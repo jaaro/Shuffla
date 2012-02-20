@@ -1,0 +1,276 @@
+# depslib dependency file v1.0
+1329694868 source:/home/jaaro/Documents/SuperSearch/main.cpp
+	<boost/regex.hpp>
+	"include/config_loader.h"
+	"include/config.h"
+	"include/query_dispatcher.h"
+	"src/server/http/server.hpp"
+	<cstdio>
+
+1329691377 /home/jaaro/Documents/SuperSearch/include/config_loader.h
+
+1329691248 /home/jaaro/Documents/SuperSearch/include/config.h
+	<string>
+
+1329691571 source:/home/jaaro/Documents/SuperSearch/src/config/config.cpp
+	"../../include/config.h"
+	<cstdio>
+	<string>
+
+1329691709 source:/home/jaaro/Documents/SuperSearch/src/config/config_loader.cpp
+	"../../include/config_loader.h"
+	<cstdio>
+
+1295238496 source:/home/jaaro/Documents/SuperSearch/src/server/http/connection.cpp
+	"connection.hpp"
+	<vector>
+	<boost/bind.hpp>
+	"request_handler.hpp"
+
+1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/connection.hpp
+	<boost/asio.hpp>
+	<boost/array.hpp>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+	<boost/enable_shared_from_this.hpp>
+	"reply.hpp"
+	"request.hpp"
+	"request_handler.hpp"
+	"request_parser.hpp"
+
+1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/reply.hpp
+	<string>
+	<vector>
+	<boost/asio.hpp>
+	"header.hpp"
+
+1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/header.hpp
+	<string>
+
+1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/request.hpp
+	<string>
+	<vector>
+	"header.hpp"
+
+1329695942 /home/jaaro/Documents/SuperSearch/src/server/http/request_handler.hpp
+	<string>
+	<boost/noncopyable.hpp>
+	"../../../include/query_dispatcher.h"
+
+1318197597 /home/jaaro/Documents/SuperSearch/src/server/http/request_parser.hpp
+	<boost/logic/tribool.hpp>
+	<boost/tuple/tuple.hpp>
+
+1307316103 source:/home/jaaro/Documents/SuperSearch/src/server/http/io_service_pool.cpp
+	"server.hpp"
+	<stdexcept>
+	<boost/thread/thread.hpp>
+	<boost/bind.hpp>
+	<boost/shared_ptr.hpp>
+
+1329694933 /home/jaaro/Documents/SuperSearch/src/server/http/server.hpp
+	<boost/asio.hpp>
+	<string>
+	<vector>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+	"connection.hpp"
+	"io_service_pool.hpp"
+	"request_handler.hpp"
+	"../../../include/query_dispatcher.h"
+
+1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/io_service_pool.hpp
+	<boost/asio.hpp>
+	<vector>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+
+1295238496 source:/home/jaaro/Documents/SuperSearch/src/server/http/mime_types.cpp
+	"mime_types.hpp"
+
+1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/mime_types.hpp
+	<string>
+
+1295238496 source:/home/jaaro/Documents/SuperSearch/src/server/http/reply.cpp
+	"reply.hpp"
+	<string>
+	<boost/lexical_cast.hpp>
+
+1329695981 source:/home/jaaro/Documents/SuperSearch/src/server/http/request_handler.cpp
+	"request_handler.hpp"
+	<fstream>
+	<sstream>
+	<string>
+	<cstdio>
+	<boost/lexical_cast.hpp>
+	"mime_types.hpp"
+	"reply.hpp"
+	"request.hpp"
+
+1318197597 source:/home/jaaro/Documents/SuperSearch/src/server/http/request_parser.cpp
+	"request_parser.hpp"
+	"request.hpp"
+
+1329694661 source:/home/jaaro/Documents/SuperSearch/src/server/http/server.cpp
+	"server.hpp"
+	<boost/bind.hpp>
+
+1329695312 /home/jaaro/Documents/SuperSearch/include/query_dispatcher.h
+	<string>
+
+1329695306 source:/home/jaaro/Documents/SuperSearch/src/server/query_dispatcher.cpp
+	<cstdio>
+	"../../include/query_dispatcher.h"
+
+1329695016 source:/home/jaaro/Documents/SuperSearch/src/server/server.cpp
+	"../../include/server.h"
+
+1329694468 /home/jaaro/Documents/SuperSearch/include/server.h
+
+1329773983 source:/home/jaaro/Shuffla/src/config/config.cpp
+	<cstdio>
+	<string>
+	<boost/lexical_cast.hpp>
+	"../../include/config.h"
+
+1329773882 /home/jaaro/Shuffla/include/config.h
+	<string>
+
+1329775907 source:/home/jaaro/Shuffla/src/config/config_loader.cpp
+	<cstdio>
+	<string>
+	<fstream>
+	<iostream>
+	<algorithm>
+	"../../include/config.h"
+	"../../include/config_loader.h"
+
+1329774723 /home/jaaro/Shuffla/include/config_loader.h
+	<string>
+
+1295238496 source:/home/jaaro/Shuffla/src/server/http/connection.cpp
+	"connection.hpp"
+	<vector>
+	<boost/bind.hpp>
+	"request_handler.hpp"
+
+1295238496 /home/jaaro/Shuffla/src/server/http/connection.hpp
+	<boost/asio.hpp>
+	<boost/array.hpp>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+	<boost/enable_shared_from_this.hpp>
+	"reply.hpp"
+	"request.hpp"
+	"request_handler.hpp"
+	"request_parser.hpp"
+
+1295238496 /home/jaaro/Shuffla/src/server/http/reply.hpp
+	<string>
+	<vector>
+	<boost/asio.hpp>
+	"header.hpp"
+
+1295238496 /home/jaaro/Shuffla/src/server/http/header.hpp
+	<string>
+
+1295238496 /home/jaaro/Shuffla/src/server/http/request.hpp
+	<string>
+	<vector>
+	"header.hpp"
+
+1329695942 /home/jaaro/Shuffla/src/server/http/request_handler.hpp
+	<string>
+	<boost/noncopyable.hpp>
+	"../../../include/query_dispatcher.h"
+
+1329695312 /home/jaaro/Shuffla/include/query_dispatcher.h
+	<string>
+
+1318197597 /home/jaaro/Shuffla/src/server/http/request_parser.hpp
+	<boost/logic/tribool.hpp>
+	<boost/tuple/tuple.hpp>
+
+1307316103 source:/home/jaaro/Shuffla/src/server/http/io_service_pool.cpp
+	"server.hpp"
+	<stdexcept>
+	<boost/thread/thread.hpp>
+	<boost/bind.hpp>
+	<boost/shared_ptr.hpp>
+
+1329771639 /home/jaaro/Shuffla/src/server/http/server.hpp
+	<boost/asio.hpp>
+	<string>
+	<vector>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+	"connection.hpp"
+	"io_service_pool.hpp"
+	"request_handler.hpp"
+	"../../../include/query_dispatcher.h"
+
+1295238496 /home/jaaro/Shuffla/src/server/http/io_service_pool.hpp
+	<boost/asio.hpp>
+	<vector>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+
+1295238496 source:/home/jaaro/Shuffla/src/server/http/mime_types.cpp
+	"mime_types.hpp"
+
+1295238496 /home/jaaro/Shuffla/src/server/http/mime_types.hpp
+	<string>
+
+1295238496 source:/home/jaaro/Shuffla/src/server/http/reply.cpp
+	"reply.hpp"
+	<string>
+	<boost/lexical_cast.hpp>
+
+1329695981 source:/home/jaaro/Shuffla/src/server/http/request_handler.cpp
+	"request_handler.hpp"
+	<fstream>
+	<sstream>
+	<string>
+	<cstdio>
+	<boost/lexical_cast.hpp>
+	"mime_types.hpp"
+	"reply.hpp"
+	"request.hpp"
+
+1318197597 source:/home/jaaro/Shuffla/src/server/http/request_parser.cpp
+	"request_parser.hpp"
+	"request.hpp"
+
+1329773522 source:/home/jaaro/Shuffla/src/server/query_dispatcher.cpp
+	<cstdio>
+	"../../include/query_dispatcher.h"
+
+1329774785 source:/home/jaaro/Shuffla/main.cpp
+	<iostream>
+	"include/config_loader.h"
+	"include/server.h"
+
+1329771817 /home/jaaro/Shuffla/src/server/http/http_server.hpp
+	<boost/asio.hpp>
+	<string>
+	<vector>
+	<boost/noncopyable.hpp>
+	<boost/shared_ptr.hpp>
+	"connection.hpp"
+	"io_service_pool.hpp"
+	"request_handler.hpp"
+	"../../../include/query_dispatcher.h"
+
+1329771892 source:/home/jaaro/Shuffla/src/server/http/http_server.cpp
+	"http_server.hpp"
+	<boost/bind.hpp>
+
+1329772303 /home/jaaro/Shuffla/include/server.h
+
+1329774579 source:/home/jaaro/Shuffla/src/server/server.cpp
+	<iostream>
+	"../../include/config.h"
+	"../../include/query_dispatcher.h"
+	"../../include/server.h"
+	"../../src/server/http/http_server.hpp"
+
