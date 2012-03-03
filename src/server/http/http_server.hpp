@@ -19,51 +19,53 @@
 #include "connection.hpp"
 #include "io_service_pool.hpp"
 #include "request_handler.hpp"
-#include "../../../include/query_dispatcher.h"
+#include "../query_dispatcher.hpp"
 
-namespace http {
-namespace server2 {
+namespace http
+{
+namespace server2
+{
 
 /// The top-level class of the HTTP server.
 class http_server
-  : private boost::noncopyable
+    : private boost::noncopyable
 {
 public:
-  /// Construct the server to listen on the specified TCP address and port, and
-  /// serve up files from the given directory.
-  explicit http_server(const std::string& address, const std::string& port,
-      const QueryDispatcher& query_dispatcher, std::size_t io_service_pool_size);
+    /// Construct the server to listen on the specified TCP address and port, and
+    /// serve up files from the given directory.
+    explicit http_server(const std::string& address, const std::string& port,
+                         const QueryDispatcher& query_dispatcher, std::size_t io_service_pool_size);
 
-  /// Run the server's io_service loop.
-  void run();
+    /// Run the server's io_service loop.
+    void run();
 
 private:
-  /// Initiate an asynchronous accept operation.
-  void start_accept();
+    /// Initiate an asynchronous accept operation.
+    void start_accept();
 
-  /// Handle completion of an asynchronous accept operation.
-  void handle_accept(const boost::system::error_code& e);
+    /// Handle completion of an asynchronous accept operation.
+    void handle_accept(const boost::system::error_code& e);
 
-  /// Handle a request to stop the server.
-  void handle_stop();
+    /// Handle a request to stop the server.
+    void handle_stop();
 
-  /// The pool of io_service objects used to perform asynchronous operations.
-  io_service_pool io_service_pool_;
+    /// The pool of io_service objects used to perform asynchronous operations.
+    io_service_pool io_service_pool_;
 
-  /// The signal_set is used to register for process termination notifications.
-  boost::asio::signal_set signals_;
+    /// The signal_set is used to register for process termination notifications.
+    boost::asio::signal_set signals_;
 
-  /// Acceptor used to listen for incoming connections.
-  boost::asio::ip::tcp::acceptor acceptor_;
+    /// Acceptor used to listen for incoming connections.
+    boost::asio::ip::tcp::acceptor acceptor_;
 
-  /// The next connection to be accepted.
-  connection_ptr new_connection_;
+    /// The next connection to be accepted.
+    connection_ptr new_connection_;
 
-  /// The handler for all incoming requests.
-  request_handler request_handler_;
+    /// The handler for all incoming requests.
+    request_handler request_handler_;
 
-  /// It will be processing all queries
-  QueryDispatcher query_dispatcher_;
+    /// It will be processing all queries
+    QueryDispatcher query_dispatcher_;
 };
 
 } // namespace server2

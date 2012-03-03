@@ -14,32 +14,34 @@
 #include <string>
 #include <boost/noncopyable.hpp>
 
-#include "../../../include/query_dispatcher.h"
+#include "../query_dispatcher.hpp"
 
-namespace http {
-namespace server2 {
+namespace http
+{
+namespace server2
+{
 
 struct reply;
 struct request;
 
 /// The common handler for all incoming requests.
 class request_handler
-  : private boost::noncopyable
+    : private boost::noncopyable
 {
 public:
-  /// Construct with a directory containing files to be served.
-  explicit request_handler(const QueryDispatcher& doc_root);
+    /// Construct with a directory containing files to be served.
+    explicit request_handler(const QueryDispatcher& doc_root);
 
-  /// Handle a request and produce a reply.
-  void handle_request(const request& req, reply& rep);
+    /// Handle a request and produce a reply.
+    void handle_request(const request& req, reply& rep);
 
 private:
-  /// Query dispatcher
-  QueryDispatcher doc_root_;
+    /// Query dispatcher
+    QueryDispatcher doc_root_;
 
-  /// Perform URL-decoding on a string. Returns false if the encoding was
-  /// invalid.
-  static bool url_decode(const std::string& in, std::string& out);
+    /// Perform URL-decoding on a string. Returns false if the encoding was
+    /// invalid.
+    static bool url_decode(const std::string& in, std::string& out);
 };
 
 } // namespace server2
