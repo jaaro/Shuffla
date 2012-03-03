@@ -7,13 +7,13 @@
 
 class QueryCreate
 {
-  public:
+public:
     QueryCreate();
     virtual ~QueryCreate();
     void register_handler(Query* handler);
     Query* parse_query(const std::string& request) const ;
-  protected:
-  private:
+protected:
+private:
     std::vector<Query*> handlers_list;
 };
 

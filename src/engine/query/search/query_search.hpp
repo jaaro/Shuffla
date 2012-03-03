@@ -5,14 +5,14 @@
 
 class QuerySearch : public Query
 {
-  public:
+public:
     QuerySearch();
     QuerySearch(const std::string& request);
     virtual ~QuerySearch();
     virtual Query* parse(const std::string& request) const ;
     virtual bool is_modyfing_data() const;
-  protected:
-  private:
+protected:
+private:
 };
 
 #endif // QUERYSEARCH_H

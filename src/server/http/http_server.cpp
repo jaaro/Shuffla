@@ -17,7 +17,7 @@ namespace server2
 {
 
 http_server::http_server(const std::string& address, const std::string& port,
-                        QueryDispatcher* query_dispatcher, std::size_t io_service_pool_size)
+                         QueryDispatcher* query_dispatcher, std::size_t io_service_pool_size)
     : io_service_pool_(io_service_pool_size),
     signals_(io_service_pool_.get_io_service()),
     acceptor_(io_service_pool_.get_io_service()),

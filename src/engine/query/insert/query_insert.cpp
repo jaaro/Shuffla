@@ -4,28 +4,30 @@
 
 QueryInsert::QueryInsert()
 {
-  //ctor
+    //ctor
 }
 
 QueryInsert::QueryInsert(const std::string& request)
 {
-  //ctor
+    //ctor
 }
 
 QueryInsert::~QueryInsert()
 {
-  //dtor
+    //dtor
 }
 
-Query* QueryInsert::parse(const std::string& request) const {
-  if (boost::starts_with(request, "/insert")) {
-    return new QueryInsert(request);
-  }
+Query* QueryInsert::parse(const std::string& request) const
+{
+    if (boost::starts_with(request, "/insert")) {
+        return new QueryInsert(request);
+    }
 
-  return NULL;
+    return NULL;
 }
 
 
-bool QueryInsert::is_modyfing_data() const {
-  return true;
+bool QueryInsert::is_modyfing_data() const
+{
+    return true;
 }

@@ -2,10 +2,10 @@
 
 Query::Query()
 {
-  //ctor
+    //ctor
 }
 
 Query::~Query()
 {
-  //dtor
+    //dtor
 }

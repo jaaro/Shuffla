@@ -2,15 +2,16 @@
 
 SearchEngine::SearchEngine()
 {
-  //ctor
+    //ctor
 }
 
 SearchEngine::~SearchEngine()
 {
-  //dtor
+    //dtor
 }
 
 
-std::string SearchEngine::process(const Query& query) {
-  return std::string("modifying = ") + (query.is_modyfing_data() ? "YES" : "NO");
+std::string SearchEngine::process(const Query& query)
+{
+    return std::string("modifying = ") + (query.is_modyfing_data() ? "YES" : "NO");
 }

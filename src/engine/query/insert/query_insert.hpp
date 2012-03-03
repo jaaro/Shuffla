@@ -6,14 +6,14 @@
 
 class QueryInsert : public Query
 {
-  public:
+public:
     QueryInsert();
     QueryInsert(const std::string& request);
     virtual ~QueryInsert();
     virtual Query* parse(const std::string& request) const ;
     virtual bool is_modyfing_data() const;
-  protected:
-  private:
+protected:
+private:
 };
 
 #endif // QUERY_INSERT_HPP

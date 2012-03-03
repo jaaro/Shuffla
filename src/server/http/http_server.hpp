@@ -34,7 +34,7 @@ public:
     /// Construct the server to listen on the specified TCP address and port, and
     /// serve up files from the given directory.
     explicit http_server(const std::string& address, const std::string& port,
-                        QueryDispatcher* query_dispatcher, std::size_t io_service_pool_size);
+                         QueryDispatcher* query_dispatcher, std::size_t io_service_pool_size);
 
     /// Run the server's io_service loop.
     void run();

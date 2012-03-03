@@ -4,28 +4,30 @@
 
 QuerySearch::QuerySearch()
 {
-  //ctor
+    //ctor
 }
 
 QuerySearch::QuerySearch(const std::string& request)
 {
-  //ctor
+    //ctor
 }
 
 QuerySearch::~QuerySearch()
 {
-  //dtor
+    //dtor
 }
 
 
-Query* QuerySearch::parse(const std::string& request) const {
-  if (boost::starts_with(request, "/search")) {
-    return new QuerySearch(request);
-  }
+Query* QuerySearch::parse(const std::string& request) const
+{
+    if (boost::starts_with(request, "/search")) {
+        return new QuerySearch(request);
+    }
 
-  return NULL;
+    return NULL;
 }
 
-bool QuerySearch::is_modyfing_data() const {
-  return false;
+bool QuerySearch::is_modyfing_data() const
+{
+    return false;
 }

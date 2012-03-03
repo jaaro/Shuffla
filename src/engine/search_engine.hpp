@@ -6,12 +6,12 @@
 
 class SearchEngine
 {
-  public:
+public:
     SearchEngine();
     virtual ~SearchEngine();
     std::string process(const Query& query);
-  protected:
-  private:
+protected:
+private:
 };
 
 #endif // SEARCHENGINE_H
