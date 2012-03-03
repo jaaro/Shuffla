@@ -3,6 +3,10 @@
 
 #include <string>
 
+
+#include "../engine/query/query_create.hpp"
+
+
 class QueryDispatcher
 {
 public:
@@ -11,6 +15,7 @@ public:
     std::string process_query(const std::string& request);
 protected:
 private:
+    QueryCreate query_parser;
 };
 
 #endif // QUERYDISPATCHER_H

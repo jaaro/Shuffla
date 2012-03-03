@@ -241,11 +241,11 @@
 	"request_parser.hpp"
 	"request.hpp"
 
-1330773627 source:/home/jaaro/Shuffla/src/server/query_dispatcher.cpp
+1330782211 source:/home/jaaro/Shuffla/src/server/query_dispatcher.cpp
 	<cstdio>
 	"query_dispatcher.hpp"
 
-1330773784 source:/home/jaaro/Shuffla/main.cpp
+1330775035 source:/home/jaaro/Shuffla/main.cpp
 	<iostream>
 	"src/config/config_loader.hpp"
 	"src/server/server.hpp"
@@ -267,7 +267,7 @@
 
 1329772303 /home/jaaro/Shuffla/include/server.h
 
-1330773784 source:/home/jaaro/Shuffla/src/server/server.cpp
+1330776123 source:/home/jaaro/Shuffla/src/server/server.cpp
 	<iostream>
 	"../config/config.hpp"
 	"query_dispatcher.hpp"
@@ -282,10 +282,32 @@
 1330773784 /home/jaaro/Shuffla/src/config/config.hpp
 	<string>
 
-1330773784 /home/jaaro/Shuffla/src/server/query_dispatcher.hpp
+1330782126 /home/jaaro/Shuffla/src/server/query_dispatcher.hpp
 	<string>
+	"../engine/query/query_create.hpp"
 
 1330773784 source:/home/jaaro/Shuffla/src/server/http/server.cpp
 	"server.hpp"
 	<boost/bind.hpp>
+
+1330781933 source:/home/jaaro/Shuffla/src/engine/query/insert/query_insert.cpp
+	<boost/algorithm/string/predicate.hpp>
+	"query_insert.hpp"
+
+1330781950 /home/jaaro/Shuffla/src/engine/query/insert/query_insert.hpp
+	"../query.hpp"
+
+1330781902 /home/jaaro/Shuffla/src/engine/query/query.hpp
+	<string>
+
+1330780651 source:/home/jaaro/Shuffla/src/engine/query/query.cpp
+	"query.hpp"
+
+1330781994 source:/home/jaaro/Shuffla/src/engine/query/query_create.cpp
+	"query_create.hpp"
+	"insert/query_insert.hpp"
+
+1330781705 /home/jaaro/Shuffla/src/engine/query/query_create.hpp
+	<vector>
+	"query.hpp"
 

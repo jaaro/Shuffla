@@ -25,11 +25,10 @@ void Server::start()
         int number_of_threads = Config::getInstance().number_of_threads;
 
         http::server2::http_server s(host, port, query_dispatcher, number_of_threads);
-        // Run the server until stopped.
-
 
         std::cout << "server started at " << host << " at port " << port << "\n";
 
+        // Run the server until stopped.
         s.run();
     } catch (std::exception& e) {
         std::cerr << "exception: " << e.what() << "\n";
