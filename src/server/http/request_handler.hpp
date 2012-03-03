@@ -30,14 +30,14 @@ class request_handler
 {
 public:
     /// Construct with a directory containing files to be served.
-    explicit request_handler(const QueryDispatcher& doc_root);
+    explicit request_handler(QueryDispatcher* doc_root);
 
     /// Handle a request and produce a reply.
     void handle_request(const request& req, reply& rep);
 
 private:
     /// Query dispatcher
-    QueryDispatcher doc_root_;
+    QueryDispatcher* doc_root_;
 
     /// Perform URL-decoding on a string. Returns false if the encoding was
     /// invalid.

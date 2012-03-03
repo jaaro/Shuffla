@@ -26,3 +26,6 @@ Query* QueryInsert::parse(const std::string& request) const {
 }
 
 
+bool QueryInsert::is_modyfing_data() const {
+  return true;
+}

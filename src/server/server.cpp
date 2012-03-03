@@ -18,13 +18,15 @@ Server::~Server()
 void Server::start()
 {
     try {
+        SearchEngine search_engine;
+        QueryDispatcher query_dispatcher(&search_engine);
+
         // loading server parameters
         std::string host = Config::getInstance().host;
         std::string port = Config::getInstance().port;
-        QueryDispatcher query_dispatcher;
         int number_of_threads = Config::getInstance().number_of_threads;
 
-        http::server2::http_server s(host, port, query_dispatcher, number_of_threads);
+        http::server2::http_server s(host, port, &query_dispatcher, number_of_threads);
 
         std::cout << "server started at " << host << " at port " << port << "\n";
 

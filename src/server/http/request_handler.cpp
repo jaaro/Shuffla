@@ -23,7 +23,7 @@ namespace http
 namespace server2
 {
 
-request_handler::request_handler(const QueryDispatcher& doc_root)
+request_handler::request_handler(QueryDispatcher* doc_root)
     : doc_root_(doc_root)
 {
 }
@@ -44,7 +44,7 @@ void request_handler::handle_request(const request& req, reply& rep)
         return;
     }
 
-    std::string response = doc_root_.process_query(request_path);
+    std::string response = doc_root_->process_query(request_path);
 
     rep.content.append(response.c_str(), response.size());
     rep.headers.resize(2);

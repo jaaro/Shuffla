@@ -2,7 +2,7 @@
 
 #include "query_dispatcher.hpp"
 
-QueryDispatcher::QueryDispatcher()
+QueryDispatcher::QueryDispatcher(SearchEngine* search_engine) : search_engine(search_engine)
 {
     // right now  nothing
     // but it will change in the future
@@ -20,9 +20,11 @@ std::string QueryDispatcher::process_query(const std::string& request)
     // request is equal "/this/is/cool"
 
     printf("%s\n", request.c_str());
-    std::string response = "LOL";
 
     Query* query = query_parser.parse_query(request);
-    if (query == NULL) { return "NIET"; }
-    return response;
+    if (query == NULL) {
+      return "Error: Unknown request format. Unable to parse " + request;
+    }
+
+    return search_engine->process(*query);
 }

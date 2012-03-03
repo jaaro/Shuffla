@@ -1,9 +1,11 @@
 #include "query_create.hpp"
 #include "insert/query_insert.hpp"
+#include "search/query_search.hpp"
 
 QueryCreate::QueryCreate()
 {
     register_handler(new QueryInsert());
+    register_handler(new QuerySearch());
 }
 
 QueryCreate::~QueryCreate()
