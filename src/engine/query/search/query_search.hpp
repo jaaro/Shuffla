@@ -6,6 +6,8 @@
 class QuerySearch : public Query
 {
 public:
+    static const std::string HTTP_PREFIX;
+
     QuerySearch();
     QuerySearch(const std::string& request);
     virtual ~QuerySearch();

@@ -7,6 +7,8 @@
 class QueryInsert : public Query
 {
 public:
+    static const std::string HTTP_PREFIX;
+
     QueryInsert();
     QueryInsert(const std::string& request);
     virtual ~QueryInsert();

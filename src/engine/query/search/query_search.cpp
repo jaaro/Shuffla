@@ -2,6 +2,8 @@
 
 #include "query_search.hpp"
 
+const std::string QuerySearch::HTTP_PREFIX = "/search/";
+
 QuerySearch::QuerySearch()
 {
     //ctor
@@ -20,7 +22,7 @@ QuerySearch::~QuerySearch()
 
 Query* QuerySearch::parse(const std::string& request) const
 {
-    if (boost::starts_with(request, "/search")) {
+    if (boost::starts_with(request, HTTP_PREFIX)) {
         return new QuerySearch(request);
     }
 

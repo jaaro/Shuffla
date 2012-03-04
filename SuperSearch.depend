@@ -241,16 +241,17 @@
 	"request_parser.hpp"
 	"request.hpp"
 
-1330794654 source:/home/jaaro/Shuffla/src/server/query_dispatcher.cpp
+1330813736 source:/home/jaaro/Shuffla/src/server/query_dispatcher.cpp
 	<cstdio>
 	"query_dispatcher.hpp"
+	"../engine/search_result/search_result.hpp"
 
 1330775035 source:/home/jaaro/Shuffla/main.cpp
 	<iostream>
 	"src/config/config_loader.hpp"
 	"src/server/server.hpp"
 
-1330793580 /home/jaaro/Shuffla/src/server/http/http_server.hpp
+1330795021 /home/jaaro/Shuffla/src/server/http/http_server.hpp
 	<boost/asio.hpp>
 	<string>
 	<vector>
@@ -261,7 +262,7 @@
 	"request_handler.hpp"
 	"../query_dispatcher.hpp"
 
-1330793557 source:/home/jaaro/Shuffla/src/server/http/http_server.cpp
+1330795021 source:/home/jaaro/Shuffla/src/server/http/http_server.cpp
 	"http_server.hpp"
 	<boost/bind.hpp>
 
@@ -287,43 +288,78 @@
 	"../engine/search_engine.hpp"
 	"../engine/query/query_create.hpp"
 
-1330793927 source:/home/jaaro/Shuffla/src/server/http/server.cpp
+1330795021 source:/home/jaaro/Shuffla/src/server/http/server.cpp
 	"server.hpp"
 	<boost/bind.hpp>
 
-1330792636 source:/home/jaaro/Shuffla/src/engine/query/insert/query_insert.cpp
+1330814489 source:/home/jaaro/Shuffla/src/engine/query/insert/query_insert.cpp
 	<boost/algorithm/string/predicate.hpp>
 	"query_insert.hpp"
 
-1330792593 /home/jaaro/Shuffla/src/engine/query/insert/query_insert.hpp
+1330812980 /home/jaaro/Shuffla/src/engine/query/insert/query_insert.hpp
 	"../query.hpp"
 
-1330792576 /home/jaaro/Shuffla/src/engine/query/query.hpp
+1330795021 /home/jaaro/Shuffla/src/engine/query/query.hpp
 	<string>
 
-1330780651 source:/home/jaaro/Shuffla/src/engine/query/query.cpp
+1330795021 source:/home/jaaro/Shuffla/src/engine/query/query.cpp
 	"query.hpp"
 
-1330792510 source:/home/jaaro/Shuffla/src/engine/query/query_create.cpp
+1330810310 source:/home/jaaro/Shuffla/src/engine/query/query_create.cpp
 	"query_create.hpp"
 	"insert/query_insert.hpp"
 	"search/query_search.hpp"
+	"create_table/query_create_table.hpp"
 
-1330781705 /home/jaaro/Shuffla/src/engine/query/query_create.hpp
+1330795021 /home/jaaro/Shuffla/src/engine/query/query_create.hpp
 	<vector>
 	"query.hpp"
 
-1330792587 /home/jaaro/Shuffla/src/engine/query/search/query_search.hpp
+1330812985 /home/jaaro/Shuffla/src/engine/query/search/query_search.hpp
 	"../query.hpp"
 
-1330792633 source:/home/jaaro/Shuffla/src/engine/query/search/query_search.cpp
+1330814496 source:/home/jaaro/Shuffla/src/engine/query/search/query_search.cpp
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1330794577 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
+1330814535 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
+	"search_result/errors/search_result_error.hpp"
+	"search_result/string/search_result_string.hpp"
 
-1330794204 /home/jaaro/Shuffla/src/engine/search_engine.hpp
+1330814535 /home/jaaro/Shuffla/src/engine/search_engine.hpp
 	<string>
 	"query/query.hpp"
+	"query/insert/query_insert.hpp"
+	"query/search/query_search.hpp"
+	"query/create_table/query_create_table.hpp"
+	"search_result/search_result.hpp"
+
+1330814535 source:/home/jaaro/Shuffla/src/engine/query/create_table/query_create_table.cpp
+	<boost/algorithm/string/predicate.hpp>
+	"query_create_table.hpp"
+
+1330814535 /home/jaaro/Shuffla/src/engine/query/create_table/query_create_table.hpp
+	"../query.hpp"
+
+1330814535 source:/home/jaaro/Shuffla/src/engine/search_result/search_result.cpp
+	"search_result.hpp"
+
+1330814535 /home/jaaro/Shuffla/src/engine/search_result/search_result.hpp
+	<string>
+
+1330856290 source:/home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.cpp
+	"search_result_string.hpp"
+
+1330856284 source:/home/jaaro/Shuffla/src/engine/search_result/errors/search_result_error.cpp
+	"search_result_error.hpp"
+
+1330813489 /home/jaaro/Shuffla/src/engine/search_result/errors/search_result_error.h
+	"../search_result.hpp"
+
+1330814535 /home/jaaro/Shuffla/src/engine/search_result/errors/search_result_error.hpp
+	"../search_result.hpp"
+
+1330814535 /home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.hpp
+	"../search_result.hpp"
 

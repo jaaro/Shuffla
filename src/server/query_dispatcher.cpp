@@ -1,6 +1,7 @@
 #include <cstdio>
 
 #include "query_dispatcher.hpp"
+#include "../engine/search_result/search_result.hpp"
 
 QueryDispatcher::QueryDispatcher(SearchEngine* search_engine) : search_engine(search_engine)
 {
@@ -26,5 +27,9 @@ std::string QueryDispatcher::process_query(const std::string& request)
         return "Error: Unknown request format. Unable to parse " + request;
     }
 
-    return search_engine->process(*query);
+    SearchResult* result = search_engine->process_query(query);
+    std::string ret = result->to_string();
+
+    delete result;
+    return ret;
 }
