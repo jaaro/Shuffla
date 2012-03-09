@@ -1,4 +1,5 @@
 #include "table_definition.hpp"
+#include "../../logger/logger.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
@@ -34,12 +35,12 @@ bool TableDefinition::create_table_from_request(const std::string& request)
     boost::split(parts, request, boost::is_any_of("/"));
 
     if (parts.size() != 4) {
-        //should be [empty string, insert, table_name, table_definition]
+        Logger::getInstance().log_error("Create table request in wrong format. Should be /create_table/<table_name>/<table_definition>\n]Your request: " + request);
         return false;
     }
 
     if (parts[3].size() < 3 || parts[3][0] != '?') {
-        //table definition should be in form ?name=type&name2=type2 etc
+        Logger::getInstance().log_error("Create table request in wrong format. Table definition is empty? Please check examples.\nYour request: " + request);
         return false;
     }
 
@@ -55,17 +56,18 @@ bool TableDefinition::create_table_from_request(const std::string& request)
         std::vector<std::string> strs;
         boost::split(strs, request, boost::is_any_of("="));
         if (strs.size() != 2) {
-            //format for single entry should be value = type
+            Logger::getInstance().log_error("Create table request in wrong format. Table definition in your request isn't in format ?prop1=type1[&prop2=type2]*. Your request: " + request);
             return false;
         }
 
         if (!is_correct_type(strs[1])) {
+          Logger::getInstance().log_error("Create table request in wrong format. Property type is wrong in at least one place. Your request: " + request);
           return false;
         }
 
         bool result = add_table_property(string_to_type(strs[1]), strs[0]);
         if (!result) {
-          // property name exist more than once in request
+          Logger::getInstance().log_error("Create table request in wrong format. There are more than one definition of property " + strs[0] + " Your request: " + request);
           return false;
         }
     }

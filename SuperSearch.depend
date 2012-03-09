@@ -373,8 +373,9 @@
 	<vector>
 	<string>
 
-1331322880 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
+1331326124 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
 	"table_definition.hpp"
+	"../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
 	<algorithm>
 
@@ -391,4 +392,11 @@
 
 1331324318 /home/jaaro/Shuffla/src/dump/append_log_manager.hpp
 	"../engine/query/query.hpp"
+
+1331325379 source:/home/jaaro/Shuffla/src/logger/logger.cpp
+	<iostream>
+	"logger.hpp"
+
+1331325247 /home/jaaro/Shuffla/src/logger/logger.hpp
+	<string>
 
