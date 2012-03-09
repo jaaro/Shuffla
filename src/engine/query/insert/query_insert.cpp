@@ -19,7 +19,7 @@ QueryInsert::~QueryInsert()
 bool QueryInsert::set(const std::string& request)
 {
     Query::set(request);
-    return true;
+    return parsed_row.set(request.substr(HTTP_PREFIX.size()));
 }
 
 Query* QueryInsert::parse(const std::string& request) const
@@ -40,3 +40,7 @@ bool QueryInsert::is_modyfing_data() const
 {
     return true;
 }
+
+DataWithoutTyping QueryInsert::get_parsed_row() const {
+      return parsed_row;
+    }

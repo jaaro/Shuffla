@@ -17,7 +17,7 @@ QuerySearch::~QuerySearch()
 bool QuerySearch::set(const std::string& request)
 {
     Query::set(request);
-    return true;
+    return parsed_query.set(request.substr(HTTP_PREFIX.size()));
 }
 
 Query* QuerySearch::parse(const std::string& request) const
@@ -37,3 +37,8 @@ bool QuerySearch::is_modyfing_data() const
 {
     return false;
 }
+
+
+    DataWithoutTyping QuerySearch::get_parsed_query() const {
+      return parsed_query;
+    }
