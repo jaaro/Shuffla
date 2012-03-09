@@ -63,6 +63,8 @@
 		<Unit filename="src/engine/search_result/search_result.hpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.cpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.hpp" />
+		<Unit filename="src/engine/table/table_definition.cpp" />
+		<Unit filename="src/engine/table/table_definition.hpp" />
 		<Unit filename="src/server/http/connection.cpp" />
 		<Unit filename="src/server/http/connection.hpp" />
 		<Unit filename="src/server/http/header.hpp" />

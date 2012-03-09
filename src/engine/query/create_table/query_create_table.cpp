@@ -1,4 +1,5 @@
 #include <boost/algorithm/string/predicate.hpp>
+#include <iostream>
 
 #include "query_create_table.hpp"
 
@@ -15,15 +16,19 @@ QueryCreateTable::~QueryCreateTable()
 }
 
 
-QueryCreateTable::QueryCreateTable(const std::string& request)
+bool QueryCreateTable::set(const std::string& request)
 {
-    //ctor
+  return table_definition.create_table_from_request(request);
 }
 
 Query* QueryCreateTable::parse(const std::string& request) const
 {
     if (boost::starts_with(request, HTTP_PREFIX)) {
-        return new QueryCreateTable(request);
+        QueryCreateTable* result = new QueryCreateTable();
+        if (result->set(request)) {
+          return result;
+        }
+        delete result;
     }
 
     return NULL;
