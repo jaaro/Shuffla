@@ -1,4 +1,5 @@
 #include <boost/algorithm/string/predicate.hpp>
+#include <iostream>
 
 #include "query_insert.hpp"
 
@@ -17,6 +18,7 @@ QueryInsert::~QueryInsert()
 
 bool QueryInsert::set(const std::string& request)
 {
+    Query::set(request);
     return true;
 }
 

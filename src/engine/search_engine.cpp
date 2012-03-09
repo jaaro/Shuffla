@@ -18,6 +18,10 @@ SearchResult* SearchEngine::process_query(const Query* query)
     processing_query_begin(query);
     SearchResult* result;
 
+    if (query->is_modyfing_data()) {
+      append_log.append(query);
+    }
+
     if (dynamic_cast<const QueryInsert*>(query) != NULL) {
         result = process_insert( dynamic_cast<const QueryInsert*>(query) );
     } else if (dynamic_cast<const QuerySearch*>(query) != NULL) {
@@ -45,5 +49,21 @@ SearchResult* SearchEngine::process_search(const QuerySearch* query)
 }
 SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
 {
-    return new SearchResultString("create_table");
+    if (is_table_existing(query->get_table_name())) {
+      return new SearchResultError("Table " + query->get_table_name() + " already exists");
+    }
+
+    Table* table = new Table();
+    table->set_table_definition(query->get_table_definition());
+    tables.push_back(table);
+    return new SearchResultString("OK: Table created successfully");
+}
+
+bool SearchEngine::is_table_existing(const std::string& table_name) const {
+    for(std::size_t i=0; i<tables.size(); i++) {
+      if (tables[i]->get_table_name() == table_name) {
+        return true;
+      }
+    }
+    return false;
 }

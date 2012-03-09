@@ -13,6 +13,13 @@ TableDefinition::~TableDefinition()
     //dtor
 }
 
+TableDefinition::TableDefinition(const TableDefinition& table_def)
+{
+    table_name = table_def.table_name;
+    property_name = table_def.property_name;
+    property_type = table_def.property_type;
+}
+
 std::string TableDefinition::get_table_name() const
 {
     return table_name;

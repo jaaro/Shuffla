@@ -10,6 +10,7 @@ public:
     std::string port;
 
     std::size_t number_of_threads;
+    bool is_append_log_enabled;
 
 private:
     Config();

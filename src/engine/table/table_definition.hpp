@@ -15,6 +15,8 @@ class TableDefinition
     TableDefinition();
     virtual ~TableDefinition();
 
+    TableDefinition(const TableDefinition&);
+
     bool create_table_from_request(const std::string& request);
     std::string get_table_name() const ;
     //bool is_valid_row(const Row& row) const;

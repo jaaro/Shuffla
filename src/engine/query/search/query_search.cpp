@@ -16,6 +16,7 @@ QuerySearch::~QuerySearch()
 
 bool QuerySearch::set(const std::string& request)
 {
+    Query::set(request);
     return true;
 }
 
