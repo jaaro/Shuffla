@@ -52,7 +52,11 @@ bool TableDefinition::create_table_from_request(const std::string& request)
             return false;
         }
 
-        bool result = add_table_property(string_to_type(strs[0]), strs[1]);
+        if (!is_correct_type(strs[1])) {
+          return false;
+        }
+
+        bool result = add_table_property(string_to_type(strs[1]), strs[0]);
         if (!result) {
           // property name exist more than once in request
           return false;
@@ -62,13 +66,21 @@ bool TableDefinition::create_table_from_request(const std::string& request)
     return true;
 }
 
+bool TableDefinition::is_correct_type(const std::string& type) const {
+  if (type == "int" || type == "integer" || type == "long") {
+        return true;
+    } if (type == "string" || type =="varchar" || type == "text") {
+        return true;
+    }
+    return false;
+}
+
 TableDefinition::Type TableDefinition::string_to_type(const std::string& type) const
 {
     if (type == "int" || type == "integer" || type == "long") {
         return Type::Integer;
-    } else {
-        return Type::String;
     }
+    return Type::String;
 }
 
 bool TableDefinition::add_table_property(const Type& type, const std::string& name)

@@ -20,6 +20,7 @@ class TableDefinition
     //bool is_valid_row(const Row& row) const;
 
     Type string_to_type(const std::string& type) const;
+    bool is_correct_type(const std::string& type) const;
 
   protected:
   private:
