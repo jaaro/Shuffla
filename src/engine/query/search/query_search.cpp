@@ -9,21 +9,24 @@ QuerySearch::QuerySearch()
     //ctor
 }
 
-QuerySearch::QuerySearch(const std::string& request)
-{
-    //ctor
-}
-
 QuerySearch::~QuerySearch()
 {
     //dtor
 }
 
+bool QuerySearch::set(const std::string& request)
+{
+    return true;
+}
 
 Query* QuerySearch::parse(const std::string& request) const
 {
     if (boost::starts_with(request, HTTP_PREFIX)) {
-        return new QuerySearch(request);
+        QuerySearch* result = new QuerySearch();
+        if (result->set(request)) {
+          return result;
+        }
+        delete result;
     }
 
     return NULL;

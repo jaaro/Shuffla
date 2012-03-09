@@ -10,20 +10,24 @@ QueryInsert::QueryInsert()
     //ctor
 }
 
-QueryInsert::QueryInsert(const std::string& request)
-{
-    //ctor
-}
-
 QueryInsert::~QueryInsert()
 {
     //dtor
 }
 
+bool QueryInsert::set(const std::string& request)
+{
+    return true;
+}
+
 Query* QueryInsert::parse(const std::string& request) const
 {
     if (boost::starts_with(request, HTTP_PREFIX)) {
-        return new QueryInsert(request);
+        QueryInsert* result = new QueryInsert();
+        if (result->set(request)) {
+          return result;
+        }
+        delete result;
     }
 
     return NULL;
