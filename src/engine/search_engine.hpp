@@ -10,6 +10,7 @@
 #include "table/table.hpp"
 #include "search_result/search_result.hpp"
 #include "../dump/append_log_manager.hpp"
+#include "../dump/dump_processor.hpp"
 
 class SearchEngine
 {
@@ -25,6 +26,8 @@ private:
     SearchResult* process_insert(const QueryInsert* query);
     SearchResult* process_search(const QuerySearch* query);
     SearchResult* process_create_table(const QueryCreateTable* query);
+
+    bool save_dump() const ;
 
     std::vector<Table*> tables;
     Table* find_table(const std::string& table_name) const;

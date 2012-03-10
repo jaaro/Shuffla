@@ -40,11 +40,11 @@ std::string Row::to_string() const
 {
     std::string result = "";
     for(std::size_t i=0; i<values.size(); i++) {
-        std::string value = values[i]->to_string();
-        result += boost::lexical_cast<std::string>( value.size() ) + ":" + value;
         if (i != 0) {
             result += ',';
         }
+        std::string value = values[i]->to_string();
+        result += boost::lexical_cast<std::string>( value.size() ) + ":" + value;
     }
     return result;
 }

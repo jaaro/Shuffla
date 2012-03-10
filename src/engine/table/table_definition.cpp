@@ -87,6 +87,18 @@ bool TableDefinition::add_table_property(const Types::Type& type, const std::str
     return true;
 }
 
+std::string TableDefinition::type_to_string(const Types::Type& type) const
+{
+    switch (type) {
+    case Types::Int:
+        return "int";
+    case Types::String:
+        return "string";
+    default:
+        //TODO log error
+        return "error";
+    }
+}
 
 std::vector<std::string> TableDefinition::get_property_names() const
 {
@@ -117,4 +129,13 @@ Types::Type TableDefinition::get_property_type(const std::string& property) cons
     }
     //TODO log error
     return Types::String;
+}
+
+std::string TableDefinition::to_string() const
+{
+    std::string result = "TABLE " + table_name + "\n";
+    for(std::size_t i=0; i<property_names.size(); i++) {
+        result += std::string("p: ") + type_to_string(property_types[i])  + " " + property_names[i] + "\n";
+    }
+    return result;
 }

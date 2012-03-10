@@ -34,6 +34,12 @@ SearchResult* SearchEngine::process_query(const Query* query)
     }
 
     processing_query_end(query);
+
+    //temporary
+    if (query->is_modyfing_data()) {
+        save_dump();
+    }
+
     return result;
 }
 
@@ -74,7 +80,7 @@ SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
     return new SearchResultString("OK: Table created successfully");
 }
 
-Table*  SearchEngine::find_table(const std::string& table_name) const
+Table* SearchEngine::find_table(const std::string& table_name) const
 {
     for(std::size_t i=0; i<tables.size(); i++) {
         if (tables[i]->get_table_name() == table_name) {
@@ -82,4 +88,15 @@ Table*  SearchEngine::find_table(const std::string& table_name) const
         }
     }
     return NULL;
+}
+
+bool SearchEngine::save_dump() const
+{
+    //TODO, tu powinien być mutex na wszystko ?
+    DumpProcessor dump_processor;
+    for(std::size_t i=0; i<tables.size(); i++) {
+        tables[i]->dump_table(dump_processor);
+    }
+
+    return true;
 }

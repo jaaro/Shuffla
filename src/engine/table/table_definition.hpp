@@ -21,8 +21,11 @@ public:
     bool is_correct_value_for_property(const std::string& property, const std::string& value) const ;
 
     Types::Type get_property_type(const std::string& property) const ;
+    std::string to_string() const ;
 protected:
 private:
+
+    std::string type_to_string(const Types::Type& type) const;
 
     // returns true if adding property was successfull, false otherwise
     bool add_table_property(const Types::Type& type, const std::string& name);
