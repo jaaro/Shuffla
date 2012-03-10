@@ -22,3 +22,9 @@ TypeInt::TYPE TypeInt::get_value() const
 {
     return value;
 }
+
+
+std::string TypeInt::to_string() const
+{
+    return boost::lexical_cast<std::string>( value );
+}

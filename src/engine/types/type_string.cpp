@@ -14,3 +14,8 @@ TypeString::TYPE TypeString::get_value() const
 {
     return value;
 }
+
+std::string TypeString::to_string() const
+{
+    return value;
+}

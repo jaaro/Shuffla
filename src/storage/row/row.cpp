@@ -1,4 +1,5 @@
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 
 #include "row.hpp"
 #include "../../engine/types/type_int.hpp"
@@ -32,6 +33,19 @@ void Row::add_value(const Types::Type& type, const std::string& value)
 
         //adding value so db is consistent
         values.push_back(new TypeString(std::string("")));
-
     }
 }
+
+std::string Row::to_string() const
+{
+    std::string result = "";
+    for(std::size_t i=0; i<values.size(); i++) {
+        std::string value = values[i]->to_string();
+        result += boost::lexical_cast<std::string>( value.size() ) + ":" + value;
+        if (i != 0) {
+            result += ',';
+        }
+    }
+    return result;
+}
+

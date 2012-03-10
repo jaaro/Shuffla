@@ -9,6 +9,8 @@ public:
     Type();
     virtual ~Type();
     virtual std::string get_name() const = 0;
+    virtual std::string to_string() const = 0;
+
 protected:
 private:
 };

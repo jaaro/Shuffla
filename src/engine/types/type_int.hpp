@@ -17,6 +17,7 @@ public:
 
     virtual ~TypeInt();
     TYPE get_value() const ;
+    virtual std::string to_string() const;
 protected:
 private:
     const TYPE value;
