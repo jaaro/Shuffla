@@ -3,14 +3,24 @@
 
 #include "../../engine/query/data_without_typing.hpp"
 #include "../../engine/table/table_definition.hpp"
+#include "../../engine/types/type.hpp"
 
 class Row
 {
   public:
-    Row(const TableDefinition& table_definition, const DataWithoutTyping& data);
+    explicit Row(const TableDefinition& table_definition, const DataWithoutTyping& data);
     virtual ~Row();
+
+    Type* operator[] (const std::string& name) const ;
+    std::string to_string() const ;
+
   protected:
   private:
+    void add_value(const Types::Type& type, const std::string& value);
+
+  private:
+    const TableDefinition* table_definition;
+    std::vector<Type*> values;
 };
 
 #endif // ROW_H

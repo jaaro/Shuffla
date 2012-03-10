@@ -105,3 +105,13 @@ bool TableDefinition::is_correct_value_for_property(const std::string& property,
 
   return false;
 }
+
+Types::Type TableDefinition::get_property_type(const std::string& property) const {
+  for(std::size_t i=0; i<property_names.size(); i++) {
+    if (property_names[i] == property) {
+      return property_types[i];
+    }
+  }
+  //TODO log error
+  return Types::String;
+}

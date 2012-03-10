@@ -1,6 +1,8 @@
 #include <boost/lexical_cast.hpp>
 
 #include "types.hpp"
+#include "type_string.hpp"
+#include "type_int.hpp"
 
 Types::Types()
 {
@@ -25,7 +27,7 @@ bool Types::is_correct_type(const std::string& type) const {
 Types::Type Types::string_to_type(const std::string& type) const
 {
     if (type == "int" || type == "integer" || type == "long") {
-        return Type::Integer;
+        return Type::Int;
     }
     return Type::String;
 }
@@ -34,10 +36,10 @@ Types::Type Types::string_to_type(const std::string& type) const
 bool Types::is_correct_value(const Type& type, const std::string& value) const {
   switch(type) {
     case String: return true;
-    case Integer:
+    case Int:
       try
       {
-        boost::lexical_cast<Types::INTEGER>( value );
+        boost::lexical_cast<TypeInt::TYPE>( value );
         return true;
       }
       catch( const boost::bad_lexical_cast & )

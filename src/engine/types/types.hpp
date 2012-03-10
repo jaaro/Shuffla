@@ -3,15 +3,13 @@
 
 #include <string>
 
+
 class Types
 {
   public:
-    typedef long long INTEGER;
-    typedef double DOUBLE;
-
     enum Type {
       String,
-      Integer
+      Int
     };
 
     Types();

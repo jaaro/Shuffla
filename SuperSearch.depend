@@ -372,12 +372,12 @@
 1330814535 /home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.hpp
 	"../search_result.hpp"
 
-1331376277 /home/jaaro/Shuffla/src/engine/table/table_definition.hpp
+1331384884 /home/jaaro/Shuffla/src/engine/table/table_definition.hpp
 	<vector>
 	<string>
 	"../types/types.hpp"
 
-1331376591 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
+1331385046 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
 	"table_definition.hpp"
 	"../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
@@ -405,29 +405,55 @@
 1331325247 /home/jaaro/Shuffla/src/logger/logger.hpp
 	<string>
 
-1331371210 /home/jaaro/Shuffla/src/storage/row/row.hpp
+1331385901 /home/jaaro/Shuffla/src/storage/row/row.hpp
 	"../../engine/query/data_without_typing.hpp"
 	"../../engine/table/table_definition.hpp"
+	"../../engine/types/type.hpp"
 
-1331371700 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
+1331386321 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
+	<iostream>
 	"row.hpp"
+	"../../engine/types/type_int.hpp"
+	"../../engine/types/type_string.hpp"
 
 1331374477 /home/jaaro/Shuffla/src/engine/query/data_without_typing.hpp
 	<string>
 	<vector>
 	"../table/table_definition.hpp"
 
-1331378913 source:/home/jaaro/Shuffla/src/engine/query/data_without_typing.cpp
+1331379248 source:/home/jaaro/Shuffla/src/engine/query/data_without_typing.cpp
 	"data_without_typing.hpp"
 	"../../logger/logger.hpp"
 	<vector>
 	<string>
 	<boost/algorithm/string.hpp>
 
-1331377127 /home/jaaro/Shuffla/src/engine/types/types.hpp
+1331384365 /home/jaaro/Shuffla/src/engine/types/types.hpp
 	<string>
 
-1331377184 source:/home/jaaro/Shuffla/src/engine/types/types.cpp
+1331384360 source:/home/jaaro/Shuffla/src/engine/types/types.cpp
 	<boost/lexical_cast.hpp>
 	"types.hpp"
+	"type_string.hpp"
+	"type_int.hpp"
+
+1331386247 /home/jaaro/Shuffla/src/engine/types/type_int.hpp
+	"type.hpp"
+
+1331386221 /home/jaaro/Shuffla/src/engine/types/type.hpp
+	<string>
+
+1331383516 source:/home/jaaro/Shuffla/src/engine/types/type.cpp
+	"type.hpp"
+
+1331385757 source:/home/jaaro/Shuffla/src/engine/types/type_int.cpp
+	<boost/lexical_cast.hpp>
+	"type_int.hpp"
+
+1331384164 source:/home/jaaro/Shuffla/src/engine/types/type_string.cpp
+	"type_string.hpp"
+
+1331386256 /home/jaaro/Shuffla/src/engine/types/type_string.hpp
+	<string>
+	"type.hpp"
 

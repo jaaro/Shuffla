@@ -20,7 +20,7 @@ class TableDefinition
     std::vector<std::string> get_property_names() const ;
     bool is_correct_value_for_property(const std::string& property, const std::string& value) const ;
 
-
+    Types::Type get_property_type(const std::string& property) const ;
   protected:
   private:
 
