@@ -18,7 +18,7 @@ public:
     DataWithoutTyping get_parsed_query() const;
 protected:
 private:
-  DataWithoutTyping parsed_query;
+    DataWithoutTyping parsed_query;
 };
 
 #endif // QUERYSEARCH_H

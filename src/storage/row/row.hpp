@@ -7,18 +7,18 @@
 
 class Row
 {
-  public:
+public:
     explicit Row(const TableDefinition& table_definition, const DataWithoutTyping& data);
     virtual ~Row();
 
     Type* operator[] (const std::string& name) const ;
     std::string to_string() const ;
 
-  protected:
-  private:
+protected:
+private:
     void add_value(const Types::Type& type, const std::string& value);
 
-  private:
+private:
     const TableDefinition* table_definition;
     std::vector<Type*> values;
 };

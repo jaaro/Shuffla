@@ -21,7 +21,7 @@ public:
     std::string get_table_name() const;
 protected:
 private:
-  TableDefinition table_definition;
+    TableDefinition table_definition;
 };
 
 #endif // QUERYCREATETABLE_H

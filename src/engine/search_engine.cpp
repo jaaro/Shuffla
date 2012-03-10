@@ -20,7 +20,7 @@ SearchResult* SearchEngine::process_query(const Query* query)
     SearchResult* result;
 
     if (query->is_modyfing_data()) {
-      append_log.append(query);
+        append_log.append(query);
     }
 
     if (dynamic_cast<const QueryInsert*>(query) != NULL) {
@@ -42,30 +42,30 @@ void SearchEngine::processing_query_end(const Query* query) {}
 
 SearchResult* SearchEngine::process_insert(const QueryInsert* query)
 {
-  Table* table = find_table(query->get_table_name());
-  if (table == NULL) {
-      return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
-  }
+    Table* table = find_table(query->get_table_name());
+    if (table == NULL) {
+        return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
+    }
 
-  bool success = query->get_parsed_row().is_matching_table_definition(table->get_table_definition());
+    bool success = query->get_parsed_row().is_matching_table_definition(table->get_table_definition());
 
-  if (!success) {
-    return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
-  }
+    if (!success) {
+        return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
+    }
 
-  Row* new_row = new Row(table->get_table_definition(), query->get_parsed_row());
-  table->insert(new_row);
-  return new SearchResultString("OK");
+    Row* new_row = new Row(table->get_table_definition(), query->get_parsed_row());
+    table->insert(new_row);
+    return new SearchResultString("OK");
 }
 
 SearchResult* SearchEngine::process_search(const QuerySearch* query)
 {
-  return new SearchResultString("Search");
+    return new SearchResultString("Search");
 }
 SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
 {
     if (find_table(query->get_table_name()) != NULL) {
-      return new SearchResultError("Table " + query->get_table_name() + " already exists");
+        return new SearchResultError("Table " + query->get_table_name() + " already exists");
     }
 
     Table* table = new Table();
@@ -74,11 +74,12 @@ SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
     return new SearchResultString("OK: Table created successfully");
 }
 
-Table*  SearchEngine::find_table(const std::string& table_name) const {
+Table*  SearchEngine::find_table(const std::string& table_name) const
+{
     for(std::size_t i=0; i<tables.size(); i++) {
-      if (tables[i]->get_table_name() == table_name) {
-        return tables[i];
-      }
+        if (tables[i]->get_table_name() == table_name) {
+            return tables[i];
+        }
     }
     return NULL;
 }

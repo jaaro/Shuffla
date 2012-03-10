@@ -20,7 +20,7 @@ public:
     std::string get_table_name() const;
 protected:
 private:
-  DataWithoutTyping parsed_row;
+    DataWithoutTyping parsed_row;
 };
 
 #endif // QUERY_INSERT_HPP

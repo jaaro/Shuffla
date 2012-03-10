@@ -2,14 +2,15 @@
 
 TypeString::TypeString(const TypeString::TYPE value) : value(value)
 {
-  //ctor
+    //ctor
 }
 
 TypeString::~TypeString()
 {
-  //dtor
+    //dtor
 }
 
-TypeString::TYPE TypeString::get_value() const {
-  return value;
+TypeString::TYPE TypeString::get_value() const
+{
+    return value;
 }

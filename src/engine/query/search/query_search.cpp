@@ -25,7 +25,7 @@ Query* QuerySearch::parse(const std::string& request) const
     if (boost::starts_with(request, HTTP_PREFIX)) {
         QuerySearch* result = new QuerySearch();
         if (result->set(request)) {
-          return result;
+            return result;
         }
         delete result;
     }
@@ -39,6 +39,7 @@ bool QuerySearch::is_modyfing_data() const
 }
 
 
-    DataWithoutTyping QuerySearch::get_parsed_query() const {
-      return parsed_query;
-    }
+DataWithoutTyping QuerySearch::get_parsed_query() const
+{
+    return parsed_query;
+}

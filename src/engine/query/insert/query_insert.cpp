@@ -27,7 +27,7 @@ Query* QueryInsert::parse(const std::string& request) const
     if (boost::starts_with(request, HTTP_PREFIX)) {
         QueryInsert* result = new QueryInsert();
         if (result->set(request)) {
-          return result;
+            return result;
         }
         delete result;
     }
@@ -41,10 +41,12 @@ bool QueryInsert::is_modyfing_data() const
     return true;
 }
 
-std::string QueryInsert::get_table_name() const {
-  return parsed_row.get_table_name();
+std::string QueryInsert::get_table_name() const
+{
+    return parsed_row.get_table_name();
 }
 
-DataWithoutTyping QueryInsert::get_parsed_row() const {
-      return parsed_row;
-    }
+DataWithoutTyping QueryInsert::get_parsed_row() const
+{
+    return parsed_row;
+}

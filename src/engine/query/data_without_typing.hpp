@@ -8,7 +8,7 @@
 
 class DataWithoutTyping
 {
-  public:
+public:
     DataWithoutTyping();
     virtual ~DataWithoutTyping();
 
@@ -17,8 +17,8 @@ class DataWithoutTyping
     std::vector<std::string> get_property_names() const ;
     std::string get_value_for_property(const std::string& property) const ;
     bool is_matching_table_definition(const TableDefinition& table_definition) const ;
-  protected:
-  private:
+protected:
+private:
     std::string table_name;
     std::vector<std::string> property_names;
     std::vector<std::string> values;

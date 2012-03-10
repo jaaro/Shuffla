@@ -5,13 +5,13 @@
 
 class AppendLogManager
 {
-  public:
+public:
     AppendLogManager();
     virtual ~AppendLogManager();
 
     void append(const Query* query);
-  protected:
-  private:
+protected:
+private:
     bool is_enabled;
 };
 

@@ -18,8 +18,8 @@ QueryCreateTable::~QueryCreateTable()
 
 bool QueryCreateTable::set(const std::string& request)
 {
-  Query::set(request);
-  return table_definition.create_table_from_request(request);
+    Query::set(request);
+    return table_definition.create_table_from_request(request);
 }
 
 Query* QueryCreateTable::parse(const std::string& request) const
@@ -27,7 +27,7 @@ Query* QueryCreateTable::parse(const std::string& request) const
     if (boost::starts_with(request, HTTP_PREFIX)) {
         QueryCreateTable* result = new QueryCreateTable();
         if (result->set(request)) {
-          return result;
+            return result;
         }
         delete result;
     }

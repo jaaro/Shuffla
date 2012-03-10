@@ -2,10 +2,10 @@
 
 Type::Type()
 {
-  //ctor
+    //ctor
 }
 
 Type::~Type()
 {
-  //dtor
+    //dtor
 }

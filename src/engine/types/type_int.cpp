@@ -4,12 +4,12 @@
 
 TypeInt::TypeInt(const TypeInt::TYPE value) : value(value)
 {
-  // intensionally nothing
+    // intensionally nothing
 }
 
 TypeInt::TypeInt(const std::string& number) : value (boost::lexical_cast<TypeInt::TYPE>( number ))
 {
-  // intensionally nothing
+    // intensionally nothing
 }
 
 TypeInt::~TypeInt()

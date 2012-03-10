@@ -6,7 +6,7 @@
 
 class Table
 {
-  public:
+public:
     Table();
     virtual ~Table();
 
@@ -15,8 +15,8 @@ class Table
     std::string get_table_name() const ;
 
     void insert(const Row* row);
-  protected:
-  private:
+protected:
+private:
     TableDefinition table_definition;
 
 };

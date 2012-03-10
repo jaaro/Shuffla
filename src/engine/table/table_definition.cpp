@@ -61,14 +61,14 @@ bool TableDefinition::create_table_from_request(const std::string& request)
         }
 
         if (!types.is_correct_type(strs[1])) {
-          Logger::getInstance().log_error("Create table request in wrong format. Property type is wrong in at least one place. Your request: " + request);
-          return false;
+            Logger::getInstance().log_error("Create table request in wrong format. Property type is wrong in at least one place. Your request: " + request);
+            return false;
         }
 
         bool result = add_table_property(types.string_to_type(strs[1]), strs[0]);
         if (!result) {
-          Logger::getInstance().log_error("Create table request in wrong format. There are more than one definition of property " + strs[0] + " Your request: " + request);
-          return false;
+            Logger::getInstance().log_error("Create table request in wrong format. There are more than one definition of property " + strs[0] + " Your request: " + request);
+            return false;
         }
     }
 
@@ -88,30 +88,33 @@ bool TableDefinition::add_table_property(const Types::Type& type, const std::str
 }
 
 
-std::vector<std::string> TableDefinition::get_property_names() const {
-  return property_names;
+std::vector<std::string> TableDefinition::get_property_names() const
+{
+    return property_names;
 }
 
-bool TableDefinition::is_correct_value_for_property(const std::string& property, const std::string& value) const {
-  for(std::size_t i=0; i<property_names.size(); i++) {
-    if (property == property_names[i]) {
-      if (!types.is_correct_value(property_types[i], value)) {
-        //TODO log error
-        return false;
-      }
-      return true;
+bool TableDefinition::is_correct_value_for_property(const std::string& property, const std::string& value) const
+{
+    for(std::size_t i=0; i<property_names.size(); i++) {
+        if (property == property_names[i]) {
+            if (!types.is_correct_value(property_types[i], value)) {
+                //TODO log error
+                return false;
+            }
+            return true;
+        }
     }
-  }
 
-  return false;
+    return false;
 }
 
-Types::Type TableDefinition::get_property_type(const std::string& property) const {
-  for(std::size_t i=0; i<property_names.size(); i++) {
-    if (property_names[i] == property) {
-      return property_types[i];
+Types::Type TableDefinition::get_property_type(const std::string& property) const
+{
+    for(std::size_t i=0; i<property_names.size(); i++) {
+        if (property_names[i] == property) {
+            return property_types[i];
+        }
     }
-  }
-  //TODO log error
-  return Types::String;
+    //TODO log error
+    return Types::String;
 }

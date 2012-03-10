@@ -5,18 +5,20 @@
 
 class TypeInt : public Type
 {
-  public:
+public:
     typedef int TYPE;
 
-    virtual std::string get_name() const { return "int"; }
+    virtual std::string get_name() const {
+        return "int";
+    }
 
     TypeInt(const std::string& number);
     TypeInt(const TYPE value);
 
     virtual ~TypeInt();
     TYPE get_value() const ;
-  protected:
-  private:
+protected:
+private:
     const TYPE value;
 };
 

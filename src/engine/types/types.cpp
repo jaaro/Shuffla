@@ -6,19 +6,21 @@
 
 Types::Types()
 {
-  //ctor
+    //ctor
 }
 
 Types::~Types()
 {
-  //dtor
+    //dtor
 }
 
 
-bool Types::is_correct_type(const std::string& type) const {
-  if (type == "int" || type == "integer" || type == "long") {
+bool Types::is_correct_type(const std::string& type) const
+{
+    if (type == "int" || type == "integer" || type == "long") {
         return true;
-    } if (type == "string" || type =="varchar" || type == "text") {
+    }
+    if (type == "string" || type =="varchar" || type == "text") {
         return true;
     }
     return false;
@@ -33,21 +35,20 @@ Types::Type Types::string_to_type(const std::string& type) const
 }
 
 
-bool Types::is_correct_value(const Type& type, const std::string& value) const {
-  switch(type) {
-    case String: return true;
-    case Int:
-      try
-      {
-        boost::lexical_cast<TypeInt::TYPE>( value );
+bool Types::is_correct_value(const Type& type, const std::string& value) const
+{
+    switch(type) {
+    case String:
         return true;
-      }
-      catch( const boost::bad_lexical_cast & )
-      {
-        return false;
-      }
+    case Int:
+        try {
+            boost::lexical_cast<TypeInt::TYPE>( value );
+            return true;
+        } catch( const boost::bad_lexical_cast & ) {
+            return false;
+        }
     default:
-      //TODO log error
-      return false;
-  }
+        //TODO log error
+        return false;
+    }
 }

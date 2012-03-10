@@ -5,16 +5,17 @@
 
 AppendLogManager::AppendLogManager()
 {
-  is_enabled = Config::getInstance().is_append_log_enabled;
+    is_enabled = Config::getInstance().is_append_log_enabled;
 }
 
 AppendLogManager::~AppendLogManager()
 {
-  //dtor
+    //dtor
 }
 
-void AppendLogManager::append(const Query* query) {
-  if (is_enabled) {
-    std::cout << "[Append log] " << query->to_string() << "\n";
-  }
+void AppendLogManager::append(const Query* query)
+{
+    if (is_enabled) {
+        std::cout << "[Append log] " << query->to_string() << "\n";
+    }
 }

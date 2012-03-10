@@ -5,12 +5,12 @@
 
 class Type
 {
-  public:
+public:
     Type();
     virtual ~Type();
     virtual std::string get_name() const = 0;
-  protected:
-  private:
+protected:
+private:
 };
 
 #endif // TYPE_H

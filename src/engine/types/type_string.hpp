@@ -7,17 +7,19 @@
 
 class TypeString : public Type
 {
-  public:
+public:
     typedef std::string TYPE;
 
-    virtual std::string get_name() const { return "string"; }
+    virtual std::string get_name() const {
+        return "string";
+    }
 
     TypeString(const TYPE value);
     virtual ~TypeString();
 
     TYPE get_value() const ;
-  protected:
-  private:
+protected:
+private:
     TYPE value;
 };
 
