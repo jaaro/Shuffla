@@ -1,8 +1,8 @@
 #include "row.hpp"
 
-Row::Row()
+Row::Row(const TableDefinition& table_definition, const DataWithoutTyping& data)
 {
-  //ctor
+  //TODO
 }
 
 Row::~Row()

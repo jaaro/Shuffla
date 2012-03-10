@@ -17,7 +17,6 @@ public:
     SearchEngine();
     virtual ~SearchEngine();
     SearchResult* process_query(const Query* query);
-    bool is_table_existing(const std::string& table_name) const;
 protected:
 private:
     void processing_query_begin(const Query* query);
@@ -28,6 +27,7 @@ private:
     SearchResult* process_create_table(const QueryCreateTable* query);
 
     std::vector<Table*> tables;
+    Table* find_table(const std::string& table_name) const;
 
     AppendLogManager append_log;
 };

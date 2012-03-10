@@ -1,6 +1,7 @@
 #include "search_engine.hpp"
 #include "search_result/errors/search_result_error.hpp"
 #include "search_result/string/search_result_string.hpp"
+#include "../storage/row/row.hpp"
 
 SearchEngine::SearchEngine()
 {
@@ -41,15 +42,29 @@ void SearchEngine::processing_query_end(const Query* query) {}
 
 SearchResult* SearchEngine::process_insert(const QueryInsert* query)
 {
-    return new SearchResultString("insert");
+  Table* table = find_table(query->get_table_name());
+  if (table == NULL) {
+      return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
+  }
+
+  bool success = query->get_parsed_row().is_matching_table_definition(table->get_table_definition());
+
+  if (!success) {
+    return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
+  }
+
+  Row* new_row = new Row(table->get_table_definition(), query->get_parsed_row());
+  table->insert(new_row);
+  return new SearchResultString("OK");
 }
+
 SearchResult* SearchEngine::process_search(const QuerySearch* query)
 {
-    return new SearchResultString("search");
+  return new SearchResultString("Search");
 }
 SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
 {
-    if (is_table_existing(query->get_table_name())) {
+    if (find_table(query->get_table_name()) != NULL) {
       return new SearchResultError("Table " + query->get_table_name() + " already exists");
     }
 
@@ -59,11 +74,11 @@ SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
     return new SearchResultString("OK: Table created successfully");
 }
 
-bool SearchEngine::is_table_existing(const std::string& table_name) const {
+Table*  SearchEngine::find_table(const std::string& table_name) const {
     for(std::size_t i=0; i<tables.size(); i++) {
       if (tables[i]->get_table_name() == table_name) {
-        return true;
+        return tables[i];
       }
     }
-    return false;
+    return NULL;
 }

@@ -25,7 +25,7 @@ bool DataWithoutTyping::set(const std::string& request)
         return false;
     }
 
-    table_name = request.substr(0, i - 1);
+    table_name = request.substr(0, i);
 
     // settings properties and their values
     std::string rest = request.substr(i+2); /*removed "/?" */
@@ -53,7 +53,7 @@ std::string DataWithoutTyping::get_table_name() const
     return table_name;
 }
 
-std::vector<std::string> DataWithoutTyping::get_columns_names() const
+std::vector<std::string> DataWithoutTyping::get_property_names() const
 {
     return property_names;
 
@@ -66,4 +66,36 @@ std::string DataWithoutTyping::get_value_for_property(const std::string& propert
         }
     }
     return NULL;
+}
+
+
+bool DataWithoutTyping::is_matching_table_definition(const TableDefinition& table_definition) const {
+  if (property_names.size() != table_definition.get_property_names().size()) {
+    Logger::getInstance().log_error("Error: Description TODO");
+    return false;
+  }
+
+  //TODO speed-up possible
+  std::vector<std::string> props = table_definition.get_property_names();
+  for(std::size_t i=0; i<props.size(); i++) {
+    bool found = false;
+    for(std::size_t j=0; !found && j<property_names.size(); j++) {
+      if (property_names[j] == props[i]) {
+        found = true;
+
+        //checking if type is ok
+        if (!table_definition.is_correct_value_for_property(props[i], values[j])) {
+          Logger::getInstance().log_error(std::string("Error: Value doesn't match property_type.\n") +
+                        "Table=" + table_definition.get_table_name() + "\n" +
+                        "Property=" + props[i] + "\n" +
+                        "Value=" + values[j]);
+          return false;
+        }
+      }
+    }
+
+    if (!found) return false;
+  }
+
+  return true;
 }

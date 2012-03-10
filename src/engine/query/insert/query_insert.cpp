@@ -41,6 +41,10 @@ bool QueryInsert::is_modyfing_data() const
     return true;
 }
 
+std::string QueryInsert::get_table_name() const {
+  return parsed_row.get_table_name();
+}
+
 DataWithoutTyping QueryInsert::get_parsed_row() const {
       return parsed_row;
     }

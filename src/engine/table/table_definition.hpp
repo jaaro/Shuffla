@@ -4,14 +4,11 @@
 #include <vector>
 #include <string>
 
+#include "../types/types.hpp"
+
 class TableDefinition
 {
   public:
-    enum Type {
-        Integer,
-        String
-     };
-
     TableDefinition();
     virtual ~TableDefinition();
 
@@ -19,20 +16,22 @@ class TableDefinition
 
     bool create_table_from_request(const std::string& request);
     std::string get_table_name() const ;
-    //bool is_valid_row(const Row& row) const;
 
-    Type string_to_type(const std::string& type) const;
-    bool is_correct_type(const std::string& type) const;
+    std::vector<std::string> get_property_names() const ;
+    bool is_correct_value_for_property(const std::string& property, const std::string& value) const ;
+
 
   protected:
   private:
 
     // returns true if adding property was successfull, false otherwise
-    bool add_table_property(const Type& type, const std::string& name);
+    bool add_table_property(const Types::Type& type, const std::string& name);
 
     std::string table_name;
-    std::vector<std::string> property_name;
-    std::vector<Type> property_type;
+    std::vector<std::string> property_names;
+    std::vector<Types::Type> property_types;
+
+    Types types;
 };
 
 #endif // TABLEDEFINITION_H

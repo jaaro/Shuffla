@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "../table/table_definition.hpp"
+
 class DataWithoutTyping
 {
   public:
@@ -12,8 +14,9 @@ class DataWithoutTyping
 
     bool set(const std::string& request);
     std::string get_table_name() const ;
-    std::vector<std::string> get_columns_names() const ;
+    std::vector<std::string> get_property_names() const ;
     std::string get_value_for_property(const std::string& property) const ;
+    bool is_matching_table_definition(const TableDefinition& table_definition) const ;
   protected:
   private:
     std::string table_name;
