@@ -8,6 +8,7 @@
 class Row
 {
 public:
+    explicit Row(const TableDefinition& table_definition, DumpLoader& dump_loader);
     explicit Row(const TableDefinition& table_definition, const DataWithoutTyping& data);
     virtual ~Row();
 

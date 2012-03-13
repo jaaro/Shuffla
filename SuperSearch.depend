@@ -127,7 +127,7 @@
 
 1329694468 /home/jaaro/Documents/SuperSearch/include/server.h
 
-1331324235 source:/home/jaaro/Shuffla/src/config/config.cpp
+1331674648 source:/home/jaaro/Shuffla/src/config/config.cpp
 	<cstdio>
 	<string>
 	<boost/lexical_cast.hpp>
@@ -268,7 +268,7 @@
 
 1329772303 /home/jaaro/Shuffla/include/server.h
 
-1330794043 source:/home/jaaro/Shuffla/src/server/server.cpp
+1331586191 source:/home/jaaro/Shuffla/src/server/server.cpp
 	<iostream>
 	"../config/config.hpp"
 	"query_dispatcher.hpp"
@@ -280,7 +280,7 @@
 
 1330773784 /home/jaaro/Shuffla/src/server/server.hpp
 
-1331324256 /home/jaaro/Shuffla/src/config/config.hpp
+1331586973 /home/jaaro/Shuffla/src/config/config.hpp
 	<string>
 
 1330793972 /home/jaaro/Shuffla/src/server/query_dispatcher.hpp
@@ -325,13 +325,13 @@
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1331406247 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
+1331681528 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
 	"../storage/row/row.hpp"
 
-1331404887 /home/jaaro/Shuffla/src/engine/search_engine.hpp
+1331586161 /home/jaaro/Shuffla/src/engine/search_engine.hpp
 	<string>
 	"query/query.hpp"
 	"query/insert/query_insert.hpp"
@@ -341,6 +341,7 @@
 	"search_result/search_result.hpp"
 	"../dump/append_log_manager.hpp"
 	"../dump/dump_processor.hpp"
+	"../dump/dump_loader.hpp"
 
 1331386664 source:/home/jaaro/Shuffla/src/engine/query/create_table/query_create_table.cpp
 	<boost/algorithm/string/predicate.hpp>
@@ -373,23 +374,25 @@
 1330814535 /home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.hpp
 	"../search_result.hpp"
 
-1331406160 /home/jaaro/Shuffla/src/engine/table/table_definition.hpp
+1331585906 /home/jaaro/Shuffla/src/engine/table/table_definition.hpp
 	<vector>
 	<string>
 	"../types/types.hpp"
+	"../../dump/dump_loader.hpp"
 
-1331406123 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
+1331679342 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
 	"table_definition.hpp"
 	"../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
 	<algorithm>
 
-1331405444 /home/jaaro/Shuffla/src/engine/table/table.hpp
+1331586561 /home/jaaro/Shuffla/src/engine/table/table.hpp
 	"table_definition.hpp"
 	"../../storage/row/row.hpp"
 	"../../dump/dump_processor.hpp"
+	"../../dump/dump_loader.hpp"
 
-1331406447 source:/home/jaaro/Shuffla/src/engine/table/table.cpp
+1331681485 source:/home/jaaro/Shuffla/src/engine/table/table.cpp
 	"table.hpp"
 	<boost/lexical_cast.hpp>
 
@@ -408,12 +411,12 @@
 1331386665 /home/jaaro/Shuffla/src/logger/logger.hpp
 	<string>
 
-1331386664 /home/jaaro/Shuffla/src/storage/row/row.hpp
+1331589075 /home/jaaro/Shuffla/src/storage/row/row.hpp
 	"../../engine/query/data_without_typing.hpp"
 	"../../engine/table/table_definition.hpp"
 	"../../engine/types/type.hpp"
 
-1331406700 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
+1331675643 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
 	<iostream>
 	<boost/lexical_cast.hpp>
 	"row.hpp"
@@ -461,10 +464,23 @@
 	<string>
 	"type.hpp"
 
-1331404798 source:/home/jaaro/Shuffla/src/dump/dump_processor.cpp
+1331681766 source:/home/jaaro/Shuffla/src/dump/dump_processor.cpp
 	"dump_processor.hpp"
+	"../config/config.hpp"
+	<iostream>
+	<fstream>
+
+1331681775 /home/jaaro/Shuffla/src/dump/dump_processor.hpp
+	<string>
+	<fstream>
 	<iostream>
 
-1331406861 /home/jaaro/Shuffla/src/dump/dump_processor.hpp
+1331681313 source:/home/jaaro/Shuffla/src/dump/dump_loader.cpp
+	"dump_loader.hpp"
+	"../config/config.hpp"
+
+1331679781 /home/jaaro/Shuffla/src/dump/dump_loader.hpp
 	<string>
+	<iostream>
+	<fstream>
 

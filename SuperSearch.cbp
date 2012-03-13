@@ -45,8 +45,16 @@
 		<Unit filename="src/config/config.hpp" />
 		<Unit filename="src/config/config_loader.cpp" />
 		<Unit filename="src/config/config_loader.hpp" />
+		<Unit filename="src/dump/append_log_manager.cpp" />
+		<Unit filename="src/dump/append_log_manager.hpp" />
+		<Unit filename="src/dump/dump_loader.cpp" />
+		<Unit filename="src/dump/dump_loader.hpp" />
+		<Unit filename="src/dump/dump_processor.cpp" />
+		<Unit filename="src/dump/dump_processor.hpp" />
 		<Unit filename="src/engine/query/create_table/query_create_table.cpp" />
 		<Unit filename="src/engine/query/create_table/query_create_table.hpp" />
+		<Unit filename="src/engine/query/data_without_typing.cpp" />
+		<Unit filename="src/engine/query/data_without_typing.hpp" />
 		<Unit filename="src/engine/query/insert/query_insert.cpp" />
 		<Unit filename="src/engine/query/insert/query_insert.hpp" />
 		<Unit filename="src/engine/query/query.cpp" />
@@ -63,8 +71,20 @@
 		<Unit filename="src/engine/search_result/search_result.hpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.cpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.hpp" />
+		<Unit filename="src/engine/table/table.cpp" />
+		<Unit filename="src/engine/table/table.hpp" />
 		<Unit filename="src/engine/table/table_definition.cpp" />
 		<Unit filename="src/engine/table/table_definition.hpp" />
+		<Unit filename="src/engine/types/type.cpp" />
+		<Unit filename="src/engine/types/type.hpp" />
+		<Unit filename="src/engine/types/type_int.cpp" />
+		<Unit filename="src/engine/types/type_int.hpp" />
+		<Unit filename="src/engine/types/type_string.cpp" />
+		<Unit filename="src/engine/types/type_string.hpp" />
+		<Unit filename="src/engine/types/types.cpp" />
+		<Unit filename="src/engine/types/types.hpp" />
+		<Unit filename="src/logger/logger.cpp" />
+		<Unit filename="src/logger/logger.hpp" />
 		<Unit filename="src/server/http/connection.cpp" />
 		<Unit filename="src/server/http/connection.hpp" />
 		<Unit filename="src/server/http/header.hpp" />
@@ -87,6 +107,8 @@
 		<Unit filename="src/server/query_dispatcher.hpp" />
 		<Unit filename="src/server/server.cpp" />
 		<Unit filename="src/server/server.hpp" />
+		<Unit filename="src/storage/row/row.cpp" />
+		<Unit filename="src/storage/row/row.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

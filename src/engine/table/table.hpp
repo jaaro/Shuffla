@@ -4,11 +4,13 @@
 #include "table_definition.hpp"
 #include "../../storage/row/row.hpp"
 #include "../../dump/dump_processor.hpp"
+#include "../../dump/dump_loader.hpp"
 
 class Table
 {
 public:
     Table();
+    Table(DumpLoader& dump_loader);
     virtual ~Table();
 
     void set_table_definition(const TableDefinition& table_definition);

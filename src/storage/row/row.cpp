@@ -5,6 +5,18 @@
 #include "../../engine/types/type_int.hpp"
 #include "../../engine/types/type_string.hpp"
 
+
+Row::Row(const TableDefinition& table_definition, DumpLoader& dump_loader) {
+  std::vector<std::string> props = table_definition.get_property_names();
+    for(std::size_t i=0; i<props.size(); i++) {
+        int value_size = dump_loader.get_next_int();
+        dump_loader.get_next_char();
+        std::string value = dump_loader.get_next_chars(value_size);
+
+        add_value(table_definition.get_property_type(props[i]), value);
+    }
+}
+
 Row::Row(const TableDefinition& table_definition, const DataWithoutTyping& data) : table_definition(&table_definition)
 {
     std::vector<std::string> props = table_definition.get_property_names();
@@ -40,9 +52,6 @@ std::string Row::to_string() const
 {
     std::string result = "";
     for(std::size_t i=0; i<values.size(); i++) {
-        if (i != 0) {
-            result += ',';
-        }
         std::string value = values[i]->to_string();
         result += boost::lexical_cast<std::string>( value.size() ) + ":" + value;
     }

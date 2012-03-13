@@ -13,6 +13,8 @@ Config::Config()
     number_of_threads = 16;
 
     is_append_log_enabled = true;
+
+    dump_file_name = "/home/jaaro/dump.shu";
 }
 
 Config::~Config() {}

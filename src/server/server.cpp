@@ -18,7 +18,8 @@ Server::~Server()
 void Server::start()
 {
     try {
-        SearchEngine search_engine;
+        DumpLoader dump_loader;
+        SearchEngine search_engine(dump_loader);
         QueryDispatcher query_dispatcher(&search_engine);
 
         // loading server parameters

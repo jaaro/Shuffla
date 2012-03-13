@@ -1,17 +1,23 @@
 #include "dump_processor.hpp"
+#include "../config/config.hpp"
+
 #include <iostream>
+#include <fstream>
 
 DumpProcessor::DumpProcessor()
 {
-    //ctor
+    output = new std::ofstream(Config::getInstance().dump_file_name.c_str());
 }
 
 DumpProcessor::~DumpProcessor()
 {
-    //dtor
+
+    output->flush();
+    output->close();
+    delete output;
 }
 
 void DumpProcessor::append(const std::string& line)
 {
-    std::cout << line << "\n";
+    *output << line;
 }

@@ -11,11 +11,12 @@
 #include "search_result/search_result.hpp"
 #include "../dump/append_log_manager.hpp"
 #include "../dump/dump_processor.hpp"
+#include "../dump/dump_loader.hpp"
 
 class SearchEngine
 {
 public:
-    SearchEngine();
+    SearchEngine(DumpLoader& dump_loader);
     virtual ~SearchEngine();
     SearchResult* process_query(const Query* query);
 protected:

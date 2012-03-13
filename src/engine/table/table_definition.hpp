@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../types/types.hpp"
+#include "../../dump/dump_loader.hpp"
 
 class TableDefinition
 {
@@ -13,6 +14,7 @@ public:
     virtual ~TableDefinition();
 
     TableDefinition(const TableDefinition&);
+    TableDefinition(DumpLoader& dump_loader);
 
     bool create_table_from_request(const std::string& request);
     std::string get_table_name() const ;

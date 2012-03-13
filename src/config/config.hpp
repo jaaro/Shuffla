@@ -12,6 +12,7 @@ public:
     std::size_t number_of_threads;
     bool is_append_log_enabled;
 
+    std::string dump_file_name;
 private:
     Config();
     Config(const Config&);

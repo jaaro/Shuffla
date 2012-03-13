@@ -3,9 +3,12 @@
 #include "search_result/string/search_result_string.hpp"
 #include "../storage/row/row.hpp"
 
-SearchEngine::SearchEngine()
+SearchEngine::SearchEngine(DumpLoader& dump_loader)
 {
-    //ctor
+  while(!dump_loader.is_eof()) {
+    tables.push_back(new Table(dump_loader));
+  }
+  dump_loader.close();
 }
 
 SearchEngine::~SearchEngine()
@@ -95,6 +98,7 @@ bool SearchEngine::save_dump() const
     //TODO, tu powinien być mutex na wszystko ?
     DumpProcessor dump_processor;
     for(std::size_t i=0; i<tables.size(); i++) {
+        if (i > 0) dump_processor.append("\n");
         tables[i]->dump_table(dump_processor);
     }
 
