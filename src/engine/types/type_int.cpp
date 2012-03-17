@@ -28,3 +28,18 @@ std::string TypeInt::to_string() const
 {
     return boost::lexical_cast<std::string>( value );
 }
+
+bool TypeInt::is_correct_value(const std::string& value) const
+{
+    try {
+        int res = boost::lexical_cast<TypeInt::TYPE>( value );
+        return true;
+    } catch(std::exception e) {
+        return false;
+    }
+}
+
+bool TypeInt::is_correct_function(const std::string& function_name) const
+{
+    return false;
+}

@@ -19,3 +19,13 @@ std::string TypeString::to_string() const
 {
     return value;
 }
+
+bool TypeString::is_correct_value(const std::string& value) const
+{
+    return true;
+}
+
+bool TypeString::is_correct_function(const std::string& function_name) const
+{
+    return false;
+}

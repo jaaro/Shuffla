@@ -17,6 +17,9 @@ public:
     TypeString(const TYPE value);
     virtual ~TypeString();
 
+    virtual bool is_correct_value(const std::string& value) const ;
+    virtual bool is_correct_function(const std::string& function_name) const ;
+
     virtual std::string to_string() const;
     TYPE get_value() const ;
 protected:

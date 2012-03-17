@@ -32,16 +32,13 @@ Row::~Row()
 }
 
 
-void Row::add_value(const Types::Type& type, const std::string& value)
+void Row::add_value(const Type* type, const std::string& value)
 {
-    switch(type) {
-    case Types::Int:
+    if (type->get_name() == "int") {
         values.push_back(new TypeInt(value));
-        break;
-    case Types::String:
+    } else if (type->get_name() == "string") {
         values.push_back(new TypeString(value));
-        break;
-    default:
+    } else {
         //TODO log error
 
         //adding value so db is consistent

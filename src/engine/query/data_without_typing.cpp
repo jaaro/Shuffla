@@ -1,5 +1,6 @@
 #include "data_without_typing.hpp"
 #include "../../logger/logger.hpp"
+#include "../types/type.hpp"
 
 #include <vector>
 #include <string>
@@ -100,3 +101,45 @@ bool DataWithoutTyping::is_matching_table_definition(const TableDefinition& tabl
 
     return true;
 }
+
+bool DataWithoutTyping::is_correct_query_search(const TableDefinition& table_definition) const
+{
+    for(std::size_t i = 0; i < property_names.size(); i++) {
+        std::string prop = property_names[i];
+
+        bool is_function = false;
+        std::string function_name;
+        if (prop[prop.size()-1] == ')') {
+            int pos = find(prop.begin(), prop.end(), '(') - prop.begin();
+            if (pos + 2 >= prop.size()) {
+                //TODO log error
+                return false;
+            }
+
+            is_function = true;
+            function_name = prop.substr(0, pos);
+            prop = prop.substr(pos+1, prop.size() - 1);
+        } else {
+            is_function = false;
+        }
+
+        const Type* type = table_definition.get_property_type(prop);
+        if (type == NULL) {
+            //TODO log error
+            return false;
+        }
+
+        if (!type->is_correct_value(values[i])) {
+            //TODO log error
+            return false;
+        }
+
+        if (is_function && !type->is_correct_function(function_name)) {
+            //TODO log error
+            return false;
+        }
+    }
+
+    return true;
+}
+

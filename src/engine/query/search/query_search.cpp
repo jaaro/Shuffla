@@ -38,6 +38,10 @@ bool QuerySearch::is_modyfing_data() const
     return false;
 }
 
+std::string QuerySearch::get_table_name() const
+{
+    return parsed_query.get_table_name();
+}
 
 DataWithoutTyping QuerySearch::get_parsed_query() const
 {

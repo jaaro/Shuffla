@@ -17,7 +17,7 @@ public:
 
 protected:
 private:
-    void add_value(const Types::Type& type, const std::string& value);
+    void add_value(const Type* type, const std::string& value);
 
 private:
     const TableDefinition* table_definition;

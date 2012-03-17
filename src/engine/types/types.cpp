@@ -26,29 +26,20 @@ bool Types::is_correct_type(const std::string& type) const
     return false;
 }
 
-Types::Type Types::string_to_type(const std::string& type) const
+Type* Types::string_to_type(const std::string& type) const
 {
+    //TODO check for memory leaks
     if (type == "int" || type == "integer" || type == "long") {
-        return Type::Int;
+        return new TypeInt(0);
     }
-    return Type::String;
+    if (type == "string" || type =="varchar" || type == "text") {
+        return new TypeString("");
+    }
+    return false;
 }
 
 
-bool Types::is_correct_value(const Type& type, const std::string& value) const
+bool Types::is_correct_value(const Type* type, const std::string& value) const
 {
-    switch(type) {
-    case String:
-        return true;
-    case Int:
-        try {
-            boost::lexical_cast<TypeInt::TYPE>( value );
-            return true;
-        } catch( const boost::bad_lexical_cast & ) {
-            return false;
-        }
-    default:
-        //TODO log error
-        return false;
-    }
+    return type->is_correct_value(value);
 }

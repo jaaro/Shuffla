@@ -75,7 +75,7 @@ bool TableDefinition::create_table_from_request(const std::string& request)
     return true;
 }
 
-bool TableDefinition::add_table_property(const Types::Type& type, const std::string& name)
+bool TableDefinition::add_table_property(const Type* type, const std::string& name)
 {
     if (find(property_names.begin(), property_names.end(), name) != property_names.end()) {
         return false;
@@ -85,19 +85,6 @@ bool TableDefinition::add_table_property(const Types::Type& type, const std::str
     property_names.push_back(name);
 
     return true;
-}
-
-std::string TableDefinition::type_to_string(const Types::Type& type) const
-{
-    switch (type) {
-    case Types::Int:
-        return "int";
-    case Types::String:
-        return "string";
-    default:
-        //TODO log error
-        return "error";
-    }
 }
 
 std::vector<std::string> TableDefinition::get_property_names() const
@@ -120,7 +107,7 @@ bool TableDefinition::is_correct_value_for_property(const std::string& property,
     return false;
 }
 
-Types::Type TableDefinition::get_property_type(const std::string& property) const
+const Type* TableDefinition::get_property_type(const std::string& property) const
 {
     for(std::size_t i=0; i<property_names.size(); i++) {
         if (property_names[i] == property) {
@@ -128,14 +115,14 @@ Types::Type TableDefinition::get_property_type(const std::string& property) cons
         }
     }
     //TODO log error
-    return Types::String;
+    return NULL;
 }
 
 std::string TableDefinition::to_string() const
 {
     std::string result = "TABLE " + table_name + "\n";
     for(std::size_t i=0; i<property_names.size(); i++) {
-        result += type_to_string(property_types[i])  + " " + property_names[i] + "\n";
+        result += property_types[i]->get_name()  + " " + property_names[i] + "\n";
     }
     result += "END TABLE\n";
 

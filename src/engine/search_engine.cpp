@@ -49,6 +49,16 @@ SearchResult* SearchEngine::process_query(const Query* query)
 void SearchEngine::processing_query_begin(const Query* query) {}
 void SearchEngine::processing_query_end(const Query* query) {}
 
+/**
+ * Processes insert command.
+ *
+ * It means that for given QueryInsert this function:
+ * -> finds table that insert command refers to
+ * -> checks, if insert data matches table definition
+ * -> handles error from above points
+ * -> creates new row, based on given data
+ * -> passes new row to table class
+ */
 SearchResult* SearchEngine::process_insert(const QueryInsert* query)
 {
     Table* table = find_table(query->get_table_name());
@@ -67,10 +77,40 @@ SearchResult* SearchEngine::process_insert(const QueryInsert* query)
     return new SearchResultString("OK");
 }
 
+
+/**
+ * Processes search command
+ *
+ * It means that for given QuerySearch this function:
+ * -> finds table that search command refers to
+ * -> checks, if search command matches table definition
+ * -> handles error from above points
+ * ->
+ */
 SearchResult* SearchEngine::process_search(const QuerySearch* query)
 {
+    Table* table = find_table(query->get_table_name());
+    if (table == NULL) {
+        return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
+    }
+
+    bool success = query->get_parsed_query().is_correct_query_search(table->get_table_definition());
+
+    if (!success) {
+        return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
+    }
+
     return new SearchResultString("Search");
 }
+
+/**
+ * Processes create table command
+ *
+ * It means that for given QueryCreateTable this function:
+ * -> checks if such table already exists
+ * -> creates table
+ *
+ */
 SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
 {
     if (find_table(query->get_table_name()) != NULL) {
