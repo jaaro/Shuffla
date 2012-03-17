@@ -14,7 +14,7 @@ public:
     void append(const std::string& line);
 protected:
 private:
-std::ofstream* output;
+    std::ofstream* output;
 };
 
 #endif // DUMPPROCESSOR_H

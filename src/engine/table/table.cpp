@@ -9,14 +9,14 @@ Table::Table()
 
 Table::Table(DumpLoader& dump_loader)
 {
-  table_definition = TableDefinition(dump_loader);
+    table_definition = TableDefinition(dump_loader);
 
-  std::string line = dump_loader.get_line();
-  int size = boost::lexical_cast<int>(line);
-  while(size--) {
-    rows.push_back(new Row(table_definition, dump_loader));
-  }
-  dump_loader.get_line();
+    std::string line = dump_loader.get_line();
+    int size = boost::lexical_cast<int>(line);
+    while(size--) {
+        rows.push_back(new Row(table_definition, dump_loader));
+    }
+    dump_loader.get_line();
 }
 
 Table::~Table()

@@ -143,28 +143,29 @@ std::string TableDefinition::to_string() const
 }
 
 
-TableDefinition::TableDefinition(DumpLoader& dump_loader) {
-  std::string line = dump_loader.get_line();
+TableDefinition::TableDefinition(DumpLoader& dump_loader)
+{
+    std::string line = dump_loader.get_line();
 
-  if (line.size() < 6 || line.substr(0, 5) != "TABLE") {
-    //TODO log error
-    throw new std::exception();
-  }
-
-  table_name = line.substr(6);
-
-  while(true) {
-    line = dump_loader.get_line();
-    if (line == "END TABLE") break;
-
-    std::vector<std::string> strs;
-    boost::split(strs, line, boost::is_any_of(" "));
-
-    if (strs.size() != 2) {
-      //TODO log error
+    if (line.size() < 6 || line.substr(0, 5) != "TABLE") {
+        //TODO log error
+        throw new std::exception();
     }
 
-    add_table_property(types.string_to_type(strs[0]), strs[1]);
-  }
+    table_name = line.substr(6);
+
+    while(true) {
+        line = dump_loader.get_line();
+        if (line == "END TABLE") break;
+
+        std::vector<std::string> strs;
+        boost::split(strs, line, boost::is_any_of(" "));
+
+        if (strs.size() != 2) {
+            //TODO log error
+        }
+
+        add_table_property(types.string_to_type(strs[0]), strs[1]);
+    }
 
 }

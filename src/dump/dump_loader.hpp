@@ -7,7 +7,7 @@
 
 class DumpLoader
 {
-  public:
+public:
     DumpLoader();
     virtual ~DumpLoader();
 
@@ -20,8 +20,8 @@ class DumpLoader
     bool is_eof();
     void close();
 
-  protected:
-  private:
+protected:
+private:
     char* temp_buffor;
     std::ifstream* input;
 };

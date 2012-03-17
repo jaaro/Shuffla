@@ -5,10 +5,10 @@
 
 SearchEngine::SearchEngine(DumpLoader& dump_loader)
 {
-  while(!dump_loader.is_eof()) {
-    tables.push_back(new Table(dump_loader));
-  }
-  dump_loader.close();
+    while(!dump_loader.is_eof()) {
+        tables.push_back(new Table(dump_loader));
+    }
+    dump_loader.close();
 }
 
 SearchEngine::~SearchEngine()

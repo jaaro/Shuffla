@@ -6,8 +6,9 @@
 #include "../../engine/types/type_string.hpp"
 
 
-Row::Row(const TableDefinition& table_definition, DumpLoader& dump_loader) {
-  std::vector<std::string> props = table_definition.get_property_names();
+Row::Row(const TableDefinition& table_definition, DumpLoader& dump_loader)
+{
+    std::vector<std::string> props = table_definition.get_property_names();
     for(std::size_t i=0; i<props.size(); i++) {
         int value_size = dump_loader.get_next_int();
         dump_loader.get_next_char();
