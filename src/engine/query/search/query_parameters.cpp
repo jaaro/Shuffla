@@ -57,6 +57,16 @@ bool QueryParameters::set(const TableDefinition& table_definition, const DataWit
     return true;
 }
 
+bool QueryParameters::is_matching(const Row* row) const
+{
+    for(std::size_t i=0; i<parameters.size(); i++) {
+        if (!parameters[i]->is_matching(row)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void QueryParameters::register_functions()
 {
     registered_functions.clear();

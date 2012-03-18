@@ -16,6 +16,12 @@ SearchFunctionEqual::SearchFunctionEqual(const SearchFunctionEqual& fun)
     value = fun.value;
 }
 
+
+bool SearchFunctionEqual::is_matching(const Row* row) const
+{
+    return (*row)[property_name]->equals(value);
+}
+
 bool SearchFunctionEqual::set(const std::string& name)
 {
     //TODO check if it is valid property name

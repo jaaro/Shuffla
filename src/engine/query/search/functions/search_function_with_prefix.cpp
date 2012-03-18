@@ -2,12 +2,12 @@
 
 SearchFunctionWithPrefix::SearchFunctionWithPrefix()
 {
-  //ctor
+    //ctor
 }
 
 SearchFunctionWithPrefix::~SearchFunctionWithPrefix()
 {
-  //dtor
+    //dtor
 }
 
 
@@ -17,17 +17,17 @@ bool SearchFunctionWithPrefix::set(const std::string& name)
     size_t pos_end = name.find(')');
 
     if (pos_open == std::string::npos || pos_end + 1 != name.size()) {
-      //TODO log error
-      return false;
+        //TODO log error
+        return false;
     }
 
     if (!is_correct_prefix(name.substr(0, pos_open))) {
-      //TODO log error
-      return false;
+        //TODO log error
+        return false;
     }
 
     if (!set_property_name(name.substr(pos_open + 1, pos_end))) {
-      return false;
+        return false;
     }
 
     return true;

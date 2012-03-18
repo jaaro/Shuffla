@@ -325,7 +325,7 @@
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1332075840 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
+1332101715 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
@@ -357,7 +357,7 @@
 1330814535 source:/home/jaaro/Shuffla/src/engine/search_result/search_result.cpp
 	"search_result.hpp"
 
-1330814535 /home/jaaro/Shuffla/src/engine/search_result/search_result.hpp
+1332106139 /home/jaaro/Shuffla/src/engine/search_result/search_result.hpp
 	<string>
 
 1330856290 source:/home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.cpp
@@ -388,14 +388,17 @@
 	<boost/algorithm/string.hpp>
 	<algorithm>
 
-1331586561 /home/jaaro/Shuffla/src/engine/table/table.hpp
+1332101886 /home/jaaro/Shuffla/src/engine/table/table.hpp
 	"table_definition.hpp"
 	"../../storage/row/row.hpp"
 	"../../dump/dump_processor.hpp"
 	"../../dump/dump_loader.hpp"
+	"../search_result/search_result.hpp"
+	"../query/search/query_parameters.hpp"
 
-1332008776 source:/home/jaaro/Shuffla/src/engine/table/table.cpp
+1332102569 source:/home/jaaro/Shuffla/src/engine/table/table.cpp
 	"table.hpp"
+	"../search_result/results/search_results.hpp"
 	<boost/lexical_cast.hpp>
 
 1331386664 source:/home/jaaro/Shuffla/src/dump/append_log_manager.cpp
@@ -413,12 +416,12 @@
 1331386665 /home/jaaro/Shuffla/src/logger/logger.hpp
 	<string>
 
-1332018939 /home/jaaro/Shuffla/src/storage/row/row.hpp
+1332106339 /home/jaaro/Shuffla/src/storage/row/row.hpp
 	"../../engine/query/data_without_typing.hpp"
 	"../../engine/table/table_definition.hpp"
 	"../../engine/types/type.hpp"
 
-1332019089 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
+1332106707 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
 	<iostream>
 	<boost/lexical_cast.hpp>
 	"row.hpp"
@@ -448,23 +451,23 @@
 	"type_string.hpp"
 	"type_int.hpp"
 
-1332018714 /home/jaaro/Shuffla/src/engine/types/type_int.hpp
+1332103759 /home/jaaro/Shuffla/src/engine/types/type_int.hpp
 	"type.hpp"
 
-1332018729 /home/jaaro/Shuffla/src/engine/types/type.hpp
+1332103743 /home/jaaro/Shuffla/src/engine/types/type.hpp
 	<string>
 
 1331386664 source:/home/jaaro/Shuffla/src/engine/types/type.cpp
 	"type.hpp"
 
-1332080657 source:/home/jaaro/Shuffla/src/engine/types/type_int.cpp
+1332103859 source:/home/jaaro/Shuffla/src/engine/types/type_int.cpp
 	<boost/lexical_cast.hpp>
 	"type_int.hpp"
 
-1332020200 source:/home/jaaro/Shuffla/src/engine/types/type_string.cpp
+1332106028 source:/home/jaaro/Shuffla/src/engine/types/type_string.cpp
 	"type_string.hpp"
 
-1332018720 /home/jaaro/Shuffla/src/engine/types/type_string.hpp
+1332105956 /home/jaaro/Shuffla/src/engine/types/type_string.hpp
 	<string>
 	"type.hpp"
 
@@ -491,29 +494,32 @@
 1332080349 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function.cpp
 	"search_function.hpp"
 
-1332080241 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function.hpp
+1332103419 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function.hpp
 	"../../../types/type.hpp"
+	"../../../../storage/row/row.hpp"
 
-1332077447 source:/home/jaaro/Shuffla/src/engine/query/search/query_parameters.cpp
+1332103494 source:/home/jaaro/Shuffla/src/engine/query/search/query_parameters.cpp
 	"query_parameters.hpp"
 	"functions/search_function_equal.hpp"
 	"functions/search_function_prefix.hpp"
 
-1332076010 /home/jaaro/Shuffla/src/engine/query/search/query_parameters.hpp
+1332102333 /home/jaaro/Shuffla/src/engine/query/search/query_parameters.hpp
 	"../../table/table_definition.hpp"
 	"../data_without_typing.hpp"
 	"functions/search_function.hpp"
+	"../../../storage/row/row.hpp"
 
-1332080257 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
+1332103694 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
 	"search_function_equal.hpp"
 
-1332080215 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
+1332103460 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
 	"search_function.hpp"
 
-1332081028 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.cpp
+1332105876 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.cpp
 	"search_function_prefix.hpp"
+	"../../../types/type_string.hpp"
 
-1332081083 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
+1332103458 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
 	"search_function_with_prefix.hpp"
 
 1332081074 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_with_prefix.hpp
@@ -521,4 +527,12 @@
 
 1332081051 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
 	"search_function_with_prefix.hpp"
+
+1332106656 source:/home/jaaro/Shuffla/src/engine/search_result/results/search_results.cpp
+	"search_results.hpp"
+	<boost/lexical_cast.hpp>
+
+1332102652 /home/jaaro/Shuffla/src/engine/search_result/results/search_results.hpp
+	"../search_result.hpp"
+	"../../../storage/row/row.hpp"
 

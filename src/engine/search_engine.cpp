@@ -102,7 +102,7 @@ SearchResult* SearchEngine::process_search(const QuerySearch* query)
         return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
     }
 
-    return new SearchResultString("Search");
+    return table->search(params);
 }
 
 /**

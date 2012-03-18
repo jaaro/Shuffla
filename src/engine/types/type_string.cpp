@@ -29,3 +29,14 @@ bool TypeString::is_correct_function(const std::string& function_name) const
 {
     return false;
 }
+
+bool TypeString::equals(const std::string& v) const
+{
+    return v == value;
+}
+
+bool TypeString::is_prefix(const std::string& prefix) const
+{
+    if (prefix.size() > value.size()) return false;
+    return value.substr(0, prefix.size()) == prefix;
+}

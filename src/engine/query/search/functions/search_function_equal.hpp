@@ -11,6 +11,7 @@ public:
     virtual ~SearchFunctionEqual();
 
     virtual bool set(const std::string& name);
+    virtual bool is_matching(const Row* row) const;
     virtual bool is_available_for_type(const Type* type) const;
     virtual SearchFunction* clone() const ;
 

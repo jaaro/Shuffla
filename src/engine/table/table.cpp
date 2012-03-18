@@ -1,4 +1,5 @@
 #include "table.hpp"
+#include "../search_result/results/search_results.hpp"
 
 #include <boost/lexical_cast.hpp>
 
@@ -52,4 +53,16 @@ void Table::dump_table(DumpProcessor& dump_processor) const
     for(std::size_t i=0; i<rows.size(); i++) {
         dump_processor.append(rows[i]->to_string());
     }
+}
+
+SearchResult* Table::search(const QueryParameters& params) const
+{
+    std::vector<const Row*> results;
+    for(std::size_t i=0; i<rows.size(); i++) {
+        if (params.is_matching(rows[i])) {
+            results.push_back(rows[i]);
+        }
+    }
+
+    return new SearchResults(results);
 }

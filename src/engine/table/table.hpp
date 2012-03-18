@@ -5,6 +5,8 @@
 #include "../../storage/row/row.hpp"
 #include "../../dump/dump_processor.hpp"
 #include "../../dump/dump_loader.hpp"
+#include "../search_result/search_result.hpp"
+#include "../query/search/query_parameters.hpp"
 
 class Table
 {
@@ -18,6 +20,7 @@ public:
     std::string get_table_name() const ;
 
     void insert(const Row* row);
+    SearchResult* search(const QueryParameters& params) const ;
     void dump_table(DumpProcessor& dump_processor) const;
 protected:
 private:

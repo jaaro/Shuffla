@@ -61,6 +61,16 @@
 		<Unit filename="src/engine/query/query.hpp" />
 		<Unit filename="src/engine/query/query_create.cpp" />
 		<Unit filename="src/engine/query/query_create.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_equal.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_equal.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_prefix.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_prefix.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_with_prefix.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_with_prefix.hpp" />
+		<Unit filename="src/engine/query/search/query_parameters.cpp" />
+		<Unit filename="src/engine/query/search/query_parameters.hpp" />
 		<Unit filename="src/engine/query/search/query_search.cpp" />
 		<Unit filename="src/engine/query/search/query_search.hpp" />
 		<Unit filename="src/engine/search_engine.cpp" />

@@ -14,6 +14,7 @@ public:
 
     Type* operator[] (const std::string& name) const ;
     std::string to_string() const ;
+    std::string to_json() const ;
 
 protected:
 private:

@@ -43,3 +43,8 @@ bool TypeInt::is_correct_function(const std::string& function_name) const
 {
     return false;
 }
+
+bool TypeInt::equals(const std::string& v) const
+{
+    return is_correct_value(v) && boost::lexical_cast<TypeInt::TYPE>( v ) == value;
+}

@@ -6,7 +6,7 @@
 #include "../../engine/types/type_string.hpp"
 
 
-Row::Row(const TableDefinition& table_definition, DumpLoader& dump_loader)
+Row::Row(const TableDefinition& table_definition, DumpLoader& dump_loader) : table_definition(&table_definition)
 {
     std::vector<std::string> props = table_definition.get_property_names();
     for(std::size_t i=0; i<props.size(); i++) {
@@ -55,4 +55,30 @@ std::string Row::to_string() const
     }
     return result;
 }
+
+std::string Row::to_json() const
+{
+    std::string result = "{";
+
+    std::vector<std::string> props = table_definition->get_property_names();
+    for(std::size_t i=0; i<props.size(); i++) {
+        if (i!=0) result += ",";
+        result += props[i] + ":";
+        //TODO CRITICAL you have to escape this value
+        result += values[i]->to_string();
+    }
+    result += "}";
+    return result;
+}
+
+Type* Row::operator[] (const std::string& name) const
+{
+    std::vector<std::string> property_names = table_definition->get_property_names();
+    for(std::size_t i=0; i<property_names.size(); i++) {
+        if (property_names[i] == name) return values[i];
+    }
+
+    return NULL;
+}
+
 
