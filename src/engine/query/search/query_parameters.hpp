@@ -7,13 +7,13 @@
 
 class QueryParameters
 {
-  public:
+public:
     QueryParameters();
     virtual ~QueryParameters();
 
     bool set(const TableDefinition& table, const DataWithoutTyping& data);
-  protected:
-  private:
+protected:
+private:
     std::vector<const SearchFunction*> parameters;
     std::vector<SearchFunction*> registered_functions;
 

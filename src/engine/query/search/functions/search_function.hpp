@@ -5,7 +5,7 @@
 
 class SearchFunction
 {
-  public:
+public:
     SearchFunction();
     virtual ~SearchFunction();
 
@@ -14,8 +14,8 @@ class SearchFunction
     virtual std::string get_property_name() const = 0;
     virtual bool is_available_for_type(const Type* type) const = 0;
     virtual SearchFunction* clone() const = 0;
-  protected:
-  private:
+protected:
+private:
 };
 
 #endif // SEARCHFUNCTION_H

@@ -22,15 +22,15 @@ bool QueryParameters::set(const TableDefinition& table_definition, const DataWit
 
         SearchFunction* function = NULL;
         for(std::size_t i=0; i<registered_functions.size(); i++) {
-          if (registered_functions[i]->set(prop)) {
-            function = registered_functions[i]->clone();
-            break;
-          }
+            if (registered_functions[i]->set(prop)) {
+                function = registered_functions[i]->clone();
+                break;
+            }
         }
 
         if (function == NULL) {
-          //TODO log error
-          return false;
+            //TODO log error
+            return false;
         }
 
         const Type* type = table_definition.get_property_type(function->get_property_name());
@@ -56,7 +56,8 @@ bool QueryParameters::set(const TableDefinition& table_definition, const DataWit
     return true;
 }
 
-void QueryParameters::register_functions() {
-  registered_functions.clear();
-  registered_functions.push_back(new SearchFunctionEqual());
+void QueryParameters::register_functions()
+{
+    registered_functions.clear();
+    registered_functions.push_back(new SearchFunctionEqual());
 }

@@ -2,10 +2,10 @@
 
 SearchFunction::SearchFunction()
 {
-  //ctor
+    //ctor
 }
 
 SearchFunction::~SearchFunction()
 {
-  //dtor
+    //dtor
 }

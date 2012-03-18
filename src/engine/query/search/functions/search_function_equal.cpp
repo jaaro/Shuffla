@@ -2,39 +2,45 @@
 
 SearchFunctionEqual::SearchFunctionEqual()
 {
-  //ctor
+    //ctor
 }
 
 SearchFunctionEqual::~SearchFunctionEqual()
 {
-  //dtor
+    //dtor
 }
 
-SearchFunctionEqual::SearchFunctionEqual(const SearchFunctionEqual& fun) {
-  property_name = fun.get_property_name();
-  value = fun.value;
+SearchFunctionEqual::SearchFunctionEqual(const SearchFunctionEqual& fun)
+{
+    property_name = fun.get_property_name();
+    value = fun.value;
 }
 
-bool SearchFunctionEqual::set(const std::string& name) {
-  //TODO check if it is valid property name
-  property_name = name;
-  return true;
+bool SearchFunctionEqual::set(const std::string& name)
+{
+    //TODO check if it is valid property name
+    property_name = name;
+    return true;
 }
 
-bool SearchFunctionEqual::set_value(const std::string& v) {
-  value = v;
-  return true;
+bool SearchFunctionEqual::set_value(const std::string& v)
+{
+    value = v;
+    return true;
 }
 
-std::string SearchFunctionEqual::get_property_name() const {
-  return property_name;
+std::string SearchFunctionEqual::get_property_name() const
+{
+    return property_name;
 }
 
-bool SearchFunctionEqual::is_available_for_type(const Type* type) const {
-  return true;
+bool SearchFunctionEqual::is_available_for_type(const Type* type) const
+{
+    return true;
 }
 
-SearchFunction* SearchFunctionEqual::clone() const {
-  SearchFunctionEqual* res = new SearchFunctionEqual(*this);
-  return res;
+SearchFunction* SearchFunctionEqual::clone() const
+{
+    SearchFunctionEqual* res = new SearchFunctionEqual(*this);
+    return res;
 }

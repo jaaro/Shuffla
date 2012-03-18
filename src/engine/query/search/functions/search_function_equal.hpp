@@ -5,7 +5,7 @@
 
 class SearchFunctionEqual : public SearchFunction
 {
-  public:
+public:
     SearchFunctionEqual();
     SearchFunctionEqual(const SearchFunctionEqual& fun);
     virtual ~SearchFunctionEqual();
@@ -16,10 +16,10 @@ class SearchFunctionEqual : public SearchFunction
     virtual bool is_available_for_type(const Type* type) const;
     virtual SearchFunction* clone() const ;
 
-  protected:
-  private:
-  std::string property_name;
-  std::string value;
+protected:
+private:
+    std::string property_name;
+    std::string value;
 };
 
 #endif // SEARCHFUNCTIONEQUAL_H
