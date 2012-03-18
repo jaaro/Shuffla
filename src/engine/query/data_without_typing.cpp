@@ -110,7 +110,7 @@ bool DataWithoutTyping::is_correct_query_search(const TableDefinition& table_def
         bool is_function = false;
         std::string function_name;
         if (prop[prop.size()-1] == ')') {
-            int pos = find(prop.begin(), prop.end(), '(') - prop.begin();
+            unsigned int pos = find(prop.begin(), prop.end(), '(') - prop.begin();
             if (pos + 2 >= prop.size()) {
                 //TODO log error
                 return false;

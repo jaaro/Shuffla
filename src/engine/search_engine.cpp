@@ -2,6 +2,7 @@
 #include "search_result/errors/search_result_error.hpp"
 #include "search_result/string/search_result_string.hpp"
 #include "../storage/row/row.hpp"
+#include "query/search/query_parameters.hpp"
 
 SearchEngine::SearchEngine(DumpLoader& dump_loader)
 {
@@ -94,7 +95,8 @@ SearchResult* SearchEngine::process_search(const QuerySearch* query)
         return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
     }
 
-    bool success = query->get_parsed_query().is_correct_query_search(table->get_table_definition());
+    QueryParameters params;
+    bool success = params.set(table->get_table_definition(), query->get_parsed_query());
 
     if (!success) {
         return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
