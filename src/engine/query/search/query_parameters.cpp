@@ -1,5 +1,6 @@
 #include "query_parameters.hpp"
 #include "functions/search_function_equal.hpp"
+#include "functions/search_function_prefix.hpp"
 
 QueryParameters::QueryParameters()
 {
@@ -60,4 +61,5 @@ void QueryParameters::register_functions()
 {
     registered_functions.clear();
     registered_functions.push_back(new SearchFunctionEqual());
+    registered_functions.push_back(new SearchFunctionPrefix());
 }

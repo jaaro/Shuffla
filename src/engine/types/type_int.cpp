@@ -32,7 +32,7 @@ std::string TypeInt::to_string() const
 bool TypeInt::is_correct_value(const std::string& value) const
 {
     try {
-        int res = boost::lexical_cast<TypeInt::TYPE>( value );
+        boost::lexical_cast<TypeInt::TYPE>( value );
         return true;
     } catch(std::exception e) {
         return false;

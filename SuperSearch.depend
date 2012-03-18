@@ -457,7 +457,7 @@
 1331386664 source:/home/jaaro/Shuffla/src/engine/types/type.cpp
 	"type.hpp"
 
-1332020200 source:/home/jaaro/Shuffla/src/engine/types/type_int.cpp
+1332080657 source:/home/jaaro/Shuffla/src/engine/types/type_int.cpp
 	<boost/lexical_cast.hpp>
 	"type_int.hpp"
 
@@ -488,24 +488,37 @@
 	<iostream>
 	<fstream>
 
-1332064744 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function.cpp
+1332080349 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function.cpp
 	"search_function.hpp"
 
-1332073096 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function.hpp
+1332080241 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function.hpp
 	"../../../types/type.hpp"
 
-1332072340 source:/home/jaaro/Shuffla/src/engine/query/search/query_parameters.cpp
+1332077447 source:/home/jaaro/Shuffla/src/engine/query/search/query_parameters.cpp
 	"query_parameters.hpp"
 	"functions/search_function_equal.hpp"
+	"functions/search_function_prefix.hpp"
 
-1332072222 /home/jaaro/Shuffla/src/engine/query/search/query_parameters.hpp
+1332076010 /home/jaaro/Shuffla/src/engine/query/search/query_parameters.hpp
 	"../../table/table_definition.hpp"
 	"../data_without_typing.hpp"
 	"functions/search_function.hpp"
 
-1332074885 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
+1332080257 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
 	"search_function_equal.hpp"
 
-1332072971 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
+1332080215 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
 	"search_function.hpp"
+
+1332081028 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.cpp
+	"search_function_prefix.hpp"
+
+1332081083 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
+	"search_function_with_prefix.hpp"
+
+1332081074 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_with_prefix.hpp
+	"search_function.hpp"
+
+1332081051 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
+	"search_function_with_prefix.hpp"
 

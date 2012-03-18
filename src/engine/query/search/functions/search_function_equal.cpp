@@ -23,17 +23,6 @@ bool SearchFunctionEqual::set(const std::string& name)
     return true;
 }
 
-bool SearchFunctionEqual::set_value(const std::string& v)
-{
-    value = v;
-    return true;
-}
-
-std::string SearchFunctionEqual::get_property_name() const
-{
-    return property_name;
-}
-
 bool SearchFunctionEqual::is_available_for_type(const Type* type) const
 {
     return true;
