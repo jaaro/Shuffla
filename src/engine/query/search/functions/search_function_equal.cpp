@@ -24,7 +24,9 @@ bool SearchFunctionEqual::is_matching(const Row* row) const
 
 bool SearchFunctionEqual::set(const std::string& name)
 {
-    //TODO check if it is valid property name
+    if (!Misc::is_possible_property_name(name)) {
+        return false;
+    }
     property_name = name;
     return true;
 }

@@ -1,5 +1,6 @@
 #include "table_definition.hpp"
 #include "../../logger/logger.hpp"
+#include "../../misc/misc.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
@@ -77,7 +78,12 @@ bool TableDefinition::create_table_from_request(const std::string& request)
 
 bool TableDefinition::add_table_property(const Type* type, const std::string& name)
 {
+    if (!Misc::is_possible_property_name(name)) {
+        return false;
+    }
+
     if (find(property_names.begin(), property_names.end(), name) != property_names.end()) {
+        //TODO log error
         return false;
     }
 

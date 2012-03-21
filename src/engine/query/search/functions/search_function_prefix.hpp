@@ -8,7 +8,6 @@ class SearchFunctionPrefix : public SearchFunctionWithPrefix
 {
 public:
     SearchFunctionPrefix();
-    SearchFunctionPrefix(const SearchFunctionPrefix& fun);
     virtual ~SearchFunctionPrefix();
 
     virtual bool is_matching(const Row* row) const;

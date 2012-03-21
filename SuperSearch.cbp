@@ -77,6 +77,8 @@
 		<Unit filename="src/engine/search_engine.hpp" />
 		<Unit filename="src/engine/search_result/errors/search_result_error.cpp" />
 		<Unit filename="src/engine/search_result/errors/search_result_error.hpp" />
+		<Unit filename="src/engine/search_result/results/search_results.cpp" />
+		<Unit filename="src/engine/search_result/results/search_results.hpp" />
 		<Unit filename="src/engine/search_result/search_result.cpp" />
 		<Unit filename="src/engine/search_result/search_result.hpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.cpp" />

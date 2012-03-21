@@ -3,6 +3,7 @@
 
 #include "../../../types/type.hpp"
 #include "../../../../storage/row/row.hpp"
+#include "../../../../misc/misc.hpp"
 
 class SearchFunction
 {
@@ -13,7 +14,7 @@ public:
     virtual bool set_value(const std::string& value);
     virtual bool set_property_name(const std::string& value);
     virtual std::string get_property_name() const;
-
+    virtual std::string get_value() const;
 
     virtual bool is_matching(const Row* row) const = 0;
     virtual bool set(const std::string& name) = 0;

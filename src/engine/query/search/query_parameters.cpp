@@ -1,6 +1,7 @@
 #include "query_parameters.hpp"
 #include "functions/search_function_equal.hpp"
 #include "functions/search_function_prefix.hpp"
+#include "../../../logger/logger.hpp"
 
 QueryParameters::QueryParameters()
 {
@@ -14,6 +15,7 @@ QueryParameters::~QueryParameters()
 
 bool QueryParameters::set(const TableDefinition& table_definition, const DataWithoutTyping& data)
 {
+    parameters.clear();
     register_functions();
 
     std::vector<std::string> property_names = data.get_property_names();
@@ -30,13 +32,14 @@ bool QueryParameters::set(const TableDefinition& table_definition, const DataWit
         }
 
         if (function == NULL) {
-            //TODO log error
+            Logger::getInstance().log_error("Unable to understund "+prop+"\nPlease check documentation for more details about search syntax.");
             return false;
         }
 
         const Type* type = table_definition.get_property_type(function->get_property_name());
+
         if (type == NULL) {
-            //TODO log error
+            Logger::getInstance().log_error("Table " + table_definition.get_table_name() + " doesnt not have property named " + function->get_property_name());
             return false;
         }
 
