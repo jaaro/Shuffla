@@ -3,6 +3,8 @@
 #include "functions/search_function_prefix.hpp"
 #include "../../../logger/logger.hpp"
 
+#include <boost/algorithm/string.hpp>
+
 QueryParameters::QueryParameters()
 {
     //ctor
@@ -15,6 +17,9 @@ QueryParameters::~QueryParameters()
 
 bool QueryParameters::set(const TableDefinition& table_definition, const DataWithoutTyping& data)
 {
+    offset = 0;
+    limit = 10;
+
     parameters.clear();
     register_functions();
 
@@ -22,6 +27,15 @@ bool QueryParameters::set(const TableDefinition& table_definition, const DataWit
     for(std::size_t i = 0; i < property_names.size(); i++) {
         std::string prop = property_names[i];
         std::string value = data.get_value_for_property(prop);
+
+        if (is_special_property(prop)) {
+          bool success = set_special_property(table_definition, prop, value);
+          if (!success) {
+            Logger::getInstance().log_error("Search: something wrong with:" + prop + "=" + value);
+            return false;
+          }
+          continue;
+        }
 
         SearchFunction* function = NULL;
         for(std::size_t i=0; i<registered_functions.size(); i++) {
@@ -75,4 +89,46 @@ void QueryParameters::register_functions()
     registered_functions.clear();
     registered_functions.push_back(new SearchFunctionEqual());
     registered_functions.push_back(new SearchFunctionPrefix());
+}
+
+bool QueryParameters::is_special_property(const std::string& name) const {
+  return name == "ORDER_BY" || name == "LIMIT" || name == "OFFSET";
+}
+
+bool QueryParameters::set_special_property(const TableDefinition& table_definition, const std::string& name, const std::string& value) {
+  if (name == "ORDER_BY") {
+    std::vector<std::string> strs;
+    boost::split(strs, value, boost::is_any_of(","));
+
+    for(size_t i=0; i<strs.size(); i++) {
+      if (strs[i].size() == 0) {
+        //TODO awaria
+        return false;
+      }
+      QueryParameters::Order order = ASC;
+      if (strs[i][0] == '-') {
+        order = DESC;
+        strs[i] = strs[i].substr(1);
+      }
+
+      if (!Misc::is_possible_property_name(strs[i])) {
+        //TODO log error
+        return false;
+      }
+
+      if (table_definition.get_property_type(strs[i]) == NULL) {
+        //TODO log error
+        return false;
+      }
+      order_by.push_back(std::make_pair(strs[i], order));
+    }
+  } else if (name == "LIMIT") {
+    limit = Misc::string_to_int(value);
+  } else if (name == "OFFSET") {
+    offset = Misc::string_to_int(value);
+  } else {
+    //TODO log error
+    return false;
+  }
+  return true;
 }
