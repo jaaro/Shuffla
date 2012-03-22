@@ -97,6 +97,8 @@
 		<Unit filename="src/engine/types/types.hpp" />
 		<Unit filename="src/logger/logger.cpp" />
 		<Unit filename="src/logger/logger.hpp" />
+		<Unit filename="src/misc/misc.cpp" />
+		<Unit filename="src/misc/misc.hpp" />
 		<Unit filename="src/server/http/connection.cpp" />
 		<Unit filename="src/server/http/connection.hpp" />
 		<Unit filename="src/server/http/header.hpp" />
