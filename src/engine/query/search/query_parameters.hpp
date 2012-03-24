@@ -9,8 +9,8 @@ class QueryParameters
 {
 public:
     enum Order {
-      ASC,
-      DESC
+        ASC,
+        DESC
     };
 
     QueryParameters();

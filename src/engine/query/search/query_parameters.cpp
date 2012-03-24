@@ -139,7 +139,7 @@ bool QueryParameters::set_special_property(const TableDefinition* table_definiti
             offset = Misc::string_to_int(value);
         } catch(std::exception e) {
             Logger::getInstance().log_error("Search parameters: OFFSET is not an int. You gave offset = " + value);
-          return false;
+            return false;
         }
         return true;
     } else {

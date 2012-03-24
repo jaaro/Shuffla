@@ -35,11 +35,9 @@ Type* Types::string_to_type(const std::string& type) const
     //TODO check for memory leaks
     if (type == "int" || type == "integer") {
         return new TypeInt(0);
-    }
-    else if (type == "string" || type =="varchar" || type == "text") {
+    } else if (type == "string" || type =="varchar" || type == "text") {
         return new TypeString("");
-    }
-    else if (type == "double") {
+    } else if (type == "double") {
         return new TypeDouble(0.0);
     }
     return false;

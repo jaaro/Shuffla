@@ -8,8 +8,7 @@ class TypeDouble : public TypeNumber
 public:
     typedef double TYPE;
 
-    virtual std::string get_name() const
-    {
+    virtual std::string get_name() const {
         return "double";
     }
 

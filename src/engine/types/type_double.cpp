@@ -31,13 +31,10 @@ std::string TypeDouble::to_string() const
 
 bool TypeDouble::is_correct_value(const std::string& value) const
 {
-    try
-    {
+    try {
         boost::lexical_cast<TypeDouble::TYPE>( value );
         return true;
-    }
-    catch(std::exception e)
-    {
+    } catch(std::exception e) {
         return false;
     }
 }
