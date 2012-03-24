@@ -1,0 +1,99 @@
+Performance
+-----------
+
+On table with 1GB data (1M elements)
+Inserting: unknown
+Querying: unknown
+Searching: unknown
+
+You can test it yourself by installing shuffla and running script shuffla-benchmark.sh. (TODO)
+
+Building
+--------
+Shuffla requires boost, version >= 1.49. For information about installing boost visit:
+* windows users: http://www.boost.org/doc/libs/1_49_0/more/getting_started/windows.html
+* other OS: http://www.boost.org/doc/libs/1_49_0/more/getting_started/unix-variants.html
+
+Right know you need to open project in codeblocks and just compile it.
+
+I will change it in the future to:
+After installing boost:
+./configure
+make
+make install
+
+Running Shuffla
+---------------
+
+./Shuffla [config_file]
+
+For details about config file, read: [TODO]
+
+Creating table
+--------------
+
+You can create table by sending request:
+http://0.0.0.0:15942/create_table/<table_name>/?property_name=property_type[&property_name=property_type]*
+
+For example:
+http://0.0.0.0:15942/create_table/users/?user_id=int&name=string&age=int
+
+Inserting data
+--------------
+It is as simple as that:
+http://0.0.0.0:15942/insert/<table name>/?property_name=property_value[&property_name=property_value]*
+
+For example
+http://0.0.0.0:15942/insert/users/?user_id=7&name=Adam&age=35
+http://0.0.0.0:15942/insert/users/?user_id=8&name=Ashley&age=30
+http://0.0.0.0:15942/insert/users/?user_id=9&name=Ashley&age=25
+
+Search command
+--------------
+examples:
+
+query: http://0.0.0.0:15942/search/users/?user_id=7
+result:
+{
+ count: 1,
+ results: {
+  {user_id: 7, name: Adam, age: 35}
+  }
+}
+
+query: http://0.0.0.0:15942/search/users/?name=Ashley
+result:
+{
+ count: 2,
+ results: {
+  {user_id: 8, name: Ashley, age: 30},
+  {user_id: 9, name: Ashley, age: 25}
+ }
+}
+
+query:http://0.0.0.0:15942/search/users/?name=Ashley&offset=1&limit=1
+result:
+{
+ count: 2,
+ results: {
+  {user_id: 9, name: Ashley, age: 35}
+  }
+}
+
+query: http://0.0.0.0:15942/search/users/?prefix(name)=A&order_by=age
+result:
+{
+ count: 3,
+ results: {
+  {user_id: 9, name: Ashley, age: 25},
+  {user_id: 8, name: Ashley, age: 30},
+  {user_id: 7, name: Adam, age: 35}
+ }
+}
+
+query: http://0.0.0.0:15942/search/users/?prefix(name)=A&age<=34&age>=32
+result:
+{
+ count: 0,
+ results: {}
+}
