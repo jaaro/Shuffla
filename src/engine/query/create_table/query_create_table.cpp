@@ -7,7 +7,7 @@ const std::string QueryCreateTable::HTTP_PREFIX = "/create_table/";
 
 QueryCreateTable::QueryCreateTable()
 {
-    //ctor
+    table_definition = new TableDefinition();
 }
 
 QueryCreateTable::~QueryCreateTable()

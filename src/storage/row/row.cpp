@@ -3,6 +3,7 @@
 
 #include "row.hpp"
 #include "../../engine/types/type_int.hpp"
+#include "../../engine/types/type_double.hpp"
 #include "../../engine/types/type_string.hpp"
 
 
@@ -38,6 +39,8 @@ void Row::add_value(const Type* type, const std::string& value)
         values.push_back(new TypeInt(value));
     } else if (type->get_name() == "string") {
         values.push_back(new TypeString(value));
+    } else if (type->get_name() == "double") {
+        values.push_back(new TypeDouble(value));
     } else {
         //TODO log error
 
