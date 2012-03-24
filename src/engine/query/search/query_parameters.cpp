@@ -1,6 +1,7 @@
 #include "query_parameters.hpp"
 #include "functions/search_function_equal.hpp"
 #include "functions/search_function_prefix.hpp"
+#include "functions/search_function_smaller.hpp"
 #include "../../../logger/logger.hpp"
 
 #include <boost/algorithm/string.hpp>
@@ -89,6 +90,7 @@ void QueryParameters::register_functions()
     registered_functions.clear();
     registered_functions.push_back(new SearchFunctionEqual());
     registered_functions.push_back(new SearchFunctionPrefix());
+    registered_functions.push_back(new SearchFunctionSmaller());
 }
 
 bool QueryParameters::is_special_property(const std::string& name) const

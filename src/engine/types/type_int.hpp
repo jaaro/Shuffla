@@ -1,9 +1,9 @@
 #ifndef TYPEINT_H
 #define TYPEINT_H
 
-#include "type.hpp"
+#include "type_number.hpp"
 
-class TypeInt : public Type
+class TypeInt : public TypeNumber
 {
 public:
     typedef int TYPE;
@@ -21,6 +21,13 @@ public:
     virtual ~TypeInt();
     TYPE get_value() const ;
     virtual std::string to_string() const;
+
+
+        virtual bool is_smaller(const std::string& value) const ;
+        virtual bool is_smaller_or_equal(const std::string& value) const ;
+        virtual bool is_bigger(const std::string& value) const ;
+        virtual bool is_bigger_or_equal(const std::string& value) const ;
+
 protected:
 private:
     const TYPE value;

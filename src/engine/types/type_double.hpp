@@ -1,15 +1,15 @@
 #ifndef TYPEDOUBLE_H
 #define TYPEDOUBLE_H
 
+#include "type_number.hpp"
 
-#include "type.hpp"
-
-class TypeDouble : public Type
+class TypeDouble : public TypeNumber
 {
 public:
     typedef double TYPE;
 
-    virtual std::string get_name() const {
+    virtual std::string get_name() const
+    {
         return "double";
     }
 
@@ -22,6 +22,12 @@ public:
     virtual ~TypeDouble();
     TYPE get_value() const ;
     virtual std::string to_string() const;
+
+    virtual bool is_smaller(const std::string& value) const ;
+    virtual bool is_smaller_or_equal(const std::string& value) const ;
+    virtual bool is_bigger(const std::string& value) const ;
+    virtual bool is_bigger_or_equal(const std::string& value) const ;
+
 protected:
 private:
     const TYPE value;

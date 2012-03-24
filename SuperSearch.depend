@@ -1117,10 +1117,11 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
 	"search_function_with_prefix.hpp"
 
-1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.cpp
+1332613731 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.cpp
 	"query_parameters.hpp"
 	"functions/search_function_equal.hpp"
 	"functions/search_function_prefix.hpp"
+	"functions/search_function_smaller.hpp"
 	"../../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
 
@@ -1202,12 +1203,12 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/types/type.cpp
 	"type.hpp"
 
-1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_int.cpp
+1332613955 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_int.cpp
 	<boost/lexical_cast.hpp>
 	"type_int.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/types/type_int.hpp
-	"type.hpp"
+1332613468 /home/jaaro/Projects/Shuffla/src/engine/types/type_int.hpp
+	"type_number.hpp"
 
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_string.cpp
 	"type_string.hpp"
@@ -1361,10 +1362,23 @@
 	"../../engine/types/type_double.hpp"
 	"../../engine/types/type_string.hpp"
 
-1332609945 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_double.cpp
+1332613965 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_double.cpp
 	<boost/lexical_cast.hpp>
 	"type_double.hpp"
 
-1332609905 /home/jaaro/Projects/Shuffla/src/engine/types/type_double.hpp
+1332613800 /home/jaaro/Projects/Shuffla/src/engine/types/type_double.hpp
+	"type_number.hpp"
+
+1332613076 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller.cpp
+	"search_function_smaller.hpp"
+	"../../../types/type_number.hpp"
+
+1332611975 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller.hpp
+	"search_function_with_prefix.hpp"
+
+1332613457 /home/jaaro/Projects/Shuffla/src/engine/types/type_number.hpp
 	"type.hpp"
+
+1332613305 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_number.cpp
+	"type_number.hpp"
 
