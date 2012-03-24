@@ -59,12 +59,12 @@ bool TypeDouble::is_smaller_or_equal(const std::string& v) const
     return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) >= value;
 }
 
-bool TypeDouble::is_bigger(const std::string& v) const
+bool TypeDouble::is_greater(const std::string& v) const
 {
     return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) < value;
 }
 
-bool TypeDouble::is_bigger_or_equal(const std::string& v) const
+bool TypeDouble::is_greater_or_equal(const std::string& v) const
 {
     return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) <= value;
 }

@@ -11,8 +11,8 @@ public:
 
     virtual bool is_smaller(const std::string& value) const = 0;
     virtual bool is_smaller_or_equal(const std::string& value) const = 0;
-    virtual bool is_bigger(const std::string& value) const = 0;
-    virtual bool is_bigger_or_equal(const std::string& value) const = 0;
+    virtual bool is_greater(const std::string& value) const = 0;
+    virtual bool is_greater_or_equal(const std::string& value) const = 0;
 protected:
 private:
 };

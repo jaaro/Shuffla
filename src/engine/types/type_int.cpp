@@ -59,12 +59,12 @@ bool TypeInt::is_smaller_or_equal(const std::string& v) const
     return is_correct_value(v) && boost::lexical_cast<TypeInt::TYPE>( v ) >= value;
 }
 
-bool TypeInt::is_bigger(const std::string& v) const
+bool TypeInt::is_greater(const std::string& v) const
 {
     return is_correct_value(v) && boost::lexical_cast<TypeInt::TYPE>( v ) < value;
 }
 
-bool TypeInt::is_bigger_or_equal(const std::string& v) const
+bool TypeInt::is_greater_or_equal(const std::string& v) const
 {
     return is_correct_value(v) && boost::lexical_cast<TypeInt::TYPE>( v ) >= value;
 }
