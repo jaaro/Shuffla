@@ -8,11 +8,11 @@
 class Row
 {
 public:
-    explicit Row(const TableDefinition& table_definition, DumpLoader& dump_loader);
-    explicit Row(const TableDefinition& table_definition, const DataWithoutTyping& data);
+    explicit Row(const TableDefinition* table_definition, DumpLoader& dump_loader);
+    explicit Row(const TableDefinition* table_definition, const DataWithoutTyping& data);
     virtual ~Row();
 
-    Type* operator[] (const std::string& name) const ;
+    Type* get_value(const std::string& name) const ;
     std::string to_string() const ;
     std::string to_json() const ;
 

@@ -17,11 +17,11 @@ public:
     virtual bool set(const std::string& request) ;
     virtual bool is_modyfing_data() const;
 
-    TableDefinition get_table_definition() const;
+    TableDefinition* get_table_definition() const;
     std::string get_table_name() const;
 protected:
 private:
-    TableDefinition table_definition;
+    TableDefinition* table_definition;
 };
 
 #endif // QUERYCREATETABLE_H

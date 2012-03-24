@@ -15,7 +15,7 @@ QueryParameters::~QueryParameters()
     //dtor
 }
 
-bool QueryParameters::set(const TableDefinition& table_definition, const DataWithoutTyping& data)
+bool QueryParameters::set(const TableDefinition* table_definition, const DataWithoutTyping& data)
 {
     offset = 0;
     limit = 10;
@@ -50,10 +50,10 @@ bool QueryParameters::set(const TableDefinition& table_definition, const DataWit
             return false;
         }
 
-        const Type* type = table_definition.get_property_type(function->get_property_name());
+        const Type* type = table_definition->get_property_type(function->get_property_name());
 
         if (type == NULL) {
-            Logger::getInstance().log_error("Table " + table_definition.get_table_name() + " doesnt not have property named " + function->get_property_name());
+            Logger::getInstance().log_error("Table " + table_definition->get_table_name() + " doesnt not have property named " + function->get_property_name());
             return false;
         }
 
@@ -96,7 +96,7 @@ bool QueryParameters::is_special_property(const std::string& name) const
     return name == "ORDER_BY" || name == "LIMIT" || name == "OFFSET";
 }
 
-bool QueryParameters::set_special_property(const TableDefinition& table_definition, const std::string& name, const std::string& value)
+bool QueryParameters::set_special_property(const TableDefinition* table_definition, const std::string& name, const std::string& value)
 {
     if (name == "ORDER_BY") {
         std::vector<std::string> strs;
@@ -118,8 +118,8 @@ bool QueryParameters::set_special_property(const TableDefinition& table_definiti
                 return false;
             }
 
-            if (table_definition.get_property_type(strs[i]) == NULL) {
-                Logger::getInstance().log_error("Search params: Property name doesn't match table definition. Table name: "+ table_definition.get_table_name() + "\nProperty name: " + strs[i]);
+            if (table_definition->get_property_type(strs[i]) == NULL) {
+                Logger::getInstance().log_error("Search params: Property name doesn't match table definition. Table name: "+ table_definition->get_table_name() + "\nProperty name: " + strs[i]);
                 return false;
             }
             order_by.push_back(std::make_pair(strs[i], order));

@@ -13,7 +13,7 @@ SearchFunctionPrefix::~SearchFunctionPrefix()
 
 bool SearchFunctionPrefix::is_matching(const Row* row) const
 {
-    Type* prop_value = (*row)[get_property_name()];
+    Type* prop_value = row->get_value(get_property_name());
     TypeString* type = static_cast<TypeString*>(prop_value);
 
     if (type == NULL) return false;

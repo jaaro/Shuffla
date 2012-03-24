@@ -6,23 +6,23 @@
 #include "../../engine/types/type_string.hpp"
 
 
-Row::Row(const TableDefinition& table_definition, DumpLoader& dump_loader) : table_definition(&table_definition)
+Row::Row(const TableDefinition* table_definition, DumpLoader& dump_loader) : table_definition(table_definition)
 {
-    std::vector<std::string> props = table_definition.get_property_names();
+    std::vector<std::string> props = table_definition->get_property_names();
     for(std::size_t i=0; i<props.size(); i++) {
         int value_size = dump_loader.get_next_int();
         dump_loader.get_next_char();
         std::string value = dump_loader.get_next_chars(value_size);
 
-        add_value(table_definition.get_property_type(props[i]), value);
+        add_value(table_definition->get_property_type(props[i]), value);
     }
 }
 
-Row::Row(const TableDefinition& table_definition, const DataWithoutTyping& data) : table_definition(&table_definition)
+Row::Row(const TableDefinition* table_definition, const DataWithoutTyping& data) : table_definition(table_definition)
 {
-    std::vector<std::string> props = table_definition.get_property_names();
+    std::vector<std::string> props = table_definition->get_property_names();
     for(std::size_t i=0; i<props.size(); i++) {
-        add_value(table_definition.get_property_type(props[i]), data.get_value_for_property(props[i]));
+        add_value(table_definition->get_property_type(props[i]), data.get_value_for_property(props[i]));
     }
 }
 
@@ -71,7 +71,7 @@ std::string Row::to_json() const
     return result;
 }
 
-Type* Row::operator[] (const std::string& name) const
+Type* Row::get_value (const std::string& name) const
 {
     std::vector<std::string> property_names = table_definition->get_property_names();
     for(std::size_t i=0; i<property_names.size(); i++) {

@@ -16,8 +16,8 @@ public:
     std::string get_table_name() const ;
     std::vector<std::string> get_property_names() const ;
     std::string get_value_for_property(const std::string& property) const ;
-    bool is_matching_table_definition(const TableDefinition& table_definition) const ;
-    bool is_correct_query_search(const TableDefinition& table_definition) const ;
+    bool is_matching_table_definition(const TableDefinition* table_definition) const ;
+    bool is_correct_query_search(const TableDefinition* table_definition) const ;
 protected:
 private:
     std::string table_name;

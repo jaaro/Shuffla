@@ -14,7 +14,7 @@ public:
     TableDefinition();
     virtual ~TableDefinition();
 
-    TableDefinition(const TableDefinition&);
+    TableDefinition(const TableDefinition*);
     TableDefinition(DumpLoader& dump_loader);
 
     bool create_table_from_request(const std::string& request);

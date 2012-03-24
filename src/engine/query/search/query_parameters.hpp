@@ -16,7 +16,7 @@ public:
     QueryParameters();
     virtual ~QueryParameters();
 
-    bool set(const TableDefinition& table, const DataWithoutTyping& data);
+    bool set(const TableDefinition* table, const DataWithoutTyping& data);
     bool is_matching(const Row* row) const ;
 protected:
 private:
@@ -29,7 +29,7 @@ private:
 
     void register_functions();
     bool is_special_property(const std::string& name) const;
-    bool set_special_property(const TableDefinition& table_definition, const std::string& name, const std::string& value);
+    bool set_special_property(const TableDefinition* table_definition, const std::string& name, const std::string& value);
 };
 
 #endif // QUERYPARAMETERS_H

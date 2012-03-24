@@ -19,7 +19,7 @@ SearchFunctionEqual::SearchFunctionEqual(const SearchFunctionEqual& fun)
 
 bool SearchFunctionEqual::is_matching(const Row* row) const
 {
-    return (*row)[property_name]->equals(value);
+    return row->get_value(property_name)->equals(value);
 }
 
 bool SearchFunctionEqual::set(const std::string& name)

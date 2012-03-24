@@ -15,8 +15,8 @@ public:
     Table(DumpLoader& dump_loader);
     virtual ~Table();
 
-    void set_table_definition(const TableDefinition& table_definition);
-    TableDefinition get_table_definition() const ;
+    void set_table_definition(const TableDefinition* table_definition);
+    TableDefinition* get_table_definition() const ;
     std::string get_table_name() const ;
 
     void insert(const Row* row);
@@ -24,7 +24,7 @@ public:
     void dump_table(DumpProcessor& dump_processor) const;
 protected:
 private:
-    TableDefinition table_definition;
+    TableDefinition* table_definition;
     std::vector<const Row*> rows;
 };
 
