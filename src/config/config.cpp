@@ -15,6 +15,10 @@ Config::Config()
     is_append_log_enabled = true;
 
     dump_file_name = "/home/jaaro/dump.shu";
+
+    is_slow_log_enabled = 1;
+    slow_log_file_name = "/home/jaaro/slow_log.log";
+    slow_log_miliseconds_bound = 1.0;
 }
 
 Config::~Config() {}
