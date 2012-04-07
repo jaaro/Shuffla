@@ -2,7 +2,7 @@
 #define SEARCHRESULTS_H
 
 #include "../search_result.hpp"
-#include "../../../storage/row/row.hpp"
+#include "../../storage/row.hpp"
 
 class SearchResults : public SearchResult
 {

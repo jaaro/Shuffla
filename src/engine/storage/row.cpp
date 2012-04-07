@@ -2,9 +2,9 @@
 #include <boost/lexical_cast.hpp>
 
 #include "row.hpp"
-#include "../../engine/types/type_int.hpp"
-#include "../../engine/types/type_double.hpp"
-#include "../../engine/types/type_string.hpp"
+#include "../types/type_int.hpp"
+#include "../types/type_double.hpp"
+#include "../types/type_string.hpp"
 
 
 Row::Row(const TableDefinition* table_definition, DumpLoader& dump_loader) : table_definition(table_definition)

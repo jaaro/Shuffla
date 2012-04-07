@@ -963,7 +963,7 @@
 
 1332604673 /home/jaaro/Projects/Shuffla/src/server/server.hpp
 
-1332674075 source:/home/jaaro/Projects/Shuffla/src/config/config.cpp
+1332674211 source:/home/jaaro/Projects/Shuffla/src/config/config.cpp
 	<cstdio>
 	<string>
 	<boost/lexical_cast.hpp>
@@ -1081,9 +1081,9 @@
 1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function.cpp
 	"search_function.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function.hpp
+1333800441 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function.hpp
 	"../../../types/type.hpp"
-	"../../../../storage/row/row.hpp"
+	"../../../storage/row.hpp"
 	"../../../../misc/misc.hpp"
 
 1332604673 /home/jaaro/Projects/Shuffla/src/storage/row/row.hpp
@@ -1091,7 +1091,7 @@
 	"../../engine/table/table_definition.hpp"
 	"../../engine/types/type.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/misc/misc.hpp
+1333800348 /home/jaaro/Projects/Shuffla/src/misc/misc.hpp
 	<string>
 
 1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
@@ -1126,21 +1126,21 @@
 	"../../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
 
-1332614775 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
+1333800452 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
 	"../../table/table_definition.hpp"
 	"../data_without_typing.hpp"
 	"functions/search_function.hpp"
-	"../../../storage/row/row.hpp"
+	"../../storage/row.hpp"
 
 1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_search.cpp
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1332671189 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
+1333800471 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
-	"../storage/row/row.hpp"
+	"storage/row.hpp"
 	"query/search/query_parameters.hpp"
 
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
@@ -1155,9 +1155,9 @@
 	"../dump/dump_processor.hpp"
 	"../dump/dump_loader.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
+1333800462 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
 	"table_definition.hpp"
-	"../../storage/row/row.hpp"
+	"../storage/row.hpp"
 	"../../dump/dump_processor.hpp"
 	"../../dump/dump_loader.hpp"
 	"../search_result/search_result.hpp"
@@ -1179,9 +1179,9 @@
 	"search_results.hpp"
 	<boost/lexical_cast.hpp>
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.hpp
+1333800481 /home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.hpp
 	"../search_result.hpp"
-	"../../../storage/row/row.hpp"
+	"../../storage/row.hpp"
 
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/search_result.cpp
 	"search_result.hpp"
@@ -1265,7 +1265,7 @@
 	<boost/noncopyable.hpp>
 	"../query_dispatcher.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/server/query_dispatcher.hpp
+1333800348 /home/jaaro/Projects/Shuffla/src/server/query_dispatcher.hpp
 	<string>
 	"../engine/search_engine.hpp"
 	"../engine/query/query_create.hpp"
@@ -1302,7 +1302,7 @@
 	<boost/bind.hpp>
 	<boost/shared_ptr.hpp>
 
-1332604673 /home/jaaro/Projects/Shuffla/src/server/http/server.hpp
+1333800348 /home/jaaro/Projects/Shuffla/src/server/http/server.hpp
 	<boost/asio.hpp>
 	<string>
 	<vector>
@@ -1339,11 +1339,11 @@
 	"request_parser.hpp"
 	"request.hpp"
 
-1332614776 source:/home/jaaro/Projects/Shuffla/src/server/http/server.cpp
+1333800348 source:/home/jaaro/Projects/Shuffla/src/server/http/server.cpp
 	"server.hpp"
 	<boost/bind.hpp>
 
-1332673028 source:/home/jaaro/Projects/Shuffla/src/server/query_dispatcher.cpp
+1333800348 source:/home/jaaro/Projects/Shuffla/src/server/query_dispatcher.cpp
 	<cstdio>
 	<boost/date_time/posix_time/posix_time.hpp>
 	"query_dispatcher.hpp"
@@ -1400,4 +1400,17 @@
 
 1332672931 /home/jaaro/Projects/Shuffla/src/misc/slow_log.hpp
 	<fstream>
+
+1333792230 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
+	"../../engine/query/data_without_typing.hpp"
+	"../../engine/table/table_definition.hpp"
+	"../../engine/types/type.hpp"
+
+1333792269 source:/home/jaaro/Projects/Shuffla/src/engine/storage/row.cpp
+	<iostream>
+	<boost/lexical_cast.hpp>
+	"row.hpp"
+	"../types/type_int.hpp"
+	"../types/type_double.hpp"
+	"../types/type_string.hpp"
 

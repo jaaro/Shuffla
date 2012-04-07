@@ -2,7 +2,7 @@
 #define SEARCHFUNCTION_H
 
 #include "../../../types/type.hpp"
-#include "../../../../storage/row/row.hpp"
+#include "../../../storage/row.hpp"
 #include "../../../../misc/misc.hpp"
 
 class SearchFunction

@@ -1,7 +1,7 @@
 #include "search_engine.hpp"
 #include "search_result/errors/search_result_error.hpp"
 #include "search_result/string/search_result_string.hpp"
-#include "../storage/row/row.hpp"
+#include "storage/row.hpp"
 #include "query/search/query_parameters.hpp"
 
 SearchEngine::SearchEngine(DumpLoader& dump_loader)

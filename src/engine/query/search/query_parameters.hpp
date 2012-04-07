@@ -4,7 +4,7 @@
 #include "../../table/table_definition.hpp"
 #include "../data_without_typing.hpp"
 #include "functions/search_function.hpp"
-#include "../../../storage/row/row.hpp"
+#include "../../storage/row.hpp"
 class QueryParameters
 {
 public:

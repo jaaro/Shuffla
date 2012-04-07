@@ -2,7 +2,7 @@
 #define TABLE_H
 
 #include "table_definition.hpp"
-#include "../../storage/row/row.hpp"
+#include "../storage/row.hpp"
 #include "../../dump/dump_processor.hpp"
 #include "../../dump/dump_loader.hpp"
 #include "../search_result/search_result.hpp"
