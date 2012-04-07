@@ -51,6 +51,8 @@
 		<Unit filename="src/dump/dump_loader.hpp" />
 		<Unit filename="src/dump/dump_processor.cpp" />
 		<Unit filename="src/dump/dump_processor.hpp" />
+		<Unit filename="src/dump/save_dump_manager.cpp" />
+		<Unit filename="src/dump/save_dump_manager.hpp" />
 		<Unit filename="src/engine/query/create_table/query_create_table.cpp" />
 		<Unit filename="src/engine/query/create_table/query_create_table.hpp" />
 		<Unit filename="src/engine/query/data_without_typing.cpp" />
@@ -65,8 +67,12 @@
 		<Unit filename="src/engine/query/search/functions/search_function.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_equal.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_equal.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_greater.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_greater.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_prefix.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_prefix.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_smaller.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_smaller.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_with_prefix.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_with_prefix.hpp" />
 		<Unit filename="src/engine/query/search/query_parameters.cpp" />
@@ -83,14 +89,20 @@
 		<Unit filename="src/engine/search_result/search_result.hpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.cpp" />
 		<Unit filename="src/engine/search_result/string/search_result_string.hpp" />
+		<Unit filename="src/engine/storage/row.cpp" />
+		<Unit filename="src/engine/storage/row.hpp" />
 		<Unit filename="src/engine/table/table.cpp" />
 		<Unit filename="src/engine/table/table.hpp" />
 		<Unit filename="src/engine/table/table_definition.cpp" />
 		<Unit filename="src/engine/table/table_definition.hpp" />
 		<Unit filename="src/engine/types/type.cpp" />
 		<Unit filename="src/engine/types/type.hpp" />
+		<Unit filename="src/engine/types/type_double.cpp" />
+		<Unit filename="src/engine/types/type_double.hpp" />
 		<Unit filename="src/engine/types/type_int.cpp" />
 		<Unit filename="src/engine/types/type_int.hpp" />
+		<Unit filename="src/engine/types/type_number.cpp" />
+		<Unit filename="src/engine/types/type_number.hpp" />
 		<Unit filename="src/engine/types/type_string.cpp" />
 		<Unit filename="src/engine/types/type_string.hpp" />
 		<Unit filename="src/engine/types/types.cpp" />
@@ -99,6 +111,8 @@
 		<Unit filename="src/logger/logger.hpp" />
 		<Unit filename="src/misc/misc.cpp" />
 		<Unit filename="src/misc/misc.hpp" />
+		<Unit filename="src/misc/slow_log.cpp" />
+		<Unit filename="src/misc/slow_log.hpp" />
 		<Unit filename="src/server/http/connection.cpp" />
 		<Unit filename="src/server/http/connection.hpp" />
 		<Unit filename="src/server/http/header.hpp" />
@@ -121,8 +135,6 @@
 		<Unit filename="src/server/query_dispatcher.hpp" />
 		<Unit filename="src/server/server.cpp" />
 		<Unit filename="src/server/server.hpp" />
-		<Unit filename="src/storage/row/row.cpp" />
-		<Unit filename="src/storage/row/row.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

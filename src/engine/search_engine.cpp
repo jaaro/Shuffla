@@ -3,6 +3,7 @@
 #include "search_result/string/search_result_string.hpp"
 #include "storage/row.hpp"
 #include "query/search/query_parameters.hpp"
+#include "../dump/save_dump_manager.hpp"
 
 SearchEngine::SearchEngine(DumpLoader& dump_loader)
 {
@@ -10,6 +11,11 @@ SearchEngine::SearchEngine(DumpLoader& dump_loader)
         tables.push_back(new Table(dump_loader));
     }
     dump_loader.close();
+}
+
+SearchEngine::SearchEngine()
+{
+    //dtor
 }
 
 SearchEngine::~SearchEngine()
@@ -25,6 +31,7 @@ SearchResult* SearchEngine::process_query(const Query* query)
 
     if (query->is_modyfing_data()) {
         append_log.append(query);
+        SaveDumpManager::getInstance().add_modifying_command();
     }
 
     if (dynamic_cast<const QueryInsert*>(query) != NULL) {
@@ -38,11 +45,6 @@ SearchResult* SearchEngine::process_query(const Query* query)
     }
 
     processing_query_end(query);
-
-    //temporary
-    if (query->is_modyfing_data()) {
-        save_dump();
-    }
 
     return result;
 }
@@ -137,12 +139,13 @@ Table* SearchEngine::find_table(const std::string& table_name) const
 
 bool SearchEngine::save_dump() const
 {
-    //TODO, tu powinien być mutex na wszystko ?
+    std::cout << "Start saving database\n";
     DumpProcessor dump_processor;
     for(std::size_t i=0; i<tables.size(); i++) {
         if (i > 0) dump_processor.append("\n");
         tables[i]->dump_table(dump_processor);
     }
+    std::cout << "Saving ended successfully\n";
 
     return true;
 }

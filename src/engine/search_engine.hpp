@@ -16,9 +16,13 @@
 class SearchEngine
 {
 public:
+    SearchEngine();
     SearchEngine(DumpLoader& dump_loader);
     virtual ~SearchEngine();
     SearchResult* process_query(const Query* query);
+
+    bool save_dump() const ;
+
 protected:
 private:
     void processing_query_begin(const Query* query);
@@ -27,8 +31,6 @@ private:
     SearchResult* process_insert(const QueryInsert* query);
     SearchResult* process_search(const QuerySearch* query);
     SearchResult* process_create_table(const QueryCreateTable* query);
-
-    bool save_dump() const ;
 
     std::vector<Table*> tables;
     Table* find_table(const std::string& table_name) const;

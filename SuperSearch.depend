@@ -961,13 +961,16 @@
 1332604673 /home/jaaro/Projects/Shuffla/src/config/config_loader.hpp
 	<string>
 
-1332604673 /home/jaaro/Projects/Shuffla/src/server/server.hpp
+1333823391 /home/jaaro/Projects/Shuffla/src/server/server.hpp
+	"../engine/search_engine.hpp"
 
-1332674211 source:/home/jaaro/Projects/Shuffla/src/config/config.cpp
+1333824432 source:/home/jaaro/Projects/Shuffla/src/config/config.cpp
 	<cstdio>
 	<string>
 	<boost/lexical_cast.hpp>
+	<sstream>
 	"config.hpp"
+	"../dump/save_dump_manager.hpp"
 
 1332673898 /home/jaaro/Projects/Shuffla/src/config/config.hpp
 	<string>
@@ -1136,14 +1139,15 @@
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1333800471 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
+1333824503 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
 	"storage/row.hpp"
 	"query/search/query_parameters.hpp"
+	"../dump/save_dump_manager.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
+1333823495 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
 	<string>
 	"query/query.hpp"
 	"query/insert/query_insert.hpp"
@@ -1350,12 +1354,14 @@
 	"../engine/search_result/search_result.hpp"
 	"../misc/slow_log.hpp"
 
-1332614776 source:/home/jaaro/Projects/Shuffla/src/server/server.cpp
+1333824297 source:/home/jaaro/Projects/Shuffla/src/server/server.cpp
 	<iostream>
+	<boost/thread/thread.hpp>
 	"../config/config.hpp"
 	"query_dispatcher.hpp"
 	"server.hpp"
 	"http/http_server.hpp"
+	"../dump/save_dump_manager.hpp"
 
 1332614776 source:/home/jaaro/Projects/Shuffla/src/storage/row/row.cpp
 	<iostream>
@@ -1413,4 +1419,14 @@
 	"../types/type_int.hpp"
 	"../types/type_double.hpp"
 	"../types/type_string.hpp"
+
+1333821600 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
+	"save_dump_manager.hpp"
+	"time.h"
+	<boost/date_time/gregorian/gregorian.hpp>
+
+1333821230 /home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.hpp
+	<map>
+	<vector>
+	"boost/date_time/posix_time/posix_time.hpp"
 
