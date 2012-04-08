@@ -5,6 +5,11 @@
 #include <iostream>
 #include <fstream>
 
+/**
+ * DumpLoader, holds stream to file with dump.
+ *
+ * Instance of this class should be provided to all classes that were saving data into dump.
+ */
 class DumpLoader
 {
 public:

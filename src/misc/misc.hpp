@@ -3,6 +3,11 @@
 
 #include <string>
 
+/**
+ * Class with miscellaneous functions that are very simple,
+ * but are used across whole project.
+ */
+
 class Misc
 {
 public:

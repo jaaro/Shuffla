@@ -6,6 +6,13 @@
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 
+/**
+ * User can define: After x seconds, if there were y changes, than save db to dump.
+ *
+ * SaveDumpManager needs to be informed about all modifying queries.
+ * This class answer question: Should I save dump now.
+ */
+
 class SaveDumpManager
 {
 public:

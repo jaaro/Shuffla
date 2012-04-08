@@ -3,6 +3,17 @@
 
 #include <string>
 
+/**
+ * Class contains all config settings.
+ *
+ * It is a singleton.
+ * Every class can request setting value by Config::getInstance().value
+ *
+ * You can set config values only by function Config::set
+ * Use it only from ConfigLoader class.
+ */
+
+
 class Config
 {
 public:

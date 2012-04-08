@@ -3,6 +3,12 @@
 
 #include <string>
 
+/**
+ * Logger class. It's singleton.
+ * Receives information about all errors/ warnings etc.
+ * It prints them to place defined in config (default: standard error).
+ */
+
 class Logger
 {
 public:

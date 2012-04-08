@@ -7,6 +7,10 @@
 #include "../engine/search_engine.hpp"
 #include "../engine/query/query_create.hpp"
 
+/**
+ * Http server pases information about all request to this class.
+ * This class passes Query* (created by QueryCreate) into search engine.
+ */
 
 class QueryDispatcher
 {

@@ -3,6 +3,12 @@
 
 #include <fstream>
 
+/**
+ * Slow log class.
+ *
+ * It is a singleton.
+ * Every query that was executing longer than defined bound, will be logged by this class.
+ */
 class SlowLog
 {
 public:
