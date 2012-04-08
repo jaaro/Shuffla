@@ -953,7 +953,7 @@
 	<boost/algorithm/string.hpp>
 	<algorithm>
 
-1332614775 source:/home/jaaro/Projects/Shuffla/main.cpp
+1333839147 source:/home/jaaro/Projects/Shuffla/main.cpp
 	<iostream>
 	"src/config/config_loader.hpp"
 	"src/server/server.hpp"
@@ -972,7 +972,7 @@
 	"config.hpp"
 	"../dump/save_dump_manager.hpp"
 
-1332673898 /home/jaaro/Projects/Shuffla/src/config/config.hpp
+1333877167 /home/jaaro/Projects/Shuffla/src/config/config.hpp
 	<string>
 
 1332614775 source:/home/jaaro/Projects/Shuffla/src/config/config_loader.cpp
@@ -1139,15 +1139,16 @@
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1333824503 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
+1333877503 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
 	"storage/row.hpp"
 	"query/search/query_parameters.hpp"
 	"../dump/save_dump_manager.hpp"
+	"../dump/dump_saver.hpp"
 
-1333823495 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
+1333877456 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
 	<string>
 	"query/query.hpp"
 	"query/insert/query_insert.hpp"
@@ -1156,13 +1157,12 @@
 	"table/table.hpp"
 	"search_result/search_result.hpp"
 	"../dump/append_log_manager.hpp"
-	"../dump/dump_processor.hpp"
 	"../dump/dump_loader.hpp"
 
-1333800462 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
+1333877436 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
 	"table_definition.hpp"
 	"../storage/row.hpp"
-	"../../dump/dump_processor.hpp"
+	"../../dump/dump_saver.hpp"
 	"../../dump/dump_loader.hpp"
 	"../search_result/search_result.hpp"
 	"../query/search/query_parameters.hpp"
@@ -1193,7 +1193,7 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/string/search_result_string.cpp
 	"search_result_string.hpp"
 
-1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/table/table.cpp
+1333877561 source:/home/jaaro/Projects/Shuffla/src/engine/table/table.cpp
 	"table.hpp"
 	"../search_result/results/search_results.hpp"
 	<boost/lexical_cast.hpp>
@@ -1420,7 +1420,7 @@
 	"../types/type_double.hpp"
 	"../types/type_string.hpp"
 
-1333821600 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
+1333824880 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
 	"save_dump_manager.hpp"
 	"time.h"
 	<boost/date_time/gregorian/gregorian.hpp>
@@ -1429,4 +1429,15 @@
 	<map>
 	<vector>
 	"boost/date_time/posix_time/posix_time.hpp"
+
+1333877343 /home/jaaro/Projects/Shuffla/src/dump/dump_saver.hpp
+	<string>
+	<fstream>
+	<iostream>
+
+1333877381 source:/home/jaaro/Projects/Shuffla/src/dump/dump_saver.cpp
+	"dump_saver.hpp"
+	"../config/config.hpp"
+	<iostream>
+	<fstream>
 

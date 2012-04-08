@@ -3,7 +3,7 @@
 
 #include "table_definition.hpp"
 #include "../storage/row.hpp"
-#include "../../dump/dump_processor.hpp"
+#include "../../dump/dump_saver.hpp"
 #include "../../dump/dump_loader.hpp"
 #include "../search_result/search_result.hpp"
 #include "../query/search/query_parameters.hpp"
@@ -21,7 +21,7 @@ public:
 
     void insert(const Row* row);
     SearchResult* search(const QueryParameters& params) const ;
-    void dump_table(DumpProcessor& dump_processor) const;
+    void dump_table(DumpSaver& dump_processor) const;
 protected:
 private:
     TableDefinition* table_definition;

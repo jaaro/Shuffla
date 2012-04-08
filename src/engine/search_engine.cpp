@@ -4,6 +4,7 @@
 #include "storage/row.hpp"
 #include "query/search/query_parameters.hpp"
 #include "../dump/save_dump_manager.hpp"
+#include "../dump/dump_saver.hpp"
 
 SearchEngine::SearchEngine(DumpLoader& dump_loader)
 {
@@ -140,10 +141,10 @@ Table* SearchEngine::find_table(const std::string& table_name) const
 bool SearchEngine::save_dump() const
 {
     std::cout << "Start saving database\n";
-    DumpProcessor dump_processor;
+    DumpSaver dump_saver;
     for(std::size_t i=0; i<tables.size(); i++) {
-        if (i > 0) dump_processor.append("\n");
-        tables[i]->dump_table(dump_processor);
+        if (i > 0) dump_saver.append("\n");
+        tables[i]->dump_table(dump_saver);
     }
     std::cout << "Saving ended successfully\n";
 

@@ -46,12 +46,12 @@ void Table::insert(const Row* new_row)
 }
 
 
-void Table::dump_table(DumpProcessor& dump_processor) const
+void Table::dump_table(DumpSaver& dump_saver) const
 {
-    dump_processor.append(table_definition->to_string());
-    dump_processor.append(boost::lexical_cast<std::string>( rows.size() ) + "\n");
+    dump_saver.append(table_definition->to_string());
+    dump_saver.append(boost::lexical_cast<std::string>( rows.size() ) + "\n");
     for(std::size_t i=0; i<rows.size(); i++) {
-        dump_processor.append(rows[i]->to_string());
+        dump_saver.append(rows[i]->to_string());
     }
 }
 

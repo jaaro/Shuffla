@@ -1,15 +1,15 @@
-#include "dump_processor.hpp"
+#include "dump_saver.hpp"
 #include "../config/config.hpp"
 
 #include <iostream>
 #include <fstream>
 
-DumpProcessor::DumpProcessor()
+DumpSaver::DumpSaver()
 {
     output = new std::ofstream(Config::getInstance().dump_file_name.c_str());
 }
 
-DumpProcessor::~DumpProcessor()
+DumpSaver::~DumpSaver()
 {
 
     output->flush();
@@ -17,7 +17,7 @@ DumpProcessor::~DumpProcessor()
     delete output;
 }
 
-void DumpProcessor::append(const std::string& line)
+void DumpSaver::append(const std::string& line)
 {
     *output << line;
 }

@@ -1,15 +1,15 @@
-#ifndef DUMPPROCESSOR_H
-#define DUMPPROCESSOR_H
+#ifndef DUMPSAVER_H
+#define DUMPSAVER_H
 
 #include <string>
 #include <fstream>
 #include <iostream>
 
-class DumpProcessor
+class DumpSaver
 {
 public:
-    DumpProcessor();
-    virtual ~DumpProcessor();
+    DumpSaver();
+    virtual ~DumpSaver();
 
     void append(const std::string& line);
 protected:
@@ -17,4 +17,4 @@ private:
     std::ofstream* output;
 };
 
-#endif // DUMPPROCESSOR_H
+#endif // DUMPSAVER_H

@@ -10,7 +10,6 @@
 #include "table/table.hpp"
 #include "search_result/search_result.hpp"
 #include "../dump/append_log_manager.hpp"
-#include "../dump/dump_processor.hpp"
 #include "../dump/dump_loader.hpp"
 
 class SearchEngine

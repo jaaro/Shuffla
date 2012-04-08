@@ -9,11 +9,10 @@ public:
     //DB CONFIG
     std::string host;
     std::string port;
-
     std::size_t number_of_threads;
-    bool is_append_log_enabled;
 
     //DUMP
+    bool is_append_log_enabled;
     std::string dump_file_name;
 
     //SLOW LOG
