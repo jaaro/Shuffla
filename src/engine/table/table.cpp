@@ -67,3 +67,15 @@ SearchResult* Table::search(const QueryParameters& params) const
 
     return new SearchResults(results);
 }
+
+
+int Table::delete_all(const QueryParameters& params) {
+    std::vector<const Row*> results;
+    for(std::size_t i=0; i<rows.size(); i++) {
+
+        if (params.is_matching(rows[i])) {
+            results.push_back(rows[i]);
+        }
+    }
+    return results.size();
+}

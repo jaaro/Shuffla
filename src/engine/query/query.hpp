@@ -3,6 +3,10 @@
 
 #include <string>
 
+/**
+ * Representation on query.
+ * QueryInsert, QuerySearch, QueryCreateTable are inheriting this class.
+ */
 class Query
 {
 public:

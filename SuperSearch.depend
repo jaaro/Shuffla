@@ -1,958 +1,4 @@
 # depslib dependency file v1.0
-1329694868 source:/home/jaaro/Documents/SuperSearch/main.cpp
-	<boost/regex.hpp>
-	"include/config_loader.h"
-	"include/config.h"
-	"include/query_dispatcher.h"
-	"src/server/http/server.hpp"
-	<cstdio>
-
-1329691377 /home/jaaro/Documents/SuperSearch/include/config_loader.h
-
-1329691248 /home/jaaro/Documents/SuperSearch/include/config.h
-	<string>
-
-1329691571 source:/home/jaaro/Documents/SuperSearch/src/config/config.cpp
-	"../../include/config.h"
-	<cstdio>
-	<string>
-
-1329691709 source:/home/jaaro/Documents/SuperSearch/src/config/config_loader.cpp
-	"../../include/config_loader.h"
-	<cstdio>
-
-1295238496 source:/home/jaaro/Documents/SuperSearch/src/server/http/connection.cpp
-	"connection.hpp"
-	<vector>
-	<boost/bind.hpp>
-	"request_handler.hpp"
-
-1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/connection.hpp
-	<boost/asio.hpp>
-	<boost/array.hpp>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	<boost/enable_shared_from_this.hpp>
-	"reply.hpp"
-	"request.hpp"
-	"request_handler.hpp"
-	"request_parser.hpp"
-
-1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/reply.hpp
-	<string>
-	<vector>
-	<boost/asio.hpp>
-	"header.hpp"
-
-1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/header.hpp
-	<string>
-
-1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/request.hpp
-	<string>
-	<vector>
-	"header.hpp"
-
-1329695942 /home/jaaro/Documents/SuperSearch/src/server/http/request_handler.hpp
-	<string>
-	<boost/noncopyable.hpp>
-	"../../../include/query_dispatcher.h"
-
-1318197597 /home/jaaro/Documents/SuperSearch/src/server/http/request_parser.hpp
-	<boost/logic/tribool.hpp>
-	<boost/tuple/tuple.hpp>
-
-1307316103 source:/home/jaaro/Documents/SuperSearch/src/server/http/io_service_pool.cpp
-	"server.hpp"
-	<stdexcept>
-	<boost/thread/thread.hpp>
-	<boost/bind.hpp>
-	<boost/shared_ptr.hpp>
-
-1329694933 /home/jaaro/Documents/SuperSearch/src/server/http/server.hpp
-	<boost/asio.hpp>
-	<string>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	"connection.hpp"
-	"io_service_pool.hpp"
-	"request_handler.hpp"
-	"../../../include/query_dispatcher.h"
-
-1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/io_service_pool.hpp
-	<boost/asio.hpp>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-
-1295238496 source:/home/jaaro/Documents/SuperSearch/src/server/http/mime_types.cpp
-	"mime_types.hpp"
-
-1295238496 /home/jaaro/Documents/SuperSearch/src/server/http/mime_types.hpp
-	<string>
-
-1295238496 source:/home/jaaro/Documents/SuperSearch/src/server/http/reply.cpp
-	"reply.hpp"
-	<string>
-	<boost/lexical_cast.hpp>
-
-1329695981 source:/home/jaaro/Documents/SuperSearch/src/server/http/request_handler.cpp
-	"request_handler.hpp"
-	<fstream>
-	<sstream>
-	<string>
-	<cstdio>
-	<boost/lexical_cast.hpp>
-	"mime_types.hpp"
-	"reply.hpp"
-	"request.hpp"
-
-1318197597 source:/home/jaaro/Documents/SuperSearch/src/server/http/request_parser.cpp
-	"request_parser.hpp"
-	"request.hpp"
-
-1329694661 source:/home/jaaro/Documents/SuperSearch/src/server/http/server.cpp
-	"server.hpp"
-	<boost/bind.hpp>
-
-1329695312 /home/jaaro/Documents/SuperSearch/include/query_dispatcher.h
-	<string>
-
-1329695306 source:/home/jaaro/Documents/SuperSearch/src/server/query_dispatcher.cpp
-	<cstdio>
-	"../../include/query_dispatcher.h"
-
-1329695016 source:/home/jaaro/Documents/SuperSearch/src/server/server.cpp
-	"../../include/server.h"
-
-1329694468 /home/jaaro/Documents/SuperSearch/include/server.h
-
-1331674648 source:/home/jaaro/Shuffla/src/config/config.cpp
-	<cstdio>
-	<string>
-	<boost/lexical_cast.hpp>
-	"config.hpp"
-
-1329773882 /home/jaaro/Shuffla/include/config.h
-	<string>
-
-1330773985 source:/home/jaaro/Shuffla/src/config/config_loader.cpp
-	<cstdio>
-	<string>
-	<fstream>
-	<iostream>
-	<algorithm>
-	"config.hpp"
-	"config_loader.hpp"
-
-1329774723 /home/jaaro/Shuffla/include/config_loader.h
-	<string>
-
-1330773784 source:/home/jaaro/Shuffla/src/server/http/connection.cpp
-	"connection.hpp"
-	<vector>
-	<boost/bind.hpp>
-	"request_handler.hpp"
-
-1330773784 /home/jaaro/Shuffla/src/server/http/connection.hpp
-	<boost/asio.hpp>
-	<boost/array.hpp>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	<boost/enable_shared_from_this.hpp>
-	"reply.hpp"
-	"request.hpp"
-	"request_handler.hpp"
-	"request_parser.hpp"
-
-1330773784 /home/jaaro/Shuffla/src/server/http/reply.hpp
-	<string>
-	<vector>
-	<boost/asio.hpp>
-	"header.hpp"
-
-1330773784 /home/jaaro/Shuffla/src/server/http/header.hpp
-	<string>
-
-1330773784 /home/jaaro/Shuffla/src/server/http/request.hpp
-	<string>
-	<vector>
-	"header.hpp"
-
-1330793898 /home/jaaro/Shuffla/src/server/http/request_handler.hpp
-	<string>
-	<boost/noncopyable.hpp>
-	"../query_dispatcher.hpp"
-
-1329695312 /home/jaaro/Shuffla/include/query_dispatcher.h
-	<string>
-
-1330773784 /home/jaaro/Shuffla/src/server/http/request_parser.hpp
-	<boost/logic/tribool.hpp>
-	<boost/tuple/tuple.hpp>
-
-1330773784 source:/home/jaaro/Shuffla/src/server/http/io_service_pool.cpp
-	"server.hpp"
-	<stdexcept>
-	<boost/thread/thread.hpp>
-	<boost/bind.hpp>
-	<boost/shared_ptr.hpp>
-
-1330793941 /home/jaaro/Shuffla/src/server/http/server.hpp
-	<boost/asio.hpp>
-	<string>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	"connection.hpp"
-	"io_service_pool.hpp"
-	"request_handler.hpp"
-	"../query_dispatcher.hpp"
-
-1330773784 /home/jaaro/Shuffla/src/server/http/io_service_pool.hpp
-	<boost/asio.hpp>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-
-1330773784 source:/home/jaaro/Shuffla/src/server/http/mime_types.cpp
-	"mime_types.hpp"
-
-1330773784 /home/jaaro/Shuffla/src/server/http/mime_types.hpp
-	<string>
-
-1330773784 source:/home/jaaro/Shuffla/src/server/http/reply.cpp
-	"reply.hpp"
-	<string>
-	<boost/lexical_cast.hpp>
-
-1330793869 source:/home/jaaro/Shuffla/src/server/http/request_handler.cpp
-	"request_handler.hpp"
-	<fstream>
-	<sstream>
-	<string>
-	<cstdio>
-	<boost/lexical_cast.hpp>
-	"mime_types.hpp"
-	"reply.hpp"
-	"request.hpp"
-
-1330773784 source:/home/jaaro/Shuffla/src/server/http/request_parser.cpp
-	"request_parser.hpp"
-	"request.hpp"
-
-1330813736 source:/home/jaaro/Shuffla/src/server/query_dispatcher.cpp
-	<cstdio>
-	"query_dispatcher.hpp"
-	"../engine/search_result/search_result.hpp"
-
-1330775035 source:/home/jaaro/Shuffla/main.cpp
-	<iostream>
-	"src/config/config_loader.hpp"
-	"src/server/server.hpp"
-
-1330795021 /home/jaaro/Shuffla/src/server/http/http_server.hpp
-	<boost/asio.hpp>
-	<string>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	"connection.hpp"
-	"io_service_pool.hpp"
-	"request_handler.hpp"
-	"../query_dispatcher.hpp"
-
-1330795021 source:/home/jaaro/Shuffla/src/server/http/http_server.cpp
-	"http_server.hpp"
-	<boost/bind.hpp>
-
-1329772303 /home/jaaro/Shuffla/include/server.h
-
-1331586191 source:/home/jaaro/Shuffla/src/server/server.cpp
-	<iostream>
-	"../config/config.hpp"
-	"query_dispatcher.hpp"
-	"server.hpp"
-	"http/http_server.hpp"
-
-1330774045 /home/jaaro/Shuffla/src/config/config_loader.hpp
-	<string>
-
-1330773784 /home/jaaro/Shuffla/src/server/server.hpp
-
-1331586973 /home/jaaro/Shuffla/src/config/config.hpp
-	<string>
-
-1330793972 /home/jaaro/Shuffla/src/server/query_dispatcher.hpp
-	<string>
-	"../engine/search_engine.hpp"
-	"../engine/query/query_create.hpp"
-
-1330795021 source:/home/jaaro/Shuffla/src/server/http/server.cpp
-	"server.hpp"
-	<boost/bind.hpp>
-
-1331386664 source:/home/jaaro/Shuffla/src/engine/query/insert/query_insert.cpp
-	<boost/algorithm/string/predicate.hpp>
-	<iostream>
-	"query_insert.hpp"
-
-1331386664 /home/jaaro/Shuffla/src/engine/query/insert/query_insert.hpp
-	"../query.hpp"
-	"../data_without_typing.hpp"
-
-1331324615 /home/jaaro/Shuffla/src/engine/query/query.hpp
-	<string>
-
-1331386664 source:/home/jaaro/Shuffla/src/engine/query/query.cpp
-	"query.hpp"
-
-1331316683 source:/home/jaaro/Shuffla/src/engine/query/query_create.cpp
-	"query_create.hpp"
-	"insert/query_insert.hpp"
-	"search/query_search.hpp"
-	"create_table/query_create_table.hpp"
-
-1330795021 /home/jaaro/Shuffla/src/engine/query/query_create.hpp
-	<vector>
-	"query.hpp"
-
-1332075706 /home/jaaro/Shuffla/src/engine/query/search/query_search.hpp
-	"../query.hpp"
-	"../data_without_typing.hpp"
-
-1332075698 source:/home/jaaro/Shuffla/src/engine/query/search/query_search.cpp
-	<boost/algorithm/string/predicate.hpp>
-	"query_search.hpp"
-
-1332101715 source:/home/jaaro/Shuffla/src/engine/search_engine.cpp
-	"search_engine.hpp"
-	"search_result/errors/search_result_error.hpp"
-	"search_result/string/search_result_string.hpp"
-	"../storage/row/row.hpp"
-	"query/search/query_parameters.hpp"
-
-1331586161 /home/jaaro/Shuffla/src/engine/search_engine.hpp
-	<string>
-	"query/query.hpp"
-	"query/insert/query_insert.hpp"
-	"query/search/query_search.hpp"
-	"query/create_table/query_create_table.hpp"
-	"table/table.hpp"
-	"search_result/search_result.hpp"
-	"../dump/append_log_manager.hpp"
-	"../dump/dump_processor.hpp"
-	"../dump/dump_loader.hpp"
-
-1331386664 source:/home/jaaro/Shuffla/src/engine/query/create_table/query_create_table.cpp
-	<boost/algorithm/string/predicate.hpp>
-	<iostream>
-	"query_create_table.hpp"
-
-1331386664 /home/jaaro/Shuffla/src/engine/query/create_table/query_create_table.hpp
-	"../query.hpp"
-	"../../table/table_definition.hpp"
-	<memory>
-
-1330814535 source:/home/jaaro/Shuffla/src/engine/search_result/search_result.cpp
-	"search_result.hpp"
-
-1332106139 /home/jaaro/Shuffla/src/engine/search_result/search_result.hpp
-	<string>
-
-1330856290 source:/home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.cpp
-	"search_result_string.hpp"
-
-1330856284 source:/home/jaaro/Shuffla/src/engine/search_result/errors/search_result_error.cpp
-	"search_result_error.hpp"
-
-1330813489 /home/jaaro/Shuffla/src/engine/search_result/errors/search_result_error.h
-	"../search_result.hpp"
-
-1330814535 /home/jaaro/Shuffla/src/engine/search_result/errors/search_result_error.hpp
-	"../search_result.hpp"
-
-1330814535 /home/jaaro/Shuffla/src/engine/search_result/string/search_result_string.hpp
-	"../search_result.hpp"
-
-1332018573 /home/jaaro/Shuffla/src/engine/table/table_definition.hpp
-	<vector>
-	<string>
-	"../types/type.hpp"
-	"../types/types.hpp"
-	"../../dump/dump_loader.hpp"
-
-1332366408 source:/home/jaaro/Shuffla/src/engine/table/table_definition.cpp
-	"table_definition.hpp"
-	"../../logger/logger.hpp"
-	"../../misc/misc.hpp"
-	<boost/algorithm/string.hpp>
-	<algorithm>
-
-1332101886 /home/jaaro/Shuffla/src/engine/table/table.hpp
-	"table_definition.hpp"
-	"../../storage/row/row.hpp"
-	"../../dump/dump_processor.hpp"
-	"../../dump/dump_loader.hpp"
-	"../search_result/search_result.hpp"
-	"../query/search/query_parameters.hpp"
-
-1332106792 source:/home/jaaro/Shuffla/src/engine/table/table.cpp
-	"table.hpp"
-	"../search_result/results/search_results.hpp"
-	<boost/lexical_cast.hpp>
-
-1331386664 source:/home/jaaro/Shuffla/src/dump/append_log_manager.cpp
-	<iostream>
-	"append_log_manager.hpp"
-	"../config/config.hpp"
-
-1331386664 /home/jaaro/Shuffla/src/dump/append_log_manager.hpp
-	"../engine/query/query.hpp"
-
-1331386664 source:/home/jaaro/Shuffla/src/logger/logger.cpp
-	<iostream>
-	"logger.hpp"
-
-1331386665 /home/jaaro/Shuffla/src/logger/logger.hpp
-	<string>
-
-1332106339 /home/jaaro/Shuffla/src/storage/row/row.hpp
-	"../../engine/query/data_without_typing.hpp"
-	"../../engine/table/table_definition.hpp"
-	"../../engine/types/type.hpp"
-
-1332366218 source:/home/jaaro/Shuffla/src/storage/row/row.cpp
-	<iostream>
-	<boost/lexical_cast.hpp>
-	"row.hpp"
-	"../../engine/types/type_int.hpp"
-	"../../engine/types/type_string.hpp"
-
-1332016069 /home/jaaro/Shuffla/src/engine/query/data_without_typing.hpp
-	<string>
-	<vector>
-	"../table/table_definition.hpp"
-
-1332064393 source:/home/jaaro/Shuffla/src/engine/query/data_without_typing.cpp
-	"data_without_typing.hpp"
-	"../../logger/logger.hpp"
-	"../types/type.hpp"
-	<vector>
-	<string>
-	<boost/algorithm/string.hpp>
-
-1332018542 /home/jaaro/Shuffla/src/engine/types/types.hpp
-	<string>
-	"type.hpp"
-
-1332020200 source:/home/jaaro/Shuffla/src/engine/types/types.cpp
-	<boost/lexical_cast.hpp>
-	"types.hpp"
-	"type_string.hpp"
-	"type_int.hpp"
-
-1332106792 /home/jaaro/Shuffla/src/engine/types/type_int.hpp
-	"type.hpp"
-
-1332103743 /home/jaaro/Shuffla/src/engine/types/type.hpp
-	<string>
-
-1331386664 source:/home/jaaro/Shuffla/src/engine/types/type.cpp
-	"type.hpp"
-
-1332106792 source:/home/jaaro/Shuffla/src/engine/types/type_int.cpp
-	<boost/lexical_cast.hpp>
-	"type_int.hpp"
-
-1332106792 source:/home/jaaro/Shuffla/src/engine/types/type_string.cpp
-	"type_string.hpp"
-
-1332106792 /home/jaaro/Shuffla/src/engine/types/type_string.hpp
-	<string>
-	"type.hpp"
-
-1331681766 source:/home/jaaro/Shuffla/src/dump/dump_processor.cpp
-	"dump_processor.hpp"
-	"../config/config.hpp"
-	<iostream>
-	<fstream>
-
-1332008776 /home/jaaro/Shuffla/src/dump/dump_processor.hpp
-	<string>
-	<fstream>
-	<iostream>
-
-1332008776 source:/home/jaaro/Shuffla/src/dump/dump_loader.cpp
-	"dump_loader.hpp"
-	"../config/config.hpp"
-
-1332008776 /home/jaaro/Shuffla/src/dump/dump_loader.hpp
-	<string>
-	<iostream>
-	<fstream>
-
-1332366408 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function.cpp
-	"search_function.hpp"
-
-1332364601 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function.hpp
-	"../../../types/type.hpp"
-	"../../../../storage/row/row.hpp"
-	"../../../../misc/misc.hpp"
-
-1332372818 source:/home/jaaro/Shuffla/src/engine/query/search/query_parameters.cpp
-	"query_parameters.hpp"
-	"functions/search_function_equal.hpp"
-	"functions/search_function_prefix.hpp"
-	"../../../logger/logger.hpp"
-	<boost/algorithm/string.hpp>
-
-1332372703 /home/jaaro/Shuffla/src/engine/query/search/query_parameters.hpp
-	"../../table/table_definition.hpp"
-	"../data_without_typing.hpp"
-	"functions/search_function.hpp"
-	"../../../storage/row/row.hpp"
-
-1332366408 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
-	"search_function_equal.hpp"
-
-1332103460 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
-	"search_function.hpp"
-
-1332366097 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.cpp
-	"search_function_prefix.hpp"
-	"../../../types/type_string.hpp"
-
-1332365838 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
-	"search_function_with_prefix.hpp"
-
-1332106792 /home/jaaro/Shuffla/src/engine/query/search/functions/search_function_with_prefix.hpp
-	"search_function.hpp"
-
-1332364171 source:/home/jaaro/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
-	"search_function_with_prefix.hpp"
-
-1332106792 source:/home/jaaro/Shuffla/src/engine/search_result/results/search_results.cpp
-	"search_results.hpp"
-	<boost/lexical_cast.hpp>
-
-1332106792 /home/jaaro/Shuffla/src/engine/search_result/results/search_results.hpp
-	"../search_result.hpp"
-	"../../../storage/row/row.hpp"
-
-1332372936 source:/home/jaaro/Shuffla/src/misc/misc.cpp
-	"misc.hpp"
-	<boost/lexical_cast.hpp>
-
-1332366408 /home/jaaro/Shuffla/src/misc/misc.hpp
-	<string>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/main.cpp
-	<iostream>
-	"src/config/config_loader.hpp"
-	"src/server/server.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/config/config_loader.hpp
-	<string>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/server.hpp
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/config/config.cpp
-	<cstdio>
-	<string>
-	<boost/lexical_cast.hpp>
-	"config.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/config/config.hpp
-	<string>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/config/config_loader.cpp
-	<cstdio>
-	<string>
-	<fstream>
-	<iostream>
-	<algorithm>
-	"config.hpp"
-	"config_loader.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/dump/append_log_manager.cpp
-	<iostream>
-	"append_log_manager.hpp"
-	"../config/config.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/dump/append_log_manager.hpp
-	"../engine/query/query.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/query.hpp
-	<string>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/dump/dump_loader.cpp
-	"dump_loader.hpp"
-	"../config/config.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/dump/dump_loader.hpp
-	<string>
-	<iostream>
-	<fstream>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/dump/dump_processor.cpp
-	"dump_processor.hpp"
-	"../config/config.hpp"
-	<iostream>
-	<fstream>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/dump/dump_processor.hpp
-	<string>
-	<fstream>
-	<iostream>
-
-1332583225 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/create_table/query_create_table.cpp
-	<boost/algorithm/string/predicate.hpp>
-	<iostream>
-	"query_create_table.hpp"
-
-1332583203 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/create_table/query_create_table.hpp
-	"../query.hpp"
-	"../../table/table_definition.hpp"
-	<memory>
-
-1332583379 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/table/table_definition.hpp
-	<vector>
-	<string>
-	"../types/type.hpp"
-	"../types/types.hpp"
-	"../../dump/dump_loader.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/type.hpp
-	<string>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/types.hpp
-	<string>
-	"type.hpp"
-
-1332583022 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/data_without_typing.cpp
-	"data_without_typing.hpp"
-	"../../logger/logger.hpp"
-	"../types/type.hpp"
-	<vector>
-	<string>
-	<boost/algorithm/string.hpp>
-
-1332582912 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/data_without_typing.hpp
-	<string>
-	<vector>
-	"../table/table_definition.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/logger/logger.hpp
-	<string>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/insert/query_insert.cpp
-	<boost/algorithm/string/predicate.hpp>
-	<iostream>
-	"query_insert.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/insert/query_insert.hpp
-	"../query.hpp"
-	"../data_without_typing.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/query.cpp
-	"query.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/query_create.cpp
-	"query_create.hpp"
-	"insert/query_insert.hpp"
-	"search/query_search.hpp"
-	"create_table/query_create_table.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/query_create.hpp
-	<vector>
-	"query.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/query_search.hpp
-	"../query.hpp"
-	"../data_without_typing.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function.cpp
-	"search_function.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function.hpp
-	"../../../types/type.hpp"
-	"../../../../storage/row/row.hpp"
-	"../../../../misc/misc.hpp"
-
-1332582818 /home/jaaro/Documents/Shuffla/Shuffla/src/storage/row/row.hpp
-	"../../engine/query/data_without_typing.hpp"
-	"../../engine/table/table_definition.hpp"
-	"../../engine/types/type.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/misc/misc.hpp
-	<string>
-
-1332573628 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
-	"search_function_equal.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
-	"search_function.hpp"
-
-1332573657 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function_prefix.cpp
-	"search_function_prefix.hpp"
-	"../../../types/type_string.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
-	"search_function_with_prefix.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function_with_prefix.hpp
-	"search_function.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/type_string.hpp
-	<string>
-	"type.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
-	"search_function_with_prefix.hpp"
-
-1332583074 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/query_parameters.cpp
-	"query_parameters.hpp"
-	"functions/search_function_equal.hpp"
-	"functions/search_function_prefix.hpp"
-	"../../../logger/logger.hpp"
-	<boost/algorithm/string.hpp>
-
-1332582963 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/query_parameters.hpp
-	"../../table/table_definition.hpp"
-	"../data_without_typing.hpp"
-	"functions/search_function.hpp"
-	"../../../storage/row/row.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/query/search/query_search.cpp
-	<boost/algorithm/string/predicate.hpp>
-	"query_search.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_engine.cpp
-	"search_engine.hpp"
-	"search_result/errors/search_result_error.hpp"
-	"search_result/string/search_result_string.hpp"
-	"../storage/row/row.hpp"
-	"query/search/query_parameters.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_engine.hpp
-	<string>
-	"query/query.hpp"
-	"query/insert/query_insert.hpp"
-	"query/search/query_search.hpp"
-	"query/create_table/query_create_table.hpp"
-	"table/table.hpp"
-	"search_result/search_result.hpp"
-	"../dump/append_log_manager.hpp"
-	"../dump/dump_processor.hpp"
-	"../dump/dump_loader.hpp"
-
-1332583341 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/table/table.hpp
-	"table_definition.hpp"
-	"../../storage/row/row.hpp"
-	"../../dump/dump_processor.hpp"
-	"../../dump/dump_loader.hpp"
-	"../search_result/search_result.hpp"
-	"../query/search/query_parameters.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/search_result.hpp
-	<string>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/errors/search_result_error.hpp
-	"../search_result.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/string/search_result_string.hpp
-	"../search_result.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/errors/search_result_error.cpp
-	"search_result_error.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/results/search_results.cpp
-	"search_results.hpp"
-	<boost/lexical_cast.hpp>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/results/search_results.hpp
-	"../search_result.hpp"
-	"../../../storage/row/row.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/search_result.cpp
-	"search_result.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/search_result/string/search_result_string.cpp
-	"search_result_string.hpp"
-
-1332573439 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/table/table.cpp
-	"table.hpp"
-	"../search_result/results/search_results.hpp"
-	<boost/lexical_cast.hpp>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/type.cpp
-	"type.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/type_int.cpp
-	<boost/lexical_cast.hpp>
-	"type_int.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/type_int.hpp
-	"type.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/type_string.cpp
-	"type_string.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/types/types.cpp
-	<boost/lexical_cast.hpp>
-	"types.hpp"
-	"type_string.hpp"
-	"type_int.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/logger/logger.cpp
-	<iostream>
-	"logger.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/misc/misc.cpp
-	"misc.hpp"
-	<boost/lexical_cast.hpp>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/connection.cpp
-	"connection.hpp"
-	<vector>
-	<boost/bind.hpp>
-	"request_handler.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/connection.hpp
-	<boost/asio.hpp>
-	<boost/array.hpp>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	<boost/enable_shared_from_this.hpp>
-	"reply.hpp"
-	"request.hpp"
-	"request_handler.hpp"
-	"request_parser.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/reply.hpp
-	<string>
-	<vector>
-	<boost/asio.hpp>
-	"header.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/header.hpp
-	<string>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/request.hpp
-	<string>
-	<vector>
-	"header.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/request_handler.hpp
-	<string>
-	<boost/noncopyable.hpp>
-	"../query_dispatcher.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/query_dispatcher.hpp
-	<string>
-	"../engine/search_engine.hpp"
-	"../engine/query/query_create.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/request_parser.hpp
-	<boost/logic/tribool.hpp>
-	<boost/tuple/tuple.hpp>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/http_server.cpp
-	"http_server.hpp"
-	<boost/bind.hpp>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/http_server.hpp
-	<boost/asio.hpp>
-	<string>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	"connection.hpp"
-	"io_service_pool.hpp"
-	"request_handler.hpp"
-	"../query_dispatcher.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/io_service_pool.hpp
-	<boost/asio.hpp>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/io_service_pool.cpp
-	"server.hpp"
-	<stdexcept>
-	<boost/thread/thread.hpp>
-	<boost/bind.hpp>
-	<boost/shared_ptr.hpp>
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/server.hpp
-	<boost/asio.hpp>
-	<string>
-	<vector>
-	<boost/noncopyable.hpp>
-	<boost/shared_ptr.hpp>
-	"connection.hpp"
-	"io_service_pool.hpp"
-	"request_handler.hpp"
-	"../query_dispatcher.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/mime_types.cpp
-	"mime_types.hpp"
-
-1332537976 /home/jaaro/Documents/Shuffla/Shuffla/src/server/http/mime_types.hpp
-	<string>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/reply.cpp
-	"reply.hpp"
-	<string>
-	<boost/lexical_cast.hpp>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/request_handler.cpp
-	"request_handler.hpp"
-	<fstream>
-	<sstream>
-	<string>
-	<cstdio>
-	<boost/lexical_cast.hpp>
-	"mime_types.hpp"
-	"reply.hpp"
-	"request.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/request_parser.cpp
-	"request_parser.hpp"
-	"request.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/http/server.cpp
-	"server.hpp"
-	<boost/bind.hpp>
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/query_dispatcher.cpp
-	<cstdio>
-	"query_dispatcher.hpp"
-	"../engine/search_result/search_result.hpp"
-
-1332537976 source:/home/jaaro/Documents/Shuffla/Shuffla/src/server/server.cpp
-	<iostream>
-	"../config/config.hpp"
-	"query_dispatcher.hpp"
-	"server.hpp"
-	"http/http_server.hpp"
-
-1332573538 source:/home/jaaro/Documents/Shuffla/Shuffla/src/storage/row/row.cpp
-	<iostream>
-	<boost/lexical_cast.hpp>
-	"row.hpp"
-	"../../engine/types/type_int.hpp"
-	"../../engine/types/type_string.hpp"
-
-1332582646 source:/home/jaaro/Documents/Shuffla/Shuffla/src/engine/table/table_definition.cpp
-	"table_definition.hpp"
-	"../../logger/logger.hpp"
-	"../../misc/misc.hpp"
-	<boost/algorithm/string.hpp>
-	<algorithm>
-
 1333839147 source:/home/jaaro/Projects/Shuffla/main.cpp
 	<iostream>
 	"src/config/config_loader.hpp"
@@ -964,66 +10,29 @@
 1333823391 /home/jaaro/Projects/Shuffla/src/server/server.hpp
 	"../engine/search_engine.hpp"
 
-1333824432 source:/home/jaaro/Projects/Shuffla/src/config/config.cpp
-	<cstdio>
+1334430768 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
 	<string>
-	<boost/lexical_cast.hpp>
-	<sstream>
-	"config.hpp"
-	"../dump/save_dump_manager.hpp"
+	"query/query.hpp"
+	"query/insert/query_insert.hpp"
+	"query/delete/query_delete.hpp"
+	"query/search/query_search.hpp"
+	"query/create_table/query_create_table.hpp"
+	"table/table.hpp"
+	"search_result/search_result.hpp"
+	"../dump/append_log_manager.hpp"
+	"../dump/dump_loader.hpp"
 
-1333878267 /home/jaaro/Projects/Shuffla/src/config/config.hpp
-	<string>
-
-1332614775 source:/home/jaaro/Projects/Shuffla/src/config/config_loader.cpp
-	<cstdio>
-	<string>
-	<fstream>
-	<iostream>
-	<algorithm>
-	"config.hpp"
-	"config_loader.hpp"
-
-1332614775 source:/home/jaaro/Projects/Shuffla/src/dump/append_log_manager.cpp
-	<iostream>
-	"append_log_manager.hpp"
-	"../config/config.hpp"
-
-1333879263 /home/jaaro/Projects/Shuffla/src/dump/append_log_manager.hpp
-	"../engine/query/query.hpp"
-
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/query.hpp
+1333888842 /home/jaaro/Projects/Shuffla/src/engine/query/query.hpp
 	<string>
 
-1332614775 source:/home/jaaro/Projects/Shuffla/src/dump/dump_loader.cpp
-	"dump_loader.hpp"
-	"../config/config.hpp"
-
-1333880183 /home/jaaro/Projects/Shuffla/src/dump/dump_loader.hpp
-	<string>
-	<iostream>
-	<fstream>
-
-1332604673 source:/home/jaaro/Projects/Shuffla/src/dump/dump_processor.cpp
-	"dump_processor.hpp"
-	"../config/config.hpp"
-	<iostream>
-	<fstream>
-
-1332604673 /home/jaaro/Projects/Shuffla/src/dump/dump_processor.hpp
-	<string>
-	<fstream>
-	<iostream>
-
-1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.cpp
-	<boost/algorithm/string/predicate.hpp>
-	<iostream>
-	"query_create_table.hpp"
-
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.hpp
+1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/insert/query_insert.hpp
 	"../query.hpp"
-	"../../table/table_definition.hpp"
-	<memory>
+	"../data_without_typing.hpp"
+
+1333888962 /home/jaaro/Projects/Shuffla/src/engine/query/data_without_typing.hpp
+	<string>
+	<vector>
+	"../table/table_definition.hpp"
 
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/table/table_definition.hpp
 	<vector>
@@ -1039,6 +48,113 @@
 	<string>
 	"type.hpp"
 
+1333880183 /home/jaaro/Projects/Shuffla/src/dump/dump_loader.hpp
+	<string>
+	<iostream>
+	<fstream>
+
+1334430197 /home/jaaro/Projects/Shuffla/src/engine/query/delete/query_delete.hpp
+	"../query.hpp"
+	"../data_without_typing.hpp"
+
+1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_search.hpp
+	"../query.hpp"
+	"../data_without_typing.hpp"
+
+1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.hpp
+	"../query.hpp"
+	"../../table/table_definition.hpp"
+	<memory>
+
+1334430613 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
+	"table_definition.hpp"
+	"../storage/row.hpp"
+	"../../dump/dump_saver.hpp"
+	"../../dump/dump_loader.hpp"
+	"../search_result/search_result.hpp"
+	"../query/search/query_parameters.hpp"
+
+1333792230 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
+	"../../engine/query/data_without_typing.hpp"
+	"../../engine/table/table_definition.hpp"
+	"../../engine/types/type.hpp"
+
+1333882122 /home/jaaro/Projects/Shuffla/src/dump/dump_saver.hpp
+	<string>
+	<fstream>
+	<iostream>
+
+1332604673 /home/jaaro/Projects/Shuffla/src/engine/search_result/search_result.hpp
+	<string>
+
+1333889017 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
+	"../../table/table_definition.hpp"
+	"../data_without_typing.hpp"
+	"functions/search_function.hpp"
+	"../../storage/row.hpp"
+
+1333800441 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function.hpp
+	"../../../types/type.hpp"
+	"../../../storage/row.hpp"
+	"../../../../misc/misc.hpp"
+
+1333882509 /home/jaaro/Projects/Shuffla/src/misc/misc.hpp
+	<string>
+
+1333879263 /home/jaaro/Projects/Shuffla/src/dump/append_log_manager.hpp
+	"../engine/query/query.hpp"
+
+1333888698 source:/home/jaaro/Projects/Shuffla/src/config/config.cpp
+	<cstdio>
+	<string>
+	<boost/lexical_cast.hpp>
+	<sstream>
+	"config.hpp"
+	"../dump/save_dump_manager.hpp"
+	"../misc/misc.hpp"
+
+1333878267 /home/jaaro/Projects/Shuffla/src/config/config.hpp
+	<string>
+
+1333882330 /home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.hpp
+	<map>
+	<vector>
+	"boost/date_time/posix_time/posix_time.hpp"
+
+1332614775 source:/home/jaaro/Projects/Shuffla/src/config/config_loader.cpp
+	<cstdio>
+	<string>
+	<fstream>
+	<iostream>
+	<algorithm>
+	"config.hpp"
+	"config_loader.hpp"
+
+1332614775 source:/home/jaaro/Projects/Shuffla/src/dump/append_log_manager.cpp
+	<iostream>
+	"append_log_manager.hpp"
+	"../config/config.hpp"
+
+1333888549 source:/home/jaaro/Projects/Shuffla/src/dump/dump_loader.cpp
+	"dump_loader.hpp"
+	"../config/config.hpp"
+
+1333877381 source:/home/jaaro/Projects/Shuffla/src/dump/dump_saver.cpp
+	"dump_saver.hpp"
+	"../config/config.hpp"
+	<iostream>
+	<fstream>
+
+1333824880 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
+	"save_dump_manager.hpp"
+	"time.h"
+	<boost/date_time/gregorian/gregorian.hpp>
+
+1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.cpp
+	<boost/algorithm/string/predicate.hpp>
+	<iostream>
+	"query_create_table.hpp"
+
 1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/query/data_without_typing.cpp
 	"data_without_typing.hpp"
 	"../../logger/logger.hpp"
@@ -1047,61 +163,53 @@
 	<string>
 	<boost/algorithm/string.hpp>
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/data_without_typing.hpp
-	<string>
-	<vector>
-	"../table/table_definition.hpp"
-
 1333882447 /home/jaaro/Projects/Shuffla/src/logger/logger.hpp
 	<string>
+
+1334429999 source:/home/jaaro/Projects/Shuffla/src/engine/query/delete/query_delete.cpp
+	<boost/algorithm/string/predicate.hpp>
+	"query_delete.hpp"
 
 1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/query/insert/query_insert.cpp
 	<boost/algorithm/string/predicate.hpp>
 	<iostream>
 	"query_insert.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/insert/query_insert.hpp
-	"../query.hpp"
-	"../data_without_typing.hpp"
-
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/query/query.cpp
 	"query.hpp"
 
-1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/query/query_create.cpp
+1334430145 source:/home/jaaro/Projects/Shuffla/src/engine/query/query_create.cpp
 	"query_create.hpp"
 	"insert/query_insert.hpp"
 	"search/query_search.hpp"
+	"delete/query_delete.hpp"
 	"create_table/query_create_table.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/query_create.hpp
+1333888786 /home/jaaro/Projects/Shuffla/src/engine/query/query_create.hpp
 	<vector>
 	"query.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_search.hpp
-	"../query.hpp"
-	"../data_without_typing.hpp"
-
 1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function.cpp
 	"search_function.hpp"
-
-1333800441 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function.hpp
-	"../../../types/type.hpp"
-	"../../../storage/row.hpp"
-	"../../../../misc/misc.hpp"
-
-1332604673 /home/jaaro/Projects/Shuffla/src/storage/row/row.hpp
-	"../../engine/query/data_without_typing.hpp"
-	"../../engine/table/table_definition.hpp"
-	"../../engine/types/type.hpp"
-
-1333882509 /home/jaaro/Projects/Shuffla/src/misc/misc.hpp
-	<string>
 
 1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_equal.cpp
 	"search_function_equal.hpp"
 
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_equal.hpp
 	"search_function.hpp"
+
+1332619747 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_greater.cpp
+	"search_function_greater.hpp"
+	"../../../types/type_number.hpp"
+
+1332619479 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_greater.hpp
+	"search_function_with_prefix.hpp"
+
+1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_with_prefix.hpp
+	"search_function.hpp"
+
+1332619497 /home/jaaro/Projects/Shuffla/src/engine/types/type_number.hpp
+	"type.hpp"
 
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_prefix.cpp
 	"search_function_prefix.hpp"
@@ -1110,12 +218,16 @@
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
 	"search_function_with_prefix.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_with_prefix.hpp
-	"search_function.hpp"
-
 1332614774 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
 	<string>
 	"type.hpp"
+
+1332613076 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller.cpp
+	"search_function_smaller.hpp"
+	"../../../types/type_number.hpp"
+
+1332614684 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller.hpp
+	"search_function_with_prefix.hpp"
 
 1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
 	"search_function_with_prefix.hpp"
@@ -1129,17 +241,11 @@
 	"../../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
 
-1333800452 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
-	"../../table/table_definition.hpp"
-	"../data_without_typing.hpp"
-	"functions/search_function.hpp"
-	"../../storage/row.hpp"
-
 1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_search.cpp
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1333877503 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
+1334430903 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
@@ -1147,28 +253,6 @@
 	"query/search/query_parameters.hpp"
 	"../dump/save_dump_manager.hpp"
 	"../dump/dump_saver.hpp"
-
-1333877456 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
-	<string>
-	"query/query.hpp"
-	"query/insert/query_insert.hpp"
-	"query/search/query_search.hpp"
-	"query/create_table/query_create_table.hpp"
-	"table/table.hpp"
-	"search_result/search_result.hpp"
-	"../dump/append_log_manager.hpp"
-	"../dump/dump_loader.hpp"
-
-1333877436 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
-	"table_definition.hpp"
-	"../storage/row.hpp"
-	"../../dump/dump_saver.hpp"
-	"../../dump/dump_loader.hpp"
-	"../search_result/search_result.hpp"
-	"../query/search/query_parameters.hpp"
-
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/search_result/search_result.hpp
-	<string>
 
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/search_result/errors/search_result_error.hpp
 	"../search_result.hpp"
@@ -1193,7 +277,21 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/string/search_result_string.cpp
 	"search_result_string.hpp"
 
-1333877561 source:/home/jaaro/Projects/Shuffla/src/engine/table/table.cpp
+1333792269 source:/home/jaaro/Projects/Shuffla/src/engine/storage/row.cpp
+	<iostream>
+	<boost/lexical_cast.hpp>
+	"row.hpp"
+	"../types/type_int.hpp"
+	"../types/type_double.hpp"
+	"../types/type_string.hpp"
+
+1332619508 /home/jaaro/Projects/Shuffla/src/engine/types/type_int.hpp
+	"type_number.hpp"
+
+1332619536 /home/jaaro/Projects/Shuffla/src/engine/types/type_double.hpp
+	"type_number.hpp"
+
+1334430864 source:/home/jaaro/Projects/Shuffla/src/engine/table/table.cpp
 	"table.hpp"
 	"../search_result/results/search_results.hpp"
 	<boost/lexical_cast.hpp>
@@ -1208,11 +306,15 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/types/type.cpp
 	"type.hpp"
 
+1332619558 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_double.cpp
+	<boost/lexical_cast.hpp>
+	"type_double.hpp"
+
 1332619549 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_int.cpp
 	<boost/lexical_cast.hpp>
 	"type_int.hpp"
 
-1332619508 /home/jaaro/Projects/Shuffla/src/engine/types/type_int.hpp
+1332614684 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_number.cpp
 	"type_number.hpp"
 
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_string.cpp
@@ -1232,6 +334,15 @@
 1332614775 source:/home/jaaro/Projects/Shuffla/src/misc/misc.cpp
 	"misc.hpp"
 	<boost/lexical_cast.hpp>
+
+1332674145 source:/home/jaaro/Projects/Shuffla/src/misc/slow_log.cpp
+	<string>
+	<boost/lexical_cast.hpp>
+	"slow_log.hpp"
+	"../config/config.hpp"
+
+1333882628 /home/jaaro/Projects/Shuffla/src/misc/slow_log.hpp
+	<fstream>
 
 1332614775 source:/home/jaaro/Projects/Shuffla/src/server/http/connection.cpp
 	"connection.hpp"
@@ -1347,7 +458,7 @@
 	"server.hpp"
 	<boost/bind.hpp>
 
-1333800348 source:/home/jaaro/Projects/Shuffla/src/server/query_dispatcher.cpp
+1333888667 source:/home/jaaro/Projects/Shuffla/src/server/query_dispatcher.cpp
 	<cstdio>
 	<boost/date_time/posix_time/posix_time.hpp>
 	"query_dispatcher.hpp"
@@ -1362,82 +473,4 @@
 	"server.hpp"
 	"http/http_server.hpp"
 	"../dump/save_dump_manager.hpp"
-
-1332614776 source:/home/jaaro/Projects/Shuffla/src/storage/row/row.cpp
-	<iostream>
-	<boost/lexical_cast.hpp>
-	"row.hpp"
-	"../../engine/types/type_int.hpp"
-	"../../engine/types/type_double.hpp"
-	"../../engine/types/type_string.hpp"
-
-1332619558 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_double.cpp
-	<boost/lexical_cast.hpp>
-	"type_double.hpp"
-
-1332619536 /home/jaaro/Projects/Shuffla/src/engine/types/type_double.hpp
-	"type_number.hpp"
-
-1332613076 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller.cpp
-	"search_function_smaller.hpp"
-	"../../../types/type_number.hpp"
-
-1332614684 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller.hpp
-	"search_function_with_prefix.hpp"
-
-1332619497 /home/jaaro/Projects/Shuffla/src/engine/types/type_number.hpp
-	"type.hpp"
-
-1332614684 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_number.cpp
-	"type_number.hpp"
-
-1332619747 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_greater.cpp
-	"search_function_greater.hpp"
-	"../../../types/type_number.hpp"
-
-1332619479 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_greater.hpp
-	"search_function_with_prefix.hpp"
-
-1332674145 source:/home/jaaro/Projects/Shuffla/src/misc/slow_log.cpp
-	<string>
-	<boost/lexical_cast.hpp>
-	"slow_log.hpp"
-	"../config/config.hpp"
-
-1333882628 /home/jaaro/Projects/Shuffla/src/misc/slow_log.hpp
-	<fstream>
-
-1333792230 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
-	"../../engine/query/data_without_typing.hpp"
-	"../../engine/table/table_definition.hpp"
-	"../../engine/types/type.hpp"
-
-1333792269 source:/home/jaaro/Projects/Shuffla/src/engine/storage/row.cpp
-	<iostream>
-	<boost/lexical_cast.hpp>
-	"row.hpp"
-	"../types/type_int.hpp"
-	"../types/type_double.hpp"
-	"../types/type_string.hpp"
-
-1333824880 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
-	"save_dump_manager.hpp"
-	"time.h"
-	<boost/date_time/gregorian/gregorian.hpp>
-
-1333882330 /home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.hpp
-	<map>
-	<vector>
-	"boost/date_time/posix_time/posix_time.hpp"
-
-1333882122 /home/jaaro/Projects/Shuffla/src/dump/dump_saver.hpp
-	<string>
-	<fstream>
-	<iostream>
-
-1333877381 source:/home/jaaro/Projects/Shuffla/src/dump/dump_saver.cpp
-	"dump_saver.hpp"
-	"../config/config.hpp"
-	<iostream>
-	<fstream>
 

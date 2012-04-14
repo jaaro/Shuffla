@@ -6,6 +6,11 @@
 
 #include "../table/table_definition.hpp"
 
+/**
+ * Class that is parsing string like a=b&c=d&sadf=dsf
+ * It also checks if such query matches given table definition.
+ */
+
 class DataWithoutTyping
 {
 public:

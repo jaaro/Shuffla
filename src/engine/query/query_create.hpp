@@ -5,6 +5,10 @@
 
 #include "query.hpp"
 
+/**
+ * Factory for creating Query* based on request parameters.
+ */
+
 class QueryCreate
 {
 public:

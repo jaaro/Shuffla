@@ -19,7 +19,9 @@ public:
     TableDefinition* get_table_definition() const ;
     std::string get_table_name() const ;
 
+    int delete_all(const QueryParameters& params);
     void insert(const Row* row);
+
     SearchResult* search(const QueryParameters& params) const ;
     void dump_table(DumpSaver& dump_processor) const;
 protected:

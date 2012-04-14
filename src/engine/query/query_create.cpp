@@ -1,6 +1,7 @@
 #include "query_create.hpp"
 #include "insert/query_insert.hpp"
 #include "search/query_search.hpp"
+#include "delete/query_delete.hpp"
 #include "create_table/query_create_table.hpp"
 
 QueryCreate::QueryCreate()
@@ -8,6 +9,7 @@ QueryCreate::QueryCreate()
     register_handler(new QueryInsert());
     register_handler(new QuerySearch());
     register_handler(new QueryCreateTable());
+    register_handler(new QueryDelete());
 }
 
 QueryCreate::~QueryCreate()

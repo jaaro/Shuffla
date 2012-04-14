@@ -29,6 +29,7 @@ std::string QueryDispatcher::process_query(const std::string& request)
         return "Error: Unknown request format. Unable to parse " + request;
     }
 
+    //TODO second_clock means that id doesn't have miliseconds precision.
     boost::posix_time::ptime t1 = boost::posix_time::second_clock::local_time();
 
     SearchResult* result = search_engine->process_query(query);

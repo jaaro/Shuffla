@@ -39,9 +39,11 @@ SearchResult* SearchEngine::process_query(const Query* query)
         result = process_insert( dynamic_cast<const QueryInsert*>(query) );
     } else if (dynamic_cast<const QuerySearch*>(query) != NULL) {
         result = process_search( dynamic_cast<const QuerySearch*>(query) );
+    } else if (dynamic_cast<const QueryDelete*>(query) != NULL) {
+        result = process_delete( dynamic_cast<const QueryDelete*>(query) );
     } else if (dynamic_cast<const QueryCreateTable*>(query) != NULL) {
         result = process_create_table( dynamic_cast<const QueryCreateTable*>(query) );
-    } else {
+    } else{
         result = new SearchResultError("Shuffla error: Not supported operation. Please install latest version of shuffla.");
     }
 
@@ -106,6 +108,34 @@ SearchResult* SearchEngine::process_search(const QuerySearch* query)
     }
 
     return table->search(params);
+}
+
+/**
+ * Processes delete query
+ *
+ * It means that for given QueryDelete this function:
+ * -> finds table that delete command refers to
+ * -> checks, if delete command matches table definition
+ * -> handles error from above points
+ * ->
+ */
+SearchResult* SearchEngine::process_delete(const QueryDelete* query)
+{
+    Table* table = find_table(query->get_table_name());
+    if (table == NULL) {
+        return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
+    }
+
+    QueryParameters params;
+    bool success = params.set(table->get_table_definition(), query->get_parsed_query());
+
+    if (!success) {
+        return new SearchResultError("Error during delete. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
+    }
+
+    int count = table->delete_all(params);
+
+    return new SearchResultString("Removed " + Misc::int_to_string(count) + " rows");
 }
 
 /**

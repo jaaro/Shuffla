@@ -5,6 +5,7 @@
 #include "../data_without_typing.hpp"
 #include "functions/search_function.hpp"
 #include "../../storage/row.hpp"
+
 class QueryParameters
 {
 public:
