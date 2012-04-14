@@ -43,7 +43,9 @@ SearchResult* SearchEngine::process_query(const Query* query)
         result = process_delete( dynamic_cast<const QueryDelete*>(query) );
     } else if (dynamic_cast<const QueryCreateTable*>(query) != NULL) {
         result = process_create_table( dynamic_cast<const QueryCreateTable*>(query) );
-    } else{
+    } else if (dynamic_cast<const QueryDropTable*>(query) != NULL) {
+        result = process_drop_table( dynamic_cast<const QueryDropTable*>(query) );
+    }else {
         result = new SearchResultError("Shuffla error: Not supported operation. Please install latest version of shuffla.");
     }
 
@@ -156,6 +158,29 @@ SearchResult* SearchEngine::process_create_table(const QueryCreateTable* query)
     table->set_table_definition(query->get_table_definition());
     tables.push_back(table);
     return new SearchResultString("OK: Table created successfully");
+}
+
+/**
+ * Processes drop table command
+ *
+ * It means that for given QueryDropTable this function:
+ * -> checks if such table already exists
+ * -> drops table
+ * -> releases memory
+ *
+ */
+SearchResult* SearchEngine::process_drop_table(const QueryDropTable* query)
+{
+    for(std::vector<Table*>::iterator it = tables.begin(); it != tables.end(); it++) {
+        if ((*it)->get_table_name() == query->get_table_name()) {
+            tables.erase(it);
+            Table* to_remove = *it;
+            delete to_remove;
+            return new SearchResultString("Drop table successfull.");
+        }
+    }
+
+    return new SearchResultError("Drop Table: Table " + query->get_table_name() + " doesn't exists");
 }
 
 Table* SearchEngine::find_table(const std::string& table_name) const

@@ -10,12 +10,13 @@
 1333823391 /home/jaaro/Projects/Shuffla/src/server/server.hpp
 	"../engine/search_engine.hpp"
 
-1334430768 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
+1334434020 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
 	<string>
 	"query/query.hpp"
 	"query/insert/query_insert.hpp"
 	"query/delete/query_delete.hpp"
 	"query/search/query_search.hpp"
+	"query/drop_table/query_drop_table.hpp"
 	"query/create_table/query_create_table.hpp"
 	"table/table.hpp"
 	"search_result/search_result.hpp"
@@ -178,11 +179,12 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/query/query.cpp
 	"query.hpp"
 
-1334430145 source:/home/jaaro/Projects/Shuffla/src/engine/query/query_create.cpp
+1334433832 source:/home/jaaro/Projects/Shuffla/src/engine/query/query_create.cpp
 	"query_create.hpp"
 	"insert/query_insert.hpp"
 	"search/query_search.hpp"
 	"delete/query_delete.hpp"
+	"drop_table/query_drop_table.hpp"
 	"create_table/query_create_table.hpp"
 
 1333888786 /home/jaaro/Projects/Shuffla/src/engine/query/query_create.hpp
@@ -473,4 +475,12 @@
 	"server.hpp"
 	"http/http_server.hpp"
 	"../dump/save_dump_manager.hpp"
+
+1334433982 source:/home/jaaro/Projects/Shuffla/src/engine/query/drop_table/query_drop_table.cpp
+	<boost/algorithm/string/predicate.hpp>
+	<boost/algorithm/string.hpp>
+	"query_drop_table.hpp"
+
+1334432758 /home/jaaro/Projects/Shuffla/src/engine/query/drop_table/query_drop_table.hpp
+	"../query.hpp"
 

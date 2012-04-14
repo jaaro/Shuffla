@@ -7,6 +7,7 @@
 #include "query/insert/query_insert.hpp"
 #include "query/delete/query_delete.hpp"
 #include "query/search/query_search.hpp"
+#include "query/drop_table/query_drop_table.hpp"
 #include "query/create_table/query_create_table.hpp"
 #include "table/table.hpp"
 #include "search_result/search_result.hpp"
@@ -32,6 +33,7 @@ private:
     SearchResult* process_search(const QuerySearch* query);
     SearchResult* process_delete(const QueryDelete* query);
     SearchResult* process_create_table(const QueryCreateTable* query);
+    SearchResult* process_drop_table(const QueryDropTable* query);
 
     std::vector<Table*> tables;
     Table* find_table(const std::string& table_name) const;

@@ -2,14 +2,15 @@
 #include "insert/query_insert.hpp"
 #include "search/query_search.hpp"
 #include "delete/query_delete.hpp"
+#include "drop_table/query_drop_table.hpp"
 #include "create_table/query_create_table.hpp"
 
 QueryCreate::QueryCreate()
 {
-    register_handler(new QueryInsert());
     register_handler(new QuerySearch());
-    register_handler(new QueryCreateTable());
+    register_handler(new QueryInsert());
     register_handler(new QueryDelete());
+    register_handler(new QueryDropTable());
 }
 
 QueryCreate::~QueryCreate()
