@@ -65,12 +65,31 @@ SearchResult* Table::search(const QueryParameters& params) const
         }
     }
 
-    return new SearchResults(results);
+    if (params.order_by.size() > 0 ) {
+        std::string order_by = params.order_by[0].first;
+        bool ascending = (params.order_by[0].second == QueryParameters::ASC);
+
+        auto comp = [&](const Row* a, const Row* b)-> bool {
+            bool res = a->get_value(order_by)->is_greater(b->get_value(order_by)->to_string());
+            if (ascending) res = !res;
+            return res;
+        };
+
+        sort(results.begin(), results.end(), comp);
+    }
+
+    int count = results.size();
+    int start = std::min(count, params.offset);
+    int end = (int)std::min((long long)count, (long long)params.offset + params.limit);
+    //std::cerr << offset << "\n";
+    std::vector<const Row*> sliced_results(results.begin() + start, results.begin() + end);
+    //std::cerr << offset << "\n";
+
+    return new SearchResults(params, sliced_results, count);
 }
 
 
-int Table::remove(const QueryParameters& params)
-{
+int Table::remove(const QueryParameters& params) {
     std::vector<const Row*> results;
     for(std::size_t i=0; i<rows.size(); i++) {
 
@@ -78,5 +97,16 @@ int Table::remove(const QueryParameters& params)
             results.push_back(rows[i]);
         }
     }
+
+    for(std::size_t j=0; j<results.size(); j++) {
+        for(std::size_t i=0; i<rows.size(); i++) {
+            if (rows[i] == results[j]) {
+                rows.erase(rows.begin() + i);
+                delete results[j];
+                break;
+            }
+        }
+    }
+
     return results.size();
 }

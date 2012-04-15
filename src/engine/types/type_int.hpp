@@ -1,9 +1,9 @@
 #ifndef TYPEINT_H
 #define TYPEINT_H
 
-#include "type_number.hpp"
+#include "type.hpp"
 
-class TypeInt : public TypeNumber
+class TypeInt : public Type
 {
 public:
     typedef int TYPE;

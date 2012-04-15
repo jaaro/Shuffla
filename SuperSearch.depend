@@ -7,7 +7,7 @@
 1333878538 /home/jaaro/Projects/Shuffla/src/config/config_loader.hpp
 	<string>
 
-1333823391 /home/jaaro/Projects/Shuffla/src/server/server.hpp
+1334485522 /home/jaaro/Projects/Shuffla/src/server/server.hpp
 	"../engine/search_engine.hpp"
 
 1334434020 /home/jaaro/Projects/Shuffla/src/engine/search_engine.hpp
@@ -42,7 +42,7 @@
 	"../types/types.hpp"
 	"../../dump/dump_loader.hpp"
 
-1334482081 /home/jaaro/Projects/Shuffla/src/engine/types/type.hpp
+1334501485 /home/jaaro/Projects/Shuffla/src/engine/types/type.hpp
 	<string>
 	"../../misc/misc.hpp"
 
@@ -89,7 +89,7 @@
 1334481772 /home/jaaro/Projects/Shuffla/src/engine/search_result/search_result.hpp
 	<string>
 
-1333889017 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
+1334501420 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
 	"../../table/table_definition.hpp"
 	"../data_without_typing.hpp"
 	"functions/search_function.hpp"
@@ -147,7 +147,7 @@
 	<iostream>
 	<fstream>
 
-1333824880 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
+1334485522 source:/home/jaaro/Projects/Shuffla/src/dump/save_dump_manager.cpp
 	"save_dump_manager.hpp"
 	"time.h"
 	<boost/date_time/gregorian/gregorian.hpp>
@@ -221,7 +221,7 @@
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
 	"search_function_with_prefix.hpp"
 
-1332614774 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
+1334501761 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
 	<string>
 	"type.hpp"
 
@@ -235,7 +235,7 @@
 1332614774 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_with_prefix.cpp
 	"search_function_with_prefix.hpp"
 
-1332619594 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.cpp
+1334503574 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.cpp
 	"query_parameters.hpp"
 	"functions/search_function_equal.hpp"
 	"functions/search_function_prefix.hpp"
@@ -243,12 +243,13 @@
 	"functions/search_function_greater.hpp"
 	"../../../logger/logger.hpp"
 	<boost/algorithm/string.hpp>
+	<climits>
 
 1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/query/search/query_search.cpp
 	<boost/algorithm/string/predicate.hpp>
 	"query_search.hpp"
 
-1334481881 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
+1334485522 source:/home/jaaro/Projects/Shuffla/src/engine/search_engine.cpp
 	"search_engine.hpp"
 	"search_result/errors/search_result_error.hpp"
 	"search_result/string/search_result_string.hpp"
@@ -266,13 +267,14 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/errors/search_result_error.cpp
 	"search_result_error.hpp"
 
-1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.cpp
+1334503761 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.cpp
 	"search_results.hpp"
 	<boost/lexical_cast.hpp>
 
-1333800481 /home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.hpp
+1334503215 /home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.hpp
 	"../search_result.hpp"
 	"../../storage/row.hpp"
+	"../../query/search/query_parameters.hpp"
 
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/search_result.cpp
 	"search_result.hpp"
@@ -280,7 +282,7 @@
 1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/search_result/string/search_result_string.cpp
 	"search_result_string.hpp"
 
-1333792269 source:/home/jaaro/Projects/Shuffla/src/engine/storage/row.cpp
+1334486046 source:/home/jaaro/Projects/Shuffla/src/engine/storage/row.cpp
 	<iostream>
 	<boost/lexical_cast.hpp>
 	"row.hpp"
@@ -288,13 +290,13 @@
 	"../types/type_double.hpp"
 	"../types/type_string.hpp"
 
-1332619508 /home/jaaro/Projects/Shuffla/src/engine/types/type_int.hpp
-	"type_number.hpp"
+1334501507 /home/jaaro/Projects/Shuffla/src/engine/types/type_int.hpp
+	"type.hpp"
 
-1332619536 /home/jaaro/Projects/Shuffla/src/engine/types/type_double.hpp
-	"type_number.hpp"
+1334501499 /home/jaaro/Projects/Shuffla/src/engine/types/type_double.hpp
+	"type.hpp"
 
-1334484247 source:/home/jaaro/Projects/Shuffla/src/engine/table/table.cpp
+1334504219 source:/home/jaaro/Projects/Shuffla/src/engine/table/table.cpp
 	"table.hpp"
 	"../search_result/results/search_results.hpp"
 	<boost/lexical_cast.hpp>
@@ -319,7 +321,7 @@
 1332614684 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_number.cpp
 	"type_number.hpp"
 
-1332604673 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_string.cpp
+1334501873 source:/home/jaaro/Projects/Shuffla/src/engine/types/type_string.cpp
 	"type_string.hpp"
 
 1332614775 source:/home/jaaro/Projects/Shuffla/src/engine/types/types.cpp
@@ -333,7 +335,7 @@
 	<iostream>
 	"logger.hpp"
 
-1334484077 source:/home/jaaro/Projects/Shuffla/src/misc/misc.cpp
+1334485522 source:/home/jaaro/Projects/Shuffla/src/misc/misc.cpp
 	"misc.hpp"
 	<boost/lexical_cast.hpp>
 
@@ -460,14 +462,14 @@
 	"server.hpp"
 	<boost/bind.hpp>
 
-1333888667 source:/home/jaaro/Projects/Shuffla/src/server/query_dispatcher.cpp
+1334485102 source:/home/jaaro/Projects/Shuffla/src/server/query_dispatcher.cpp
 	<cstdio>
 	<boost/date_time/posix_time/posix_time.hpp>
 	"query_dispatcher.hpp"
 	"../engine/search_result/search_result.hpp"
 	"../misc/slow_log.hpp"
 
-1333824297 source:/home/jaaro/Projects/Shuffla/src/server/server.cpp
+1334485522 source:/home/jaaro/Projects/Shuffla/src/server/server.cpp
 	<iostream>
 	<boost/thread/thread.hpp>
 	"../config/config.hpp"

@@ -1,9 +1,9 @@
 #ifndef TYPEDOUBLE_H
 #define TYPEDOUBLE_H
 
-#include "type_number.hpp"
+#include "type.hpp"
 
-class TypeDouble : public TypeNumber
+class TypeDouble : public Type
 {
 public:
     typedef double TYPE;

@@ -59,6 +59,8 @@
 		<Unit filename="src/engine/query/data_without_typing.hpp" />
 		<Unit filename="src/engine/query/delete/query_delete.cpp" />
 		<Unit filename="src/engine/query/delete/query_delete.hpp" />
+		<Unit filename="src/engine/query/drop_table/query_drop_table.cpp" />
+		<Unit filename="src/engine/query/drop_table/query_drop_table.hpp" />
 		<Unit filename="src/engine/query/insert/query_insert.cpp" />
 		<Unit filename="src/engine/query/insert/query_insert.hpp" />
 		<Unit filename="src/engine/query/query.cpp" />

@@ -19,14 +19,16 @@ public:
 
     bool set(const TableDefinition* table, const DataWithoutTyping& data);
     bool is_matching(const Row* row) const ;
-protected:
-private:
-    std::vector<const SearchFunction*> parameters;
-    std::vector<SearchFunction*> registered_functions;
+
 
     int offset;
     int limit;
     std::vector<std::pair<std::string, Order> > order_by;
+
+protected:
+private:
+    std::vector<const SearchFunction*> parameters;
+    std::vector<SearchFunction*> registered_functions;
 
     void register_functions();
     bool is_special_property(const std::string& name) const;

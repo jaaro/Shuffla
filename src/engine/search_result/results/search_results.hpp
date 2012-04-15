@@ -3,16 +3,20 @@
 
 #include "../search_result.hpp"
 #include "../../storage/row.hpp"
+#include "../../query/search/query_parameters.hpp"
 
 class SearchResults : public SearchResult
 {
 public:
-    SearchResults(const std::vector<const Row*> results);
+    SearchResults(const QueryParameters& query_params, const std::vector<const Row*>& results, int count);
     virtual ~SearchResults();
 
     virtual std::string to_string() const ;
 protected:
-    const std::vector<const Row*> results;
+    std::vector<const Row*> results;
+    QueryParameters params;
+
+    int count;
 private:
 };
 

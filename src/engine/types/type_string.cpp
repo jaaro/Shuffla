@@ -40,3 +40,24 @@ bool TypeString::is_prefix(const std::string& prefix) const
     if (prefix.size() > value.size()) return false;
     return value.substr(0, prefix.size()) == prefix;
 }
+
+
+bool TypeString::is_smaller(const std::string& v) const
+{
+    return v > value;
+}
+
+bool TypeString::is_smaller_or_equal(const std::string& v) const
+{
+    return v >= value;
+}
+
+bool TypeString::is_greater(const std::string& v) const
+{
+    return v < value;
+}
+
+bool TypeString::is_greater_or_equal(const std::string& v) const
+{
+    return v <= value;
+}

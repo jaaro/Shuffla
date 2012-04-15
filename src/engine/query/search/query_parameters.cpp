@@ -6,22 +6,20 @@
 #include "../../../logger/logger.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <climits>
 
 QueryParameters::QueryParameters()
 {
-    //ctor
+    offset = 0;
+    limit = INT_MAX;
 }
 
 QueryParameters::~QueryParameters()
 {
-    //dtor
 }
 
 bool QueryParameters::set(const TableDefinition* table_definition, const DataWithoutTyping& data)
 {
-    offset = 0;
-    limit = 10;
-
     parameters.clear();
     register_functions();
 
