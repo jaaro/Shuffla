@@ -18,14 +18,15 @@ Server::~Server()
     // intensionally nothing
 }
 
-void Server::cron_function() {
-  while(true) {
-      if (SaveDumpManager::getInstance().should_save_dump()) {
-          SaveDumpManager::getInstance().notify_about_saving_dump();
-          search_engine.save_dump();
-      }
-      boost::this_thread::sleep(boost::posix_time::seconds(5));
-  }
+void Server::cron_function()
+{
+    while(true) {
+        if (SaveDumpManager::getInstance().should_save_dump()) {
+            SaveDumpManager::getInstance().notify_about_saving_dump();
+            search_engine.save_dump();
+        }
+        boost::this_thread::sleep(boost::posix_time::seconds(5));
+    }
 }
 
 void Server::start()

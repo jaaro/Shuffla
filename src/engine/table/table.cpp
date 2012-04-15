@@ -13,7 +13,7 @@ Table::Table(DumpLoader& dump_loader)
     table_definition = new TableDefinition(dump_loader);
 
     std::string line = dump_loader.get_line();
-    int size = boost::lexical_cast<int>(line);
+    int size = Misc::string_to_int(line);
     while(size--) {
         rows.push_back(new Row(table_definition, dump_loader));
     }
@@ -49,7 +49,7 @@ void Table::insert(const Row* new_row)
 void Table::dump_table(DumpSaver& dump_saver) const
 {
     dump_saver.append(table_definition->to_string());
-    dump_saver.append(boost::lexical_cast<std::string>( rows.size() ) + "\n");
+    dump_saver.append(Misc::int_to_string( rows.size() ) + "\n");
     for(std::size_t i=0; i<rows.size(); i++) {
         dump_saver.append(rows[i]->to_string());
     }
@@ -69,7 +69,8 @@ SearchResult* Table::search(const QueryParameters& params) const
 }
 
 
-int Table::delete_all(const QueryParameters& params) {
+int Table::remove(const QueryParameters& params)
+{
     std::vector<const Row*> results;
     for(std::size_t i=0; i<rows.size(); i++) {
 

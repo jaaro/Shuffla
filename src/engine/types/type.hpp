@@ -3,6 +3,16 @@
 
 #include <string>
 
+#include "../../misc/misc.hpp"
+
+/**
+ * In shuffla there are few possible types:
+ * 1) int
+ * 2) double
+ * 3) string
+ *
+ * Representation of every type inherits from this class.
+ */
 class Type
 {
 public:

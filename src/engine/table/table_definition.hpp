@@ -8,6 +8,11 @@
 #include "../types/types.hpp"
 #include "../../dump/dump_loader.hpp"
 
+/**
+ * This class stores information about table schema.
+ *
+ * Each table contains list of fields. Each field has a type.
+ */
 class TableDefinition
 {
 public:
@@ -18,8 +23,8 @@ public:
     TableDefinition(DumpLoader& dump_loader);
 
     bool create_table_from_request(const std::string& request);
-    std::string get_table_name() const ;
 
+    std::string get_table_name() const ;
     std::vector<std::string> get_property_names() const ;
     bool is_correct_value_for_property(const std::string& property, const std::string& value) const ;
 

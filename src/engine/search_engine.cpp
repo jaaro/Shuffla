@@ -45,7 +45,7 @@ SearchResult* SearchEngine::process_query(const Query* query)
         result = process_create_table( dynamic_cast<const QueryCreateTable*>(query) );
     } else if (dynamic_cast<const QueryDropTable*>(query) != NULL) {
         result = process_drop_table( dynamic_cast<const QueryDropTable*>(query) );
-    }else {
+    } else {
         result = new SearchResultError("Shuffla error: Not supported operation. Please install latest version of shuffla.");
     }
 
@@ -135,7 +135,7 @@ SearchResult* SearchEngine::process_delete(const QueryDelete* query)
         return new SearchResultError("Error during delete. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
     }
 
-    int count = table->delete_all(params);
+    int count = table->remove(params);
 
     return new SearchResultString("Removed " + Misc::int_to_string(count) + " rows");
 }

@@ -10,6 +10,7 @@ QueryCreate::QueryCreate()
     register_handler(new QuerySearch());
     register_handler(new QueryInsert());
     register_handler(new QueryDelete());
+    register_handler(new QueryCreateTable());
     register_handler(new QueryDropTable());
 }
 

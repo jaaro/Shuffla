@@ -26,7 +26,7 @@ std::string QueryDispatcher::process_query(const std::string& request)
 
     Query* query = query_parser.parse_query(request);
     if (query == NULL) {
-        return "Error: Unknown request format. Unable to parse " + request;
+        return "Error: Unknown request format. Unable to parse " + request + ".\nLook for details in logs.";
     }
 
     //TODO second_clock means that id doesn't have miliseconds precision.

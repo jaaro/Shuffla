@@ -5,6 +5,9 @@
 #include "../../engine/table/table_definition.hpp"
 #include "../../engine/types/type.hpp"
 
+/**
+ * Representation of single row.
+ */
 class Row
 {
 public:

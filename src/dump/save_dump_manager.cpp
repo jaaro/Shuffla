@@ -46,13 +46,13 @@ SaveDumpManager::TIME_TYPE SaveDumpManager::get_current_second() const
 
 bool SaveDumpManager::should_save_dump(const int period, const int changes)
 {
-   SaveDumpManager::TIME_TYPE current_second = get_current_second();
-   if (current_second - last_dump_save < period) return false;
+    SaveDumpManager::TIME_TYPE current_second = get_current_second();
+    if (current_second - last_dump_save < period) return false;
 
-   std::map<SaveDumpManager::TIME_TYPE, long long>::iterator it = modifing_commands_count.upper_bound(-current_second + period);
-   if (it == modifing_commands_count.end()) return false;
+    std::map<SaveDumpManager::TIME_TYPE, long long>::iterator it = modifing_commands_count.upper_bound(-current_second + period);
+    if (it == modifing_commands_count.end()) return false;
 
-   return counter - it->second >= changes;
+    return counter - it->second >= changes;
 
 }
 

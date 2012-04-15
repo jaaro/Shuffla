@@ -26,17 +26,12 @@ TypeDouble::TYPE TypeDouble::get_value() const
 
 std::string TypeDouble::to_string() const
 {
-    return boost::lexical_cast<std::string>( value );
+    return Misc::double_to_string( value );
 }
 
 bool TypeDouble::is_correct_value(const std::string& value) const
 {
-    try {
-        boost::lexical_cast<TypeDouble::TYPE>( value );
-        return true;
-    } catch(std::exception e) {
-        return false;
-    }
+    return Misc::can_be_parsed_to_double(value);
 }
 
 bool TypeDouble::is_correct_function(const std::string& function_name) const
@@ -46,25 +41,25 @@ bool TypeDouble::is_correct_function(const std::string& function_name) const
 
 bool TypeDouble::equals(const std::string& v) const
 {
-    return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) == value;
+    return is_correct_value(v) && Misc::string_to_double( v ) == value;
 }
 
 bool TypeDouble::is_smaller(const std::string& v) const
 {
-    return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) > value;
+    return is_correct_value(v) && Misc::string_to_double( v ) > value;
 }
 
 bool TypeDouble::is_smaller_or_equal(const std::string& v) const
 {
-    return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) >= value;
+    return is_correct_value(v) && Misc::string_to_double( v ) >= value;
 }
 
 bool TypeDouble::is_greater(const std::string& v) const
 {
-    return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) < value;
+    return is_correct_value(v) && Misc::string_to_double( v ) < value;
 }
 
 bool TypeDouble::is_greater_or_equal(const std::string& v) const
 {
-    return is_correct_value(v) && boost::lexical_cast<TypeDouble::TYPE>( v ) <= value;
+    return is_correct_value(v) && Misc::string_to_double( v ) <= value;
 }

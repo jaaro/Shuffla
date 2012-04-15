@@ -15,14 +15,16 @@ public:
     Table(DumpLoader& dump_loader);
     virtual ~Table();
 
+    // table definition
     void set_table_definition(const TableDefinition* table_definition);
     TableDefinition* get_table_definition() const ;
     std::string get_table_name() const ;
 
-    int delete_all(const QueryParameters& params);
+    // insert, search, remove
     void insert(const Row* row);
-
+    int remove(const QueryParameters& params);
     SearchResult* search(const QueryParameters& params) const ;
+
     void dump_table(DumpSaver& dump_processor) const;
 protected:
 private:

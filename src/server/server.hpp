@@ -14,7 +14,7 @@ public:
     void start();
 protected:
 private:
-SearchEngine search_engine;
+    SearchEngine search_engine;
 };
 
 #endif // SERVER_H

@@ -45,6 +45,11 @@ bool TableDefinition::create_table_from_request(const std::string& request)
         return false;
     }
 
+    if (!Misc::is_possible_property_name(parts[2])) {
+        Logger::getInstance().log_error("Create table request in wrong format. Table name contains forbidden characters. Allowed are only a-z. A-Z, 0-9, '_'.\nYour request: " + request);
+        return false;
+    }
+
     // setting table name
     table_name = parts[2];
 
@@ -58,6 +63,11 @@ bool TableDefinition::create_table_from_request(const std::string& request)
         boost::split(strs, properties[i], boost::is_any_of("="));
         if (strs.size() != 2) {
             Logger::getInstance().log_error("Create table request in wrong format. Table definition in your request isn't in format ?prop1=type1[&prop2=type2]*. Your request: " + request);
+            return false;
+        }
+
+        if (!Misc::is_possible_property_name(strs[0])) {
+            Logger::getInstance().log_error("Create table request in wrong format. Property name contains forbidden characters. Allowed are only a-z. A-Z, 0-9, '_'.\nYour request: " + request);
             return false;
         }
 
