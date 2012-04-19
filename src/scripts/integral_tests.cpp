@@ -8,7 +8,12 @@
 #include <boost/lexical_cast.hpp>
 #include <curl/curl.h>
 
-char buffor[44444];
+const int MAX_BUFFOR_LENGTH = 50000;
+const int LIMIT_FOR_INT = 100;
+const int NUMBER_OF_ITERATIONS = 10000;
+const int DELETES_MODULO = 300;
+
+char buffor[MAX_BUFFOR_LENGTH];
 
 enum LocalTypes {
     STRING, INT, DOUBLE
@@ -30,7 +35,7 @@ std::string get_type_name(LocalTypes type)
 
 std::string get_random(LocalTypes type)
 {
-    if (type == INT) return boost::lexical_cast<std::string>(rand() % 100);
+    if (type == INT) return boost::lexical_cast<std::string>(rand() % LIMIT_FOR_INT);
     if (type == DOUBLE) return boost::lexical_cast<std::string>(double(rand() % 201 - 100) / (rand() % 43 + 1));
 
     int length = 1 + rand() % 2 + (rand() % 2) * 15;
@@ -198,9 +203,9 @@ int main(int argc, char* argv[])
     c.create_table_command(table);
     send(prefix + c.to_string());
 
-    for(int i=0; i<10000; i++) {
+    for(int i=0; i<NUMBER_OF_ITERATIONS; i++) {
         if (i % 1000 == 0) std::cerr << "DONE " << i << " COMMANDS" << std::endl;
-        if (rand() % 300 == 1) c.create_delete(table);
+        if (rand() % DELETES_MODULO == 1) c.create_delete(table);
         else if (rand() % 2 == 1) c.create_insert(table, i);
         else c.create_search(table);
 

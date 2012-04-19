@@ -23,12 +23,12 @@ integral_tests: $(OBJS_INTEGRAL_TESTS)
 depend: .depend_shuffla .depend_integral_tests
 
 .depend_shuffla: $(SRCS_SHUFFLA)
-	rm -f ./.depend
-	$(CXX) $(CPPFLAGS) -MM $^>>./.depend;
+	rm -f ./.depend_shuffla
+	$(CXX) $(CPPFLAGS) -MM $^>>./.depend_shuffla;
 
 .depend_integral_tests: $(SRCS_INTEGRAL_TESTS)
-	rm -f ./.depend
-	$(CXX) $(CPPFLAGS) -MM $^>>./.depend;
+	rm -f ./.depend_integral_tests
+	$(CXX) $(CPPFLAGS) -MM $^>>./.depend_integral_tests;
 
 clean:
 	$(RM) $(OBJS_SHUFFLA) $(OBJS_INTEGRAL_TESTS)
@@ -36,4 +36,4 @@ clean:
 dist-clean: clean
 	$(RM) *~ .dependtool
 
-include .depend
+include .depend_shuffla .depend_integral_tests
