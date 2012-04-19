@@ -44,9 +44,13 @@ void request_handler::handle_request(const request& req, reply& rep)
         return;
     }
 
-    std::string response = doc_root_->process_query(request_path);
+    std::pair<int, std::string> result = doc_root_->process_query(request_path);
+
+    int status_code = result.first;
+    std::string& response = result.second;
 
     rep.content.append(response.c_str(), response.size());
+    rep.status = (status_code == 200 ? reply::ok : reply::bad_request);
     rep.headers.resize(2);
     rep.headers[0].name = "Content-Length";
     rep.headers[0].value = boost::lexical_cast<std::string>(rep.content.size());

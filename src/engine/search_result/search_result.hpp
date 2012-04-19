@@ -13,6 +13,7 @@ public:
     SearchResult();
     virtual ~SearchResult();
     virtual std::string to_string() const = 0;
+    virtual int get_status_code() const = 0;
 protected:
 private:
 };

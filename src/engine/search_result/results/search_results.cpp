@@ -2,7 +2,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-SearchResults::SearchResults(const QueryParameters& params, const std::vector<const Row*>& results, int count): params(params), count(count), results(results)
+SearchResults::SearchResults(const QueryParameters& params, const std::vector<const Row*>& results, int count): params(params), results(results), count(count)
 {
     //ctor
 }
@@ -32,4 +32,8 @@ std::string SearchResults::to_string() const
     }
     result += "}}";
     return result;
+}
+
+int SearchResults::get_status_code() const {
+    return 200;
 }

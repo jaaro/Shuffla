@@ -1,5 +1,5 @@
 #include "search_function_smaller.hpp"
-#include "../../../types/type_number.hpp"
+#include "../../../types/type.hpp"
 
 SearchFunctionSmaller::SearchFunctionSmaller()
 {
@@ -13,8 +13,7 @@ SearchFunctionSmaller::~SearchFunctionSmaller()
 
 bool SearchFunctionSmaller::is_matching(const Row* row) const
 {
-    Type* prop_value = row->get_value(get_property_name());
-    TypeNumber* type = static_cast<TypeNumber*>(prop_value);
+    Type* type = row->get_value(get_property_name());
 
     if (type == NULL) return false;
     return type->is_smaller(get_value());
@@ -22,7 +21,7 @@ bool SearchFunctionSmaller::is_matching(const Row* row) const
 
 bool SearchFunctionSmaller::is_available_for_type(const Type* type) const
 {
-    return type->get_name() == "int" || type->get_name() == "double";
+    return true;
 }
 
 SearchFunction* SearchFunctionSmaller::clone() const

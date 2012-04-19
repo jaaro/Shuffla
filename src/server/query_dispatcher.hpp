@@ -17,7 +17,7 @@ class QueryDispatcher
 public:
     QueryDispatcher(SearchEngine* search_engine);
     virtual ~QueryDispatcher();
-    std::string process_query(const std::string& request);
+    std::pair<int, std::string> process_query(const std::string& request);
 protected:
 private:
     QueryCreate query_parser;

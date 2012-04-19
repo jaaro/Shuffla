@@ -43,6 +43,7 @@ TableDefinition* Table::get_table_definition() const
 void Table::insert(const Row* new_row)
 {
     rows.push_back(new_row);
+    //random_shuffle(rows.begin(), rows.end());
 }
 
 
@@ -81,9 +82,7 @@ SearchResult* Table::search(const QueryParameters& params) const
     int count = results.size();
     int start = std::min(count, params.offset);
     int end = (int)std::min((long long)count, (long long)params.offset + params.limit);
-    //std::cerr << offset << "\n";
     std::vector<const Row*> sliced_results(results.begin() + start, results.begin() + end);
-    //std::cerr << offset << "\n";
 
     return new SearchResults(params, sliced_results, count);
 }

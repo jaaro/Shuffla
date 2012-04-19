@@ -39,8 +39,10 @@
 		<Linker>
 			<Add library="boost_system" />
 			<Add library="boost_thread" />
+			<Add library="curl" />
 		</Linker>
 		<Unit filename="main.cpp" />
+		<Unit filename="scripts/generate_command.cpp" />
 		<Unit filename="src/config/config.cpp" />
 		<Unit filename="src/config/config.hpp" />
 		<Unit filename="src/config/config_loader.cpp" />
@@ -73,10 +75,14 @@
 		<Unit filename="src/engine/query/search/functions/search_function_equal.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_greater.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_greater.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_greater_or_equal.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_greater_or_equal.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_prefix.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_prefix.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_smaller.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_smaller.hpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_smaller_or_equal.cpp" />
+		<Unit filename="src/engine/query/search/functions/search_function_smaller_or_equal.hpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_with_prefix.cpp" />
 		<Unit filename="src/engine/query/search/functions/search_function_with_prefix.hpp" />
 		<Unit filename="src/engine/query/search/query_parameters.cpp" />
@@ -105,8 +111,6 @@
 		<Unit filename="src/engine/types/type_double.hpp" />
 		<Unit filename="src/engine/types/type_int.cpp" />
 		<Unit filename="src/engine/types/type_int.hpp" />
-		<Unit filename="src/engine/types/type_number.cpp" />
-		<Unit filename="src/engine/types/type_number.hpp" />
 		<Unit filename="src/engine/types/type_string.cpp" />
 		<Unit filename="src/engine/types/type_string.hpp" />
 		<Unit filename="src/engine/types/types.cpp" />

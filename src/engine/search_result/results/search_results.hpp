@@ -12,9 +12,11 @@ public:
     virtual ~SearchResults();
 
     virtual std::string to_string() const ;
+    virtual int get_status_code() const;
 protected:
-    std::vector<const Row*> results;
+
     QueryParameters params;
+    std::vector<const Row*> results;
 
     int count;
 private:

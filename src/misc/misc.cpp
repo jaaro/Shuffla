@@ -1,6 +1,7 @@
 #include "misc.hpp"
 
 #include <boost/lexical_cast.hpp>
+#include <curl/curl.h>
 
 Misc::Misc()
 {
@@ -64,4 +65,9 @@ bool Misc::can_be_parsed_to_double(const std::string& value)
     } catch(std::exception e) {
         return false;
     }
+}
+
+std::string Misc::url_encode(const std::string& decoded_string) {
+    int length = decoded_string.size();
+    return std::string(curl_escape(decoded_string.c_str() , length ));
 }

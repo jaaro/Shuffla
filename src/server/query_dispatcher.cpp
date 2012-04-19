@@ -16,24 +16,25 @@ QueryDispatcher::~QueryDispatcher()
     // intensionally nothing
 }
 
-std::string QueryDispatcher::process_query(const std::string& request)
+std::pair<int, std::string> QueryDispatcher::process_query(const std::string& request)
 {
     // request contains request parameters
     // so if user requests localhost:3000/this/is/cool
     // request is equal "/this/is/cool"
 
+
+    //TODO second_clock means that id doesn't have miliseconds precision.
+    boost::posix_time::ptime t1 = boost::posix_time::second_clock::local_time();
     printf("%s\n", request.c_str());
 
     Query* query = query_parser.parse_query(request);
     if (query == NULL) {
-        return "Error: Unknown request format. Unable to parse " + request + ".\nLook for details in logs.";
+        return std::make_pair(400, "Error: Unknown request format. Unable to parse " + request + ".\nLook for details in logs.");
     }
 
-    //TODO second_clock means that id doesn't have miliseconds precision.
-    boost::posix_time::ptime t1 = boost::posix_time::second_clock::local_time();
-
     SearchResult* result = search_engine->process_query(query);
-    std::string ret = result->to_string();
+    std::string ret = result->to_string() + "\n";
+    int status_code = result->get_status_code();
 
     boost::posix_time::ptime t2 = boost::posix_time::second_clock::local_time();
     boost::posix_time::time_duration diff = t2 - t1;
@@ -42,5 +43,6 @@ std::string QueryDispatcher::process_query(const std::string& request)
     SlowLog::getInstance().log(diff.total_milliseconds(), request);
 
     delete result;
-    return ret;
+
+    return std::make_pair(status_code, ret);
 }

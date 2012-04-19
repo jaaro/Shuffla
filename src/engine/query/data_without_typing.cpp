@@ -42,7 +42,7 @@ bool DataWithoutTyping::set(const std::string& request)
         }
 
         property_names.push_back(strs[0]);
-        values.push_back(strs[1]);
+        values.push_back(Misc::url_encode(strs[1]));
     }
 
     return true;

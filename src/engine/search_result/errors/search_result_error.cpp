@@ -14,3 +14,7 @@ std::string SearchResultError::to_string() const
 {
     return error_message;
 }
+
+int SearchResultError::get_status_code() const {
+    return 400;
+}

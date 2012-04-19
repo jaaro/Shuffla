@@ -14,3 +14,8 @@ std::string SearchResultString::to_string() const
 {
     return text;
 }
+
+
+int SearchResultString::get_status_code() const {
+    return 200;
+}

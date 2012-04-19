@@ -3,6 +3,8 @@
 #include "functions/search_function_prefix.hpp"
 #include "functions/search_function_smaller.hpp"
 #include "functions/search_function_greater.hpp"
+#include "functions/search_function_smaller_or_equal.hpp"
+#include "functions/search_function_greater_or_equal.hpp"
 #include "../../../logger/logger.hpp"
 
 #include <boost/algorithm/string.hpp>
@@ -91,6 +93,8 @@ void QueryParameters::register_functions()
     registered_functions.push_back(new SearchFunctionPrefix());
     registered_functions.push_back(new SearchFunctionSmaller());
     registered_functions.push_back(new SearchFunctionGreater());
+    registered_functions.push_back(new SearchFunctionSmallerOrEqual());
+    registered_functions.push_back(new SearchFunctionGreaterOrEqual());
 }
 
 bool QueryParameters::is_special_property(const std::string& name) const
