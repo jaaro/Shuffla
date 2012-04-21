@@ -37,6 +37,8 @@ public:
     /* Converts an integer value to its hex character*/
     static char to_hex(char code);
 
+    static std::string format_current_time();
+
 protected:
 private:
 };

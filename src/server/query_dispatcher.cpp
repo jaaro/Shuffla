@@ -22,9 +22,7 @@ std::pair<int, std::string> QueryDispatcher::process_query(const std::string& re
     // so if user requests localhost:3000/this/is/cool
     // request is equal "/this/is/cool"
 
-
-    //TODO second_clock means that id doesn't have miliseconds precision.
-    boost::posix_time::ptime t1 = boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::local_time();
     printf("%s\n", request.c_str());
 
     Query* query = query_parser.parse_query(request);
@@ -36,9 +34,8 @@ std::pair<int, std::string> QueryDispatcher::process_query(const std::string& re
     std::string ret = result->to_string() + "\n";
     int status_code = result->get_status_code();
 
-    boost::posix_time::ptime t2 = boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime t2 = boost::posix_time::microsec_clock::local_time();
     boost::posix_time::time_duration diff = t2 - t1;
-
 
     SlowLog::getInstance().log(diff.total_milliseconds(), request);
 

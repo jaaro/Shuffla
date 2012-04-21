@@ -21,7 +21,7 @@ Config::Config()
 
     is_slow_log_enabled = 1;
     slow_log_file_name = "/home/jaaro/slow_log.log";
-    slow_log_miliseconds_bound = 1.0;
+    slow_log_miliseconds_bound = 30.0;
 
     set("save_dump", "1 1");
 }

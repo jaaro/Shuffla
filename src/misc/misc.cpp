@@ -1,5 +1,6 @@
 #include "misc.hpp"
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstdio>
@@ -151,3 +152,19 @@ std::string Misc::url_decode(const std::string& encoded_string) {
 
     return ret;
 }
+
+
+std::string Misc::format_current_time() {
+    std::ostringstream msg;
+    const boost::posix_time::ptime now =
+      boost::posix_time::second_clock::local_time();
+
+    boost::posix_time::time_facet*const f=
+      new boost::posix_time::time_facet("%H:%M:%S");
+
+    msg.imbue(std::locale(msg.getloc(),f));
+    msg << now;
+    return msg.str();
+}
+
+

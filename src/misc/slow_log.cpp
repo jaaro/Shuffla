@@ -1,6 +1,7 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 
+#include "misc.hpp"
 #include "slow_log.hpp"
 #include "../config/config.hpp"
 
@@ -26,7 +27,7 @@ SlowLog& SlowLog::getInstance()
 void SlowLog::log(const double miliseconds, const std::string& request)
 {
     if (miliseconds >= miliseconds_bound) {
-        file << "Slow query = " + request << " took " << miliseconds << " miliseconds\n";
+        file << "[" << Misc::format_current_time() <<"] Slow query = " + request << " took " << miliseconds << " miliseconds\n";
 
         //since this is slow query, flushing shouldn't make much difference
         file.flush();
