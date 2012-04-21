@@ -10,6 +10,7 @@
 Row::Row(const TableDefinition* table_definition, DumpLoader& dump_loader) : table_definition(table_definition)
 {
     std::vector<std::string> props = table_definition->get_property_names();
+    values.reserve(props.size());
     for(std::size_t i=0; i<props.size(); i++) {
         int value_size = dump_loader.get_next_int();
         dump_loader.get_next_char();
@@ -23,6 +24,7 @@ Row::Row(const TableDefinition* table_definition, DumpLoader& dump_loader) : tab
 Row::Row(const TableDefinition* table_definition, const DataWithoutTyping& data) : table_definition(table_definition)
 {
     std::vector<std::string> props = table_definition->get_property_names();
+    values.reserve(props.size());
     for(std::size_t i=0; i<props.size(); i++) {
         add_value(table_definition->get_property_type(props[i]), data.get_value_for_property(props[i]));
     }

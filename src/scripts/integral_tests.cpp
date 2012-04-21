@@ -168,14 +168,12 @@ struct Command {
 
 void send(std::string url)
 {
-    std::cout << url << "\n";
     CURL *curl;
-    CURLcode res;
 
     curl = curl_easy_init();
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        res = curl_easy_perform(curl);
+        curl_easy_perform(curl);
 
         /* always cleanup */
         curl_easy_cleanup(curl);
@@ -194,8 +192,14 @@ int main(int argc, char* argv[])
 
     std::string prefix = host + ":" + port;
 
-    srand(57);
+
+
+    boost::posix_time::ptime t2 = boost::posix_time::second_clock::local_time();
+    boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::local_time();
+    srand((t1 - t2).total_nanoseconds());
+
     TableDef table(2, 2, 2);
+    srand(57);
 
     Command c;
     send(prefix + c.print_drop(table));

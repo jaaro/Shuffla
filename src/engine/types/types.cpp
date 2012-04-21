@@ -32,7 +32,6 @@ bool Types::is_correct_type(const std::string& type) const
 
 Type* Types::string_to_type(const std::string& type) const
 {
-    //TODO check for memory leaks
     if (type == "int" || type == "integer") {
         return new TypeInt(0);
     } else if (type == "string" || type =="varchar" || type == "text") {

@@ -25,6 +25,7 @@ Table::~Table()
     for(std::size_t i=0; i<rows.size(); i++) {
         delete rows[i];
     }
+    delete table_definition;
 }
 
 void Table::set_table_definition(const TableDefinition* td)
