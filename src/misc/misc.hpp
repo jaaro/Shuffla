@@ -24,7 +24,7 @@ public:
     static bool can_be_parsed_to_double(const std::string& value);
 
     static bool is_possible_property_name(const std::string& value);
-    static std::string url_encode(const std::string& decoded_string);
+    static std::string url_decode(const std::string& sSrc);
 protected:
 private:
 };

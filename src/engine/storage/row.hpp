@@ -1,6 +1,8 @@
 #ifndef ROW_H
 #define ROW_H
 
+#include <boost/property_tree/json_parser.hpp>
+
 #include "../../engine/query/data_without_typing.hpp"
 #include "../../engine/table/table_definition.hpp"
 #include "../../engine/types/type.hpp"
@@ -17,7 +19,8 @@ public:
 
     Type* get_value(const std::string& name) const ;
     std::string to_string() const ;
-    std::string to_json() const ;
+
+    boost::property_tree::ptree get_property_tree() const;
 
 protected:
 private:

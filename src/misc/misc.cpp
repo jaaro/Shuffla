@@ -1,7 +1,8 @@
 #include "misc.hpp"
 
+#include <boost/property_tree/json_parser.hpp>
 #include <boost/lexical_cast.hpp>
-#include <curl/curl.h>
+#include <cstdio>
 
 Misc::Misc()
 {
@@ -67,7 +68,23 @@ bool Misc::can_be_parsed_to_double(const std::string& value)
     }
 }
 
-std::string Misc::url_encode(const std::string& decoded_string) {
-    int length = decoded_string.size();
-    return std::string(curl_escape(decoded_string.c_str() , length ));
+/**
+ * I didn't know what library I should use to decode string
+ * I found this source on: http://stackoverflow.com/a/4823686/1256609
+ */
+std::string Misc::url_decode(const std::string& SRC) {
+    std::string ret;
+    char ch;
+    int ii;
+    for (std::size_t i=0; i<SRC.length(); i++) {
+        if (int(SRC[i])==37) {
+            sscanf(SRC.substr(i+1,2).c_str(), "%x", &ii);
+            ch=static_cast<char>(ii);
+            ret+=ch;
+            i=i+2;
+        } else {
+            ret+=SRC[i];
+        }
+    }
+    return (ret);
 }

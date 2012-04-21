@@ -59,19 +59,15 @@ std::string Row::to_string() const
     return result;
 }
 
-std::string Row::to_json() const
+boost::property_tree::ptree Row::get_property_tree() const
 {
-    std::string result = "{";
-
+    boost::property_tree::ptree root;
     std::vector<std::string> props = table_definition->get_property_names();
     for(std::size_t i=0; i<props.size(); i++) {
-        if (i!=0) result += ",";
-        result += props[i] + ":";
-        //TODO CRITICAL you have to escape this value
-        result += values[i]->to_string();
+        root.put<std::string>(props[i], values[i]->to_string());
     }
-    result += "}";
-    return result;
+
+    return root;
 }
 
 Type* Row::get_value (const std::string& name) const

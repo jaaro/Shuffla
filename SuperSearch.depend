@@ -76,7 +76,8 @@
 	"../search_result/search_result.hpp"
 	"../query/search/query_parameters.hpp"
 
-1334481546 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
+1334997946 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
+	<boost/property_tree/json_parser.hpp>
 	"../../engine/query/data_without_typing.hpp"
 	"../../engine/table/table_definition.hpp"
 	"../../engine/types/type.hpp"
@@ -100,7 +101,7 @@
 	"../../../storage/row.hpp"
 	"../../../../misc/misc.hpp"
 
-1334482676 /home/jaaro/Projects/Shuffla/src/misc/misc.hpp
+1334952168 /home/jaaro/Projects/Shuffla/src/misc/misc.hpp
 	<string>
 
 1333879263 /home/jaaro/Projects/Shuffla/src/dump/append_log_manager.hpp

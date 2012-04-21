@@ -1,5 +1,6 @@
 #include "search_results.hpp"
 
+#include <boost/property_tree/json_parser.hpp>
 #include <boost/lexical_cast.hpp>
 
 SearchResults::SearchResults(const QueryParameters& params, const std::vector<const Row*>& results, int count): params(params), results(results), count(count)
@@ -15,23 +16,28 @@ SearchResults::~SearchResults()
 
 std::string SearchResults::to_string() const
 {
-    std::string result = "{count:" + Misc::int_to_string( count ) + "," +
-    "offset:" + Misc::int_to_string(params.offset) + "," +
-    "limit:" + Misc::int_to_string(params.limit) + ",";
+    boost::property_tree::ptree root;
+    root.put<int>("count", count );
+    root.put<int>("offset", params.offset);
+    root.put<int>("limit", params.limit);
+
     if (params.order_by.size() > 0) {
-        result += "order_by:";
-        result += (params.order_by[0].second == QueryParameters::ASC ? "+" : "-");
-        result += params.order_by[0].first;
-        result += ",";
+        root.put<std::string>("order_by",
+            (params.order_by[0].second == QueryParameters::ASC ? "" : "-") + params.order_by[0].first
+        );
     }
 
-    result += "results:{";
+    boost::property_tree::ptree results_array;
     for(std::size_t i=0; i<results.size(); i++) {
-        if (i != 0) result+=",";
-        result += results[i]->to_json();
+        results_array.push_back(std::make_pair("", results[i]->get_property_tree()));
     }
-    result += "}}";
-    return result;
+
+    root.put_child("results", results_array);
+
+    std::stringstream ss;
+    boost::property_tree::json_parser::write_json(ss, root);
+
+    return ss.str();
 }
 
 int SearchResults::get_status_code() const {
