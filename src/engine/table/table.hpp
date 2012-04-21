@@ -22,8 +22,8 @@ public:
 
     // insert, search, remove
     void insert(const Row* row);
-    int remove(const QueryParameters& params);
-    SearchResult* search(const QueryParameters& params) const ;
+    int remove(boost::shared_ptr<QueryParameters> params);
+    SearchResult* search(boost::shared_ptr<QueryParameters> params) const ;
 
     void dump_table(DumpSaver& dump_processor) const;
 protected:

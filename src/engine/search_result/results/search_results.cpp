@@ -3,7 +3,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/lexical_cast.hpp>
 
-SearchResults::SearchResults(const QueryParameters& params, const std::vector<const Row*>& results, int count): params(params), results(results), count(count)
+SearchResults::SearchResults(boost::shared_ptr<QueryParameters> params, const std::vector<const Row*>& results, int count): params(params), results(results), count(count)
 {
     //ctor
 }
@@ -18,12 +18,13 @@ std::string SearchResults::to_string() const
 {
     boost::property_tree::ptree root;
     root.put<int>("overall_count", count );
-    root.put<int>("offset", params.offset);
-    root.put<int>("limit", params.limit);
+    root.put<int>("offset", params->offset);
+    root.put<int>("limit", params->limit);
 
-    if (params.order_by.size() > 0) {
+    if (params->order_by.size() > 0) {
         root.put<std::string>("order_by",
-            (params.order_by[0].second == QueryParameters::ASC ? "" : "-") + params.order_by[0].first
+           (params->order_by[0].second == QueryParameters::ASC ? "" : "-") +
+                              params->order_by[0].first
         );
     }
 

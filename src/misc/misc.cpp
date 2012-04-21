@@ -134,7 +134,7 @@ std::string Misc::url_encode(const std::string& decoded_string) {
 
     std::string ret = result;
 
-    delete[] result;
+    free(result);
     delete[] c_string;
 
     return ret;
@@ -147,7 +147,7 @@ std::string Misc::url_decode(const std::string& encoded_string) {
 
     std::string ret = result;
 
-    delete[] result;
+    free(result);
     delete[] c_string;
 
     return ret;

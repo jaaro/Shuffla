@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1335021837 source:/home/jaaro/Projects/Shuffla/main.cpp
-	<boost/property_tree/json_parser.hpp>
+1335028315 source:/home/jaaro/Projects/Shuffla/main.cpp
 	<iostream>
+	"src/config/config_loader.hpp"
+	"src/server/server.hpp"
 
 1333878538 /home/jaaro/Projects/Shuffla/src/config/config_loader.hpp
 	<string>
@@ -89,7 +90,7 @@
 1334517887 /home/jaaro/Projects/Shuffla/src/engine/search_result/search_result.hpp
 	<string>
 
-1334501420 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
+1335035287 /home/jaaro/Projects/Shuffla/src/engine/query/search/query_parameters.hpp
 	"../../table/table_definition.hpp"
 	"../data_without_typing.hpp"
 	"functions/search_function.hpp"
@@ -274,7 +275,7 @@
 	<boost/property_tree/json_parser.hpp>
 	<boost/lexical_cast.hpp>
 
-1334853271 /home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.hpp
+1335036206 /home/jaaro/Projects/Shuffla/src/engine/search_result/results/search_results.hpp
 	"../search_result.hpp"
 	"../../storage/row.hpp"
 	"../../query/search/query_parameters.hpp"

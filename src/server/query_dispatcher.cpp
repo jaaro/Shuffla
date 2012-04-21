@@ -23,7 +23,7 @@ std::pair<int, std::string> QueryDispatcher::process_query(const std::string& re
     // request is equal "/this/is/cool"
 
     boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::local_time();
-    printf("%s\n", request.c_str());
+    //printf("%s\n", request.c_str());
 
     Query* query = query_parser.parse_query(request);
     if (query == NULL) {
@@ -34,12 +34,13 @@ std::pair<int, std::string> QueryDispatcher::process_query(const std::string& re
     std::string ret = result->to_string() + "\n";
     int status_code = result->get_status_code();
 
+    delete query;
+    delete result;
+
     boost::posix_time::ptime t2 = boost::posix_time::microsec_clock::local_time();
     boost::posix_time::time_duration diff = t2 - t1;
 
     SlowLog::getInstance().log(diff.total_milliseconds(), request);
-
-    delete result;
 
     return std::make_pair(status_code, ret);
 }

@@ -18,6 +18,9 @@ QueryParameters::QueryParameters()
 
 QueryParameters::~QueryParameters()
 {
+    //for(std::size_t i=0; i<registered_functions.size(); i++) {
+    //    delete registered_functions[i];
+    //}
 }
 
 bool QueryParameters::set(const TableDefinition* table_definition, const DataWithoutTyping& data)

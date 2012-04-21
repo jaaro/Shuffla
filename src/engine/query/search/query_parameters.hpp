@@ -27,7 +27,7 @@ public:
 
 protected:
 private:
-    std::vector<const SearchFunction*> parameters;
+    std::vector<SearchFunction*> parameters;
     std::vector<SearchFunction*> registered_functions;
 
     void register_functions();

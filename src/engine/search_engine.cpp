@@ -102,8 +102,8 @@ SearchResult* SearchEngine::process_search(const QuerySearch* query)
         return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
     }
 
-    QueryParameters params;
-    bool success = params.set(table->get_table_definition(), query->get_parsed_query());
+    boost::shared_ptr<QueryParameters> params( new QueryParameters);
+    bool success = params->set(table->get_table_definition(), query->get_parsed_query());
 
     if (!success) {
         return new SearchResultError("Error during insert. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());
@@ -128,8 +128,8 @@ SearchResult* SearchEngine::process_delete(const QueryDelete* query)
         return new SearchResultError("Table " + query->get_table_name() + " doesn't exists");
     }
 
-    QueryParameters params;
-    bool success = params.set(table->get_table_definition(), query->get_parsed_query());
+    boost::shared_ptr<QueryParameters> params( new QueryParameters);
+    bool success = params->set(table->get_table_definition(), query->get_parsed_query());
 
     if (!success) {
         return new SearchResultError("Error during delete. Row doesn't match table definition. Check logs for more details.\nRequest + " + query->to_string());

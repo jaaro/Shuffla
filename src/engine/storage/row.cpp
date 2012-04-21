@@ -30,7 +30,9 @@ Row::Row(const TableDefinition* table_definition, const DataWithoutTyping& data)
 
 Row::~Row()
 {
-    //dtor
+    for(std::size_t i=0; i<values.size(); i++) {
+        delete values[i];
+    }
 }
 
 

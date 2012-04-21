@@ -15,7 +15,7 @@ Config::Config()
 
     number_of_threads = 16;
 
-    is_append_log_enabled = true;
+    is_append_log_enabled = false;
 
     dump_file_name = "/home/jaaro/dump.shu";
 
@@ -49,7 +49,6 @@ void Config::set(const std::string& name, const std::string& value)
         is_append_log_enabled = (value != "0" ? true : false);
     } else if (name == "save_dump") {
         std::stringstream my_stream(value);
-        //TODO it should be validated
         int period, changes;
         my_stream >> period >> changes;
         SaveDumpManager::getInstance().add_interval_save(period, changes);

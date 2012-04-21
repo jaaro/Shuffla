@@ -10,6 +10,7 @@ DumpLoader::DumpLoader()
 DumpLoader::~DumpLoader()
 {
     delete input;
+    delete[] temp_buffor;
 }
 
 
@@ -22,7 +23,6 @@ std::string DumpLoader::get_line()
 
 bool DumpLoader::is_eof()
 {
-    // TODO it should be easier
     return !input->good() || input->eof() || input->peek() == '\0';
 }
 

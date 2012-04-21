@@ -8,14 +8,14 @@
 class SearchResults : public SearchResult
 {
 public:
-    SearchResults(const QueryParameters& query_params, const std::vector<const Row*>& results, int count);
+    SearchResults(boost::shared_ptr<QueryParameters> query_params, const std::vector<const Row*>& results, int count);
     virtual ~SearchResults();
 
     virtual std::string to_string() const ;
     virtual int get_status_code() const;
 protected:
 
-    QueryParameters params;
+    boost::shared_ptr<QueryParameters> params;
     std::vector<const Row*> results;
 
     int count;
