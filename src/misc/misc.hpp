@@ -24,7 +24,19 @@ public:
     static bool can_be_parsed_to_double(const std::string& value);
 
     static bool is_possible_property_name(const std::string& value);
+
     static std::string url_decode(const std::string& sSrc);
+    static std::string url_encode(const std::string& sSrc);
+
+    static char* url_encode(char *str);
+    static char* url_decode(char *str);
+
+    /* Converts a hex character to its integer value */
+    static char from_hex(char ch);
+
+    /* Converts an integer value to its hex character*/
+    static char to_hex(char code);
+
 protected:
 private:
 };

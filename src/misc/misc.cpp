@@ -70,21 +70,84 @@ bool Misc::can_be_parsed_to_double(const std::string& value)
 
 /**
  * I didn't know what library I should use to decode string
- * I found this source on: http://stackoverflow.com/a/4823686/1256609
+ * I found this source on: http://www.geekhideout.com/urlcode.shtml
  */
-std::string Misc::url_decode(const std::string& SRC) {
-    std::string ret;
-    char ch;
-    int ii;
-    for (std::size_t i=0; i<SRC.length(); i++) {
-        if (int(SRC[i])==37) {
-            sscanf(SRC.substr(i+1,2).c_str(), "%x", &ii);
-            ch=static_cast<char>(ii);
-            ret+=ch;
-            i=i+2;
-        } else {
-            ret+=SRC[i];
-        }
+
+char Misc::from_hex(char ch) {
+  return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
+}
+
+/* Converts an integer value to its hex character*/
+char Misc::to_hex(char code) {
+  static char hex[] = "0123456789abcdef";
+  return hex[code & 15];
+}
+
+/* Returns a url-encoded version of str */
+/* IMPORTANT: be sure to free() the returned string after use */
+char* Misc::url_encode(char *str) {
+  char *pstr = str, *buf = (char*)malloc(strlen(str) * 3 + 1), *pbuf = buf;
+  while (*pstr) {
+    if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~')
+      *pbuf++ = *pstr;
+    else if (*pstr == ' ')
+      *pbuf++ = '+';
+    else
+      *pbuf++ = '%', *pbuf++ = to_hex(*pstr >> 4), *pbuf++ = to_hex(*pstr & 15);
+    pstr++;
+  }
+  *pbuf = '\0';
+  return buf;
+}
+
+/* Returns a url-decoded version of str */
+/* IMPORTANT: be sure to free() the returned string after use */
+char* Misc::url_decode(char *str) {
+  char *pstr = str, *buf = (char*)malloc(strlen(str) + 1), *pbuf = buf;
+  while (*pstr) {
+    if (*pstr == '%') {
+      if (pstr[1] && pstr[2]) {
+        *pbuf++ = from_hex(pstr[1]) << 4 | from_hex(pstr[2]);
+        pstr += 2;
+      }
+    } else if (*pstr == '+') {
+      *pbuf++ = ' ';
+    } else {
+      *pbuf++ = *pstr;
     }
-    return (ret);
+    pstr++;
+  }
+  *pbuf = '\0';
+  return buf;
+}
+
+/**
+ * //TODO before release
+ * This is horrible, find good library for that
+ */
+
+std::string Misc::url_encode(const std::string& decoded_string) {
+    char* c_string = new char [decoded_string.size()+1];
+    strcpy (c_string, decoded_string.c_str());
+    char* result = Misc::url_encode(c_string);
+
+    std::string ret = result;
+
+    delete[] result;
+    delete[] c_string;
+
+    return ret;
+}
+
+std::string Misc::url_decode(const std::string& encoded_string) {
+    char* c_string = new char [encoded_string.size()+1];
+    strcpy (c_string, encoded_string.c_str());
+    char* result = Misc::url_decode(c_string);
+
+    std::string ret = result;
+
+    delete[] result;
+    delete[] c_string;
+
+    return ret;
 }

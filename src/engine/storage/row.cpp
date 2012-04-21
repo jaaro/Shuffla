@@ -15,7 +15,8 @@ Row::Row(const TableDefinition* table_definition, DumpLoader& dump_loader) : tab
         dump_loader.get_next_char();
         std::string value = dump_loader.get_next_chars(value_size);
 
-        add_value(table_definition->get_property_type(props[i]), value);
+        // TODO BEFORE RELEASE: url_decode isn't the best way to escape characters
+        add_value(table_definition->get_property_type(props[i]), Misc::url_decode(value));
     }
 }
 
@@ -53,7 +54,8 @@ std::string Row::to_string() const
 {
     std::string result = "";
     for(std::size_t i=0; i<values.size(); i++) {
-        std::string value = values[i]->to_string();
+        // TODO BEFORE RELEASE: url_decode isn't the best way to escape characters
+        std::string value = Misc::url_encode(values[i]->to_string());
         result += Misc::int_to_string( value.size() ) + ":" + value;
     }
     return result;
