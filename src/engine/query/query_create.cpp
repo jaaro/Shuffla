@@ -16,7 +16,9 @@ QueryCreate::QueryCreate()
 
 QueryCreate::~QueryCreate()
 {
-    //dtor
+    for(std::size_t i=0; i<handlers_list.size(); i++) {
+        delete handlers_list[i];
+    }
 }
 
 void QueryCreate::register_handler(Query* handler)

@@ -21,7 +21,9 @@ SearchEngine::SearchEngine()
 
 SearchEngine::~SearchEngine()
 {
-    //dtor
+    for(std::size_t i=0; i< tables.size(); i++) {
+        delete tables[i];
+    }
 }
 
 

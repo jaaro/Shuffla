@@ -22,7 +22,9 @@ Table::Table(DumpLoader& dump_loader)
 
 Table::~Table()
 {
-    //dtor
+    for(std::size_t i=0; i<rows.size(); i++) {
+        delete rows[i];
+    }
 }
 
 void Table::set_table_definition(const TableDefinition* td)
