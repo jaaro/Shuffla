@@ -33,12 +33,6 @@ bool TypeString::is_correct_value(const std::string& value) const
     return true;
 }
 
-bool TypeString::is_correct_function(const std::string& function_name) const
-{
-    //TODO WTF?
-    return false;
-}
-
 bool TypeString::equals(const std::string& v) const
 {
     return strcmp(value_, v.c_str()) == 0;

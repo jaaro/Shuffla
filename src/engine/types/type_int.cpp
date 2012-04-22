@@ -36,11 +36,6 @@ bool TypeInt::is_correct_value(const std::string& value) const
     return Misc::can_be_parsed_to_int(value);
 }
 
-bool TypeInt::is_correct_function(const std::string& function_name) const
-{
-    return false;
-}
-
 bool TypeInt::equals(const std::string& v) const
 {
     return is_correct_value(v) && Misc::string_to_int( v ) == value;
