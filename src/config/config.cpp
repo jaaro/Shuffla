@@ -13,7 +13,7 @@ Config::Config()
     host = "0.0.0.0";
     port = "3000";
 
-    number_of_threads = 16;
+    number_of_threads = 1;
 
     is_append_log_enabled = false;
 
@@ -23,7 +23,7 @@ Config::Config()
     slow_log_file_name = "/home/jaaro/slow_log.log";
     slow_log_miliseconds_bound = 30.0;
 
-    set("save_dump", "1 1");
+    set("save_dump", "20 1");
 }
 
 Config::~Config() {}

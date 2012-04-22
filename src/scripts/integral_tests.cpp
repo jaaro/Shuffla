@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
     send(prefix + c.to_string());
 
     for(int i=0; i<NUMBER_OF_ITERATIONS; i++) {
-        if (i % 1000 == 0) std::cerr << "DONE " << i << " COMMANDS" << std::endl;
+        if (i % 1000 == 0) std::cerr << "DONE " << i << " COMMANDS IN " << table.table_name << std::endl;
         if (rand() % DELETES_MODULO == 1) c.create_delete(table);
         else if (rand() % 2 == 1) c.create_insert(table, i);
         else c.create_search(table);
