@@ -1,23 +1,31 @@
 #include "type_string.hpp"
 
-TypeString::TypeString(const TypeString::TYPE value) : value(value)
+#include <cstring>
+#include <iostream>
+
+TypeString::TypeString(const TypeString::TYPE value) : value_(new char[value.size() + 1])
 {
-    //ctor
+    strcpy(value_, value.c_str());
 }
 
 TypeString::~TypeString()
 {
-    //dtor
+    delete[] value_;
+}
+
+Type* TypeString::clone() const
+{
+    return new TypeString(get_value());
 }
 
 TypeString::TYPE TypeString::get_value() const
 {
-    return value;
+    return value_;
 }
 
 std::string TypeString::to_string() const
 {
-    return value;
+    return value_;
 }
 
 bool TypeString::is_correct_value(const std::string& value) const
@@ -27,37 +35,44 @@ bool TypeString::is_correct_value(const std::string& value) const
 
 bool TypeString::is_correct_function(const std::string& function_name) const
 {
+    //TODO WTF?
     return false;
 }
 
 bool TypeString::equals(const std::string& v) const
 {
-    return v == value;
+    return strcmp(value_, v.c_str()) == 0;
 }
 
 bool TypeString::is_prefix(const std::string& prefix) const
 {
-    if (prefix.size() > value.size()) return false;
-    return value.substr(0, prefix.size()) == prefix;
+    std::size_t i = 0;
+    while(i < prefix.size()) {
+        if (prefix[i] != value_[i]) {
+            return false;
+        }
+        i++;
+    }
+    return true;
 }
 
 
 bool TypeString::is_smaller(const std::string& v) const
 {
-    return v > value;
+    return strcmp(v.c_str(), value_) > 0;
 }
 
 bool TypeString::is_smaller_or_equal(const std::string& v) const
 {
-    return v >= value;
+    return strcmp(v.c_str(), value_) >= 0;
 }
 
 bool TypeString::is_greater(const std::string& v) const
 {
-    return v < value;
+    return strcmp(v.c_str(), value_) < 0;
 }
 
 bool TypeString::is_greater_or_equal(const std::string& v) const
 {
-    return v <= value;
+    return strcmp(v.c_str(), value_) <= 0;
 }

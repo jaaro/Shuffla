@@ -39,6 +39,8 @@ Type* Types::string_to_type(const std::string& type) const
     } else if (type == "double") {
         return new TypeDouble(0.0);
     }
+    //TODO LOG ERROR
+    std::cerr << "ERRROR!!!!" << std::endl;
     return false;
 }
 

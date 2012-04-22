@@ -17,6 +17,10 @@ TypeDouble::~TypeDouble()
     //dtor
 }
 
+Type* TypeDouble::clone() const
+{
+    return new TypeDouble(value);
+}
 
 TypeDouble::TYPE TypeDouble::get_value() const
 {

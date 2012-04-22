@@ -15,6 +15,8 @@ public:
     TypeInt(const std::string& number);
     TypeInt(const TYPE value);
 
+    virtual Type* clone() const;
+
     virtual bool is_correct_value(const std::string& value) const ;
     virtual bool is_correct_function(const std::string& function_name) const ;
     virtual bool equals(const std::string& value) const ;

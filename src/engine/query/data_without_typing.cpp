@@ -73,7 +73,7 @@ std::string DataWithoutTyping::get_value_for_property(const std::string& propert
 bool DataWithoutTyping::is_matching_table_definition(const TableDefinition* table_definition) const
 {
     if (property_names.size() != table_definition->get_property_names().size()) {
-        Logger::getInstance().log_error("Error: Description TODO");
+        Logger::getInstance().log_error("Error: Number of properties defined in you request doesn't match number of properties in table definition.\nTable = " + table_definition->get_table_name() + "\n");
         return false;
     }
 
@@ -112,7 +112,8 @@ bool DataWithoutTyping::is_correct_query_search(const TableDefinition* table_def
         if (prop[prop.size()-1] == ')') {
             unsigned int pos = find(prop.begin(), prop.end(), '(') - prop.begin();
             if (pos + 2 >= prop.size()) {
-                //TODO log error
+                Logger::getInstance().log_error("Error: " + prop + " contains ')' but doesn't contain '('.\n" +
+                                        "Table = " + table_definition->get_table_name() + "\n");
                 return false;
             }
 
@@ -125,17 +126,21 @@ bool DataWithoutTyping::is_correct_query_search(const TableDefinition* table_def
 
         const Type* type = table_definition->get_property_type(prop);
         if (type == NULL) {
-            //TODO log error
+            Logger::getInstance().log_error("Error: Your request contains unknown property name: " + prop + ".\n" +
+                                        "Table = " + table_definition->get_table_name() + "\n");
             return false;
         }
 
         if (!type->is_correct_value(values[i])) {
-            //TODO log error
+             Logger::getInstance().log_error("Error: Value for property: " + prop + " doesn't match it's type (" + type->get_name() + ".\n" +
+                                        "Table = " + table_definition->get_table_name() + "\n");
             return false;
         }
 
         if (is_function && !type->is_correct_function(function_name)) {
-            //TODO log error
+
+             Logger::getInstance().log_error("Error: Type " + type->get_name() + " doesn't support function " + function_name + ".\n" +
+                                        "Table = " + table_definition->get_table_name() + "\n");
             return false;
         }
     }

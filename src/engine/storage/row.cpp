@@ -5,11 +5,13 @@
 #include "../types/type_int.hpp"
 #include "../types/type_double.hpp"
 #include "../types/type_string.hpp"
+#include "../../logger/logger.hpp"
 
 
 Row::Row(const TableDefinition* table_definition, DumpLoader& dump_loader) : table_definition(table_definition)
 {
     std::vector<std::string> props = table_definition->get_property_names();
+
     values.reserve(props.size());
     for(std::size_t i=0; i<props.size(); i++) {
         int value_size = dump_loader.get_next_int();
@@ -47,7 +49,8 @@ void Row::add_value(const Type* type, const std::string& value)
     } else if (type->get_name() == "double") {
         values.push_back(new TypeDouble(value));
     } else {
-        //TODO log error
+        Logger::getInstance().log_error("Adding row with wrong type?! Please report this as a bug.\nInfo: type = " + type->get_name());
+
 
         //adding value so db is consistent
         values.push_back(new TypeString(std::string("")));

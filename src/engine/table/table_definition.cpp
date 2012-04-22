@@ -12,14 +12,19 @@ TableDefinition::TableDefinition()
 
 TableDefinition::~TableDefinition()
 {
-    //dtor
+    for(std::size_t i=0; i<property_types.size(); i++) {
+        delete property_types[i];
+    }
+
 }
 
 TableDefinition::TableDefinition(const TableDefinition* table_def)
 {
     table_name = table_def->table_name;
     property_names = table_def->property_names;
-    property_types = table_def->property_types;
+    for(std::size_t i=0; i<table_def->property_types.size(); i++) {
+        property_types.push_back(table_def->property_types[i]->clone());
+    }
 }
 
 std::string TableDefinition::get_table_name() const

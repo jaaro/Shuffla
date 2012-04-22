@@ -17,6 +17,8 @@ public:
     TypeString(const TYPE value);
     virtual ~TypeString();
 
+    virtual Type* clone() const;
+
     virtual bool is_correct_value(const std::string& value) const ;
     virtual bool is_correct_function(const std::string& function_name) const ;
 
@@ -31,7 +33,7 @@ public:
     TYPE get_value() const ;
 protected:
 private:
-    TYPE value;
+    char* value_;
 };
 
 #endif // TYPESTRING_H

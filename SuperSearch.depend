@@ -63,12 +63,13 @@
 	"../query.hpp"
 	"../data_without_typing.hpp"
 
-1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.hpp
+1335088896 /home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.hpp
+	"../../../misc/misc.hpp"
 	"../query.hpp"
 	"../../table/table_definition.hpp"
 	<memory>
 
-1334481287 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
+1335038329 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
 	"table_definition.hpp"
 	"../storage/row.hpp"
 	"../../dump/dump_saver.hpp"
@@ -222,7 +223,7 @@
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
 	"search_function_with_prefix.hpp"
 
-1334501761 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
+1335086912 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
 	<string>
 	"type.hpp"
 

@@ -37,14 +37,14 @@
 	<File name="src/dump/save_dump_manager.hpp" open="0" top="0" tabpos="16">
 		<Cursor position="355" topLine="0" />
 	</File>
-	<File name="src/engine/query/create_table/query_create_table.cpp" open="1" top="0" tabpos="1">
+	<File name="src/engine/query/create_table/query_create_table.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="313" topLine="0" />
 	</File>
 	<File name="src/engine/query/create_table/query_create_table.hpp" open="0" top="0" tabpos="47">
 		<Cursor position="55" topLine="0" />
 	</File>
-	<File name="src/engine/query/data_without_typing.cpp" open="0" top="0" tabpos="39">
-		<Cursor position="1328" topLine="0" />
+	<File name="src/engine/query/data_without_typing.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="3394" topLine="86" />
 	</File>
 	<File name="src/engine/query/data_without_typing.hpp" open="0" top="0" tabpos="39">
 		<Cursor position="205" topLine="0" />
@@ -73,7 +73,7 @@
 	<File name="src/engine/query/query.hpp" open="0" top="0" tabpos="38">
 		<Cursor position="156" topLine="0" />
 	</File>
-	<File name="src/engine/query/query_create.cpp" open="1" top="0" tabpos="4">
+	<File name="src/engine/query/query_create.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="587" topLine="0" />
 	</File>
 	<File name="src/engine/query/query_create.hpp" open="0" top="0" tabpos="37">
@@ -139,8 +139,8 @@
 	<File name="src/engine/query/search/query_search.hpp" open="0" top="0" tabpos="40">
 		<Cursor position="43" topLine="0" />
 	</File>
-	<File name="src/engine/search_engine.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="4615" topLine="111" />
+	<File name="src/engine/search_engine.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="4856" topLine="111" />
 	</File>
 	<File name="src/engine/search_engine.hpp" open="0" top="0" tabpos="22">
 		<Cursor position="494" topLine="0" />
@@ -169,22 +169,22 @@
 	<File name="src/engine/search_result/string/search_result_string.hpp" open="0" top="0" tabpos="20">
 		<Cursor position="275" topLine="0" />
 	</File>
-	<File name="src/engine/storage/row.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="1215" topLine="3" />
+	<File name="src/engine/storage/row.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="178" topLine="0" />
 	</File>
 	<File name="src/engine/storage/row.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="818" topLine="0" />
+		<Cursor position="75" topLine="0" />
 	</File>
-	<File name="src/engine/table/table.cpp" open="1" top="1" tabpos="5">
-		<Cursor position="2236" topLine="0" />
+	<File name="src/engine/table/table.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="1351" topLine="50" />
 	</File>
 	<File name="src/engine/table/table.hpp" open="0" top="0" tabpos="13">
-		<Cursor position="917" topLine="0" />
+		<Cursor position="859" topLine="0" />
 	</File>
-	<File name="src/engine/table/table_definition.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="1819" topLine="12" />
+	<File name="src/engine/table/table_definition.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="1064" topLine="0" />
 	</File>
-	<File name="src/engine/table/table_definition.hpp" open="1" top="0" tabpos="3">
+	<File name="src/engine/table/table_definition.hpp" open="0" top="0" tabpos="3">
 		<Cursor position="335" topLine="0" />
 	</File>
 	<File name="src/engine/types/type.cpp" open="0" top="0" tabpos="16">
@@ -194,7 +194,7 @@
 		<Cursor position="531" topLine="0" />
 	</File>
 	<File name="src/engine/types/type_double.cpp" open="0" top="0" tabpos="10">
-		<Cursor position="860" topLine="1" />
+		<Cursor position="860" topLine="0" />
 	</File>
 	<File name="src/engine/types/type_double.hpp" open="0" top="0" tabpos="5">
 		<Cursor position="587" topLine="0" />
@@ -206,13 +206,13 @@
 		<Cursor position="51" topLine="0" />
 	</File>
 	<File name="src/engine/types/type_string.cpp" open="0" top="0" tabpos="7">
-		<Cursor position="1066" topLine="0" />
+		<Cursor position="110" topLine="0" />
 	</File>
 	<File name="src/engine/types/type_string.hpp" open="0" top="0" tabpos="9">
-		<Cursor position="438" topLine="0" />
+		<Cursor position="706" topLine="0" />
 	</File>
 	<File name="src/engine/types/types.cpp" open="0" top="0" tabpos="11">
-		<Cursor position="474" topLine="0" />
+		<Cursor position="453" topLine="0" />
 	</File>
 	<File name="src/engine/types/types.hpp" open="0" top="0" tabpos="23">
 		<Cursor position="323" topLine="0" />
@@ -224,7 +224,7 @@
 		<Cursor position="201" topLine="0" />
 	</File>
 	<File name="src/misc/misc.cpp" open="0" top="0" tabpos="38">
-		<Cursor position="1834" topLine="76" />
+		<Cursor position="3658" topLine="106" />
 	</File>
 	<File name="src/misc/misc.hpp" open="0" top="0" tabpos="37">
 		<Cursor position="1081" topLine="0" />
@@ -235,8 +235,8 @@
 	<File name="src/misc/slow_log.hpp" open="0" top="0" tabpos="26">
 		<Cursor position="188" topLine="0" />
 	</File>
-	<File name="src/scripts/integral_tests.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="5253" topLine="150" />
+	<File name="src/scripts/integral_tests.cpp" open="1" top="1" tabpos="5">
+		<Cursor position="5896" topLine="154" />
 	</File>
 	<File name="src/server/http/connection.cpp" open="0" top="0" tabpos="21">
 		<Cursor position="2834" topLine="25" />
@@ -272,7 +272,7 @@
 		<Cursor position="1360" topLine="0" />
 	</File>
 	<File name="src/server/query_dispatcher.cpp" open="0" top="0" tabpos="16">
-		<Cursor position="1320" topLine="0" />
+		<Cursor position="651" topLine="0" />
 	</File>
 	<File name="src/server/query_dispatcher.hpp" open="0" top="0" tabpos="18">
 		<Cursor position="418" topLine="0" />

@@ -12,7 +12,7 @@ QueryCreateTable::QueryCreateTable()
 
 QueryCreateTable::~QueryCreateTable()
 {
-    //dtor
+    delete table_definition;
 }
 
 

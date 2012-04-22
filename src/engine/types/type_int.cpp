@@ -21,6 +21,10 @@ TypeInt::TYPE TypeInt::get_value() const
     return value;
 }
 
+Type* TypeInt::clone() const
+{
+    return new TypeInt(value);
+}
 
 std::string TypeInt::to_string() const
 {
