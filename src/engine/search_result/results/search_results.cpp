@@ -23,9 +23,9 @@ std::string SearchResults::to_string() const
 
     if (params->order_by.size() > 0) {
         root.put<std::string>("order_by",
-           (params->order_by[0].second == QueryParameters::ASC ? "" : "-") +
+                              (params->order_by[0].second == QueryParameters::ASC ? "" : "-") +
                               params->order_by[0].first
-        );
+                             );
     }
 
     boost::property_tree::ptree results_array;
@@ -41,6 +41,7 @@ std::string SearchResults::to_string() const
     return ss.str();
 }
 
-int SearchResults::get_status_code() const {
+int SearchResults::get_status_code() const
+{
     return 200;
 }

@@ -91,7 +91,8 @@ SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
 }
 
 
-int Table::remove(boost::shared_ptr<QueryParameters> params) {
+int Table::remove(boost::shared_ptr<QueryParameters> params)
+{
     std::vector<const Row*> results;
     for(std::size_t i=0; i<rows.size(); i++) {
 

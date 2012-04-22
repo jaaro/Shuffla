@@ -16,6 +16,7 @@ std::string SearchResultString::to_string() const
 }
 
 
-int SearchResultString::get_status_code() const {
+int SearchResultString::get_status_code() const
+{
     return 200;
 }
