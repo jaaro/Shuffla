@@ -39,7 +39,7 @@ bool QueryParameters::set(const TableDefinition* table_definition, const DataWit
         if (is_special_property(prop)) {
             bool success = set_special_property(table_definition, prop, value);
             if (!success) {
-                Logger::getInstance().log_error("Search: something wrong with:" + prop + "=" + value);
+                Logger::getInstance().log_error("QueryParameters: something wrong with:" + prop + "=" + value);
                 return false;
             }
             continue;
@@ -54,24 +54,24 @@ bool QueryParameters::set(const TableDefinition* table_definition, const DataWit
         }
 
         if (function == NULL) {
-            Logger::getInstance().log_error("Unable to understund "+prop+"\nPlease check documentation for more details about search syntax.");
+            Logger::getInstance().log_error("QueryParameters: Unable to understund "+prop+"\nPlease check documentation for more details about search syntax.");
             return false;
         }
 
         const Type* type = table_definition->get_property_type(function->get_property_name());
 
         if (type == NULL) {
-            Logger::getInstance().log_error("Table " + table_definition->get_table_name() + " doesnt not have property named " + function->get_property_name());
+            Logger::getInstance().log_error("QueryParameters: Table " + table_definition->get_table_name() + " doesnt have property named " + function->get_property_name());
             return false;
         }
 
         if (!type->is_correct_value(value)) {
-            //TODO log error
+            Logger::getInstance().log_error("QueryParameters: Value " + value + " doesn't match type of property " + function->get_property_name() + "(which is " + type->get_name() + ").");
             return false;
         }
 
         if (!function->is_available_for_type(type)) {
-            //TODO log error
+            Logger::getInstance().log_error("QueryParameters: Provided function " + prop + " is not available for type " + type->get_name() + ".");
             return false;
         }
 

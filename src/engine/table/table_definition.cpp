@@ -98,7 +98,7 @@ bool TableDefinition::add_table_property(const Type* type, const std::string& na
     }
 
     if (find(property_names.begin(), property_names.end(), name) != property_names.end()) {
-        //TODO log error
+        Logger::getInstance().log_error("Create table request in wrong format. Property name " + name + " appears at least twice in request.");
         return false;
     }
 
@@ -118,7 +118,7 @@ bool TableDefinition::is_correct_value_for_property(const std::string& property,
     for(std::size_t i=0; i<property_names.size(); i++) {
         if (property == property_names[i]) {
             if (!types.is_correct_value(property_types[i], value)) {
-                //TODO log error
+                Logger::getInstance().log_error("Value " + value + " cannot be parsed to " + property_types[i]->get_name());
                 return false;
             }
             return true;
@@ -135,7 +135,9 @@ const Type* TableDefinition::get_property_type(const std::string& property) cons
             return property_types[i];
         }
     }
-    //TODO log error
+
+    Logger::getInstance().log_error("There is no such property as " + property);
+
     return NULL;
 }
 
@@ -156,7 +158,7 @@ TableDefinition::TableDefinition(DumpLoader& dump_loader)
     std::string line = dump_loader.get_line();
 
     if (line.size() < 6 || line.substr(0, 5) != "TABLE") {
-        //TODO log error
+        Logger::getInstance().log_error("Problem with reading dump file. Table definition section doesn't start with TABLE.");
         throw new std::exception();
     }
 
@@ -170,7 +172,7 @@ TableDefinition::TableDefinition(DumpLoader& dump_loader)
         boost::split(strs, line, boost::is_any_of(" "));
 
         if (strs.size() != 2) {
-            //TODO log error
+            Logger::getInstance().log_error("Something went wrong during reading dump file. Property definition inside table definition should be in form: type_name property_name\\n. Type_name and property_name cannot contain whitespaces.\n");
         }
 
         add_table_property(types.string_to_type(strs[0]), strs[1]);

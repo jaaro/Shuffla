@@ -4,6 +4,7 @@
 #include "type_string.hpp"
 #include "type_int.hpp"
 #include "type_double.hpp"
+#include "../../logger/logger.hpp"
 
 Types::Types()
 {
@@ -39,8 +40,8 @@ Type* Types::string_to_type(const std::string& type) const
     } else if (type == "double") {
         return new TypeDouble(0.0);
     }
-    //TODO LOG ERROR
-    std::cerr << "ERRROR!!!!" << std::endl;
+
+    Logger::getInstance().log_error("Please report this as a bug: Unsuccessful convertion of type " + type + " (without validation?).");
     return false;
 }
 
