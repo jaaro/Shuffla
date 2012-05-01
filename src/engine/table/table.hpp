@@ -7,6 +7,7 @@
 #include "../../dump/dump_loader.hpp"
 #include "../search_result/search_result.hpp"
 #include "../query/search/query_parameters.hpp"
+#include "../table_index/table_index.hpp"
 
 class Table
 {
@@ -29,7 +30,7 @@ public:
 protected:
 private:
     TableDefinition* table_definition;
-    std::vector<const Row*> rows;
+    std::vector<TableIndex*> indexes;
 };
 
 #endif // TABLE_H

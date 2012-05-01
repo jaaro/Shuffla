@@ -30,7 +30,7 @@
 	"../query.hpp"
 	"../data_without_typing.hpp"
 
-1333888962 /home/jaaro/Projects/Shuffla/src/engine/query/data_without_typing.hpp
+1335126968 /home/jaaro/Projects/Shuffla/src/engine/query/data_without_typing.hpp
 	<string>
 	<vector>
 	"../table/table_definition.hpp"
@@ -42,7 +42,7 @@
 	"../types/types.hpp"
 	"../../dump/dump_loader.hpp"
 
-1334501485 /home/jaaro/Projects/Shuffla/src/engine/types/type.hpp
+1335126988 /home/jaaro/Projects/Shuffla/src/engine/types/type.hpp
 	<string>
 	"../../misc/misc.hpp"
 
@@ -63,21 +63,21 @@
 	"../query.hpp"
 	"../data_without_typing.hpp"
 
-1335088896 /home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.hpp
-	"../../../misc/misc.hpp"
+1335089391 /home/jaaro/Projects/Shuffla/src/engine/query/create_table/query_create_table.hpp
 	"../query.hpp"
 	"../../table/table_definition.hpp"
 	<memory>
 
-1335038329 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
+1335771199 /home/jaaro/Projects/Shuffla/src/engine/table/table.hpp
 	"table_definition.hpp"
 	"../storage/row.hpp"
 	"../../dump/dump_saver.hpp"
 	"../../dump/dump_loader.hpp"
 	"../search_result/search_result.hpp"
 	"../query/search/query_parameters.hpp"
+	"../table_index/table_index.hpp"
 
-1334997954 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
+1335123335 /home/jaaro/Projects/Shuffla/src/engine/storage/row.hpp
 	<boost/property_tree/json_parser.hpp>
 	"../../engine/query/data_without_typing.hpp"
 	"../../engine/table/table_definition.hpp"
@@ -223,7 +223,7 @@
 1332604673 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_prefix.hpp
 	"search_function_with_prefix.hpp"
 
-1335086912 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
+1335127090 /home/jaaro/Projects/Shuffla/src/engine/types/type_string.hpp
 	<string>
 	"type.hpp"
 
@@ -391,7 +391,7 @@
 	<boost/noncopyable.hpp>
 	"../query_dispatcher.hpp"
 
-1334517710 /home/jaaro/Projects/Shuffla/src/server/query_dispatcher.hpp
+1335120530 /home/jaaro/Projects/Shuffla/src/server/query_dispatcher.hpp
 	<string>
 	"../engine/search_engine.hpp"
 	"../engine/query/query_create.hpp"
@@ -517,4 +517,18 @@
 
 1334522896 /home/jaaro/Projects/Shuffla/src/engine/query/search/functions/search_function_smaller_or_equal.hpp
 	"search_function_with_prefix.hpp"
+
+1335772118 /home/jaaro/Projects/Shuffla/src/engine/table_index/table_index.hpp
+	"table_index_info.hpp"
+	"../kdtree/kd_vertice.hpp"
+
+1335770557 /home/jaaro/Projects/Shuffla/src/engine/table_index/table_index_info.hpp
+	"../table/table_definition.hpp"
+
+1335770554 /home/jaaro/Projects/Shuffla/src/engine/kdtree/kd_vertice.hpp
+	"boundary.hpp"
+	"../table_index/table_index_info.hpp"
+	"../../dump/dump_loader.hpp"
+
+1335770647 /home/jaaro/Projects/Shuffla/src/engine/kdtree/boundary.hpp
 

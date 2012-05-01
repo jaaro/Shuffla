@@ -1,6 +1,8 @@
 #include "table.hpp"
 #include "../search_result/results/search_results.hpp"
 
+#include "../kdtree/query_boundary.hpp"
+
 #include <boost/lexical_cast.hpp>
 
 Table::Table()
@@ -11,20 +13,24 @@ Table::Table()
 Table::Table(DumpLoader& dump_loader)
 {
     table_definition = new TableDefinition(dump_loader);
-
+    std::vector<const Row*> rows;
     std::string line = dump_loader.get_line();
     int size = Misc::string_to_int(line);
     while(size--) {
         rows.push_back(new Row(table_definition, dump_loader));
     }
     dump_loader.get_line();
+    TableIndexInfo index_info(table_definition, table_definition->get_property_names());
+    indexes.push_back(new TableIndex(index_info));
+    indexes[0]->bulk_build(rows);
 }
 
 Table::~Table()
 {
-    for(std::size_t i=0; i<rows.size(); i++) {
-        delete rows[i];
+    for(std::size_t i=0; i<indexes.size(); i++) {
+        delete indexes[i];
     }
+
     delete table_definition;
 }
 
@@ -45,70 +51,39 @@ TableDefinition* Table::get_table_definition() const
 
 void Table::insert(const Row* new_row)
 {
-    rows.push_back(new_row);
-    //random_shuffle(rows.begin(), rows.end());
+    for(std::size_t index = 0; index<indexes.size(); index++) {
+        indexes[index]->insert_row(new_row);
+    }
 }
 
 
 void Table::dump_table(DumpSaver& dump_saver) const
 {
     dump_saver.append(table_definition->to_string());
-    dump_saver.append(Misc::int_to_string( rows.size() ) + "\n");
-    for(std::size_t i=0; i<rows.size(); i++) {
-        dump_saver.append(rows[i]->to_string());
-    }
+    indexes[0]->dump_all_rows(dump_saver);
 }
 
 SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
 {
-    std::vector<const Row*> results;
-    for(std::size_t i=0; i<rows.size(); i++) {
-
-        if (params->is_matching(rows[i])) {
-            results.push_back(rows[i]);
-        }
-    }
-
-    if (params->order_by.size() > 0 ) {
-        std::string order_by = params->order_by[0].first;
-        bool ascending = (params->order_by[0].second == QueryParameters::ASC);
-
-        auto comp = [&](const Row* a, const Row* b)-> bool {
-            bool res = a->get_value(order_by)->is_greater(b->get_value(order_by)->to_string());
-            if (ascending) res = !res;
-            return res;
-        };
-
-        sort(results.begin(), results.end(), comp);
-    }
-
-    int count = results.size();
-    int start = std::min(count, params->offset);
-    int end = (int)std::min((long long)count, (long long)params->offset + params->limit);
-    std::vector<const Row*> sliced_results(results.begin() + start, results.begin() + end);
-
-    return new SearchResults(params, sliced_results, count);
+    QueryBoundary boundary(params);
+    //TODO count != 777 ;)
+    return new SearchResults(params, indexes[0]->search(params), 777);
 }
 
 
 int Table::remove(boost::shared_ptr<QueryParameters> params)
 {
-    std::vector<const Row*> results;
-    for(std::size_t i=0; i<rows.size(); i++) {
+    QueryBoundary boundary(params);
+    std::vector<const Row*> results = indexes[0]->search(params);
 
-        if (params->is_matching(rows[i])) {
-            results.push_back(rows[i]);
+    for(std::size_t index = 0; index<indexes.size(); index++) {
+        for(std::size_t i=0; i<results.size(); i++) {
+            indexes[index]->delete_row(results[i]);
         }
     }
 
     for(std::size_t j=0; j<results.size(); j++) {
-        for(std::size_t i=0; i<rows.size(); i++) {
-            if (rows[i] == results[j]) {
-                rows.erase(rows.begin() + i);
-                delete results[j];
-                break;
-            }
-        }
+        delete results[j];
     }
 
     return results.size();
