@@ -11,23 +11,37 @@
 class KDVertice
 {
     public:
-        explicit KDVertice(const TableIndexInfo* table_index_info, Boundary boundary, int depth);
+        explicit KDVertice(const TableIndexInfo* table_index_info, Boundary boundary);
         explicit KDVertice(const TableIndexInfo* table_index_info);
 
         void add_collection(std::vector<const Row*> rows);
-        void insert_row(const Row* row);
-        void delete_row(const Row* row);
-        std::vector<const Row*>  search(const QueryBoundary& boundary) const;
+        bool insert_row(const Row* row);
+        bool delete_row(const Row* row);
+        std::vector<const Row*> search(const QueryBoundary& boundary) const;
         void clear();
 
+        bool contains_row(const Row* row) const ;
         void dump_all_rows(DumpSaver& dump_saver) const;
 
         virtual ~KDVertice();
     protected:
         void rebuild();
+        std::vector<const Row*> linear_filter(const QueryBoundary& boundary) const;
     private:
-        Boundary boundary;
-        std::set<const Row*> rows;
+
+        const TableIndexInfo* table_index_info_;
+
+        // boundary of this vertice
+        Boundary boundary_;
+
+        // elements that are in this boundary
+        std::set<const Row*> rows_;
+
+        // left and right subtree and divider
+        int divieder_property_number_;
+        Type* divider_;
+        KDVertice* left_;
+        KDVertice* right_;
 };
 
 #endif // KDVERTICE_H
