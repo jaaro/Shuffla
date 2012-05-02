@@ -7,12 +7,14 @@
 class Boundary
 {
     public:
-        Boundary();
+        Boundary(const TableIndexInfo& table_index_info);
         virtual ~Boundary();
 
-        virtual bool is_point_inside(const TableIndexInfo* table_index_info, const Row* boundary) const ;
+        virtual bool is_point_inside(const Row* boundary) const ;
+        virtual bool contains(const Boundary& other_boundary) const ;
     protected:
     private:
+        const TableIndexInfo& table_index_info_;
 };
 
 #endif // BOUNDARY_H

@@ -65,15 +65,12 @@ void Table::dump_table(DumpSaver& dump_saver) const
 
 SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
 {
-    QueryBoundary boundary(params);
-    //TODO count != 777 ;)
     return new SearchResults(params, indexes[0]->search(params), 777);
 }
 
 
 int Table::remove(boost::shared_ptr<QueryParameters> params)
 {
-    QueryBoundary boundary(params);
     std::vector<const Row*> results = indexes[0]->search(params);
 
     for(std::size_t index = 0; index<indexes.size(); index++) {

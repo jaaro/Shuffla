@@ -1,11 +1,11 @@
 #include "kd_vertice.hpp"
 
-KDVertice::KDVertice(const TableIndexInfo* table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
+KDVertice::KDVertice(const TableIndexInfo& table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
 {
     //TODO
 }
 
-KDVertice::KDVertice(const TableIndexInfo* table_index_info) : table_index_info_(table_index_info)
+KDVertice::KDVertice(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info))
 {
     //TODO
 }
@@ -45,7 +45,7 @@ bool KDVertice::contains_row(const Row* row) const {
 
 
 bool KDVertice::insert_row(const Row* row) {
-    if (!boundary_.is_point_inside(table_index_info_, row)) return false;
+    if (!boundary_.is_point_inside(row)) return false;
     if (contains_row(row)) return false;
     rows_.insert(row);
 
@@ -62,7 +62,7 @@ bool KDVertice::insert_row(const Row* row) {
 }
 
 bool KDVertice::delete_row(const Row* row) {
-    if (!boundary_.is_point_inside(table_index_info_, row)) return false;
+    if (!boundary_.is_point_inside(row)) return false;
     if (!contains_row(row)) return false;
 
     rows_.erase(rows_.find(row));
@@ -71,12 +71,12 @@ bool KDVertice::delete_row(const Row* row) {
     return true;
 }
 
-std::vector<const Row*>  KDVertice::search(const QueryBoundary& boundary) const {
-    if (boundary.contains(boundary_)) return std::vector<const Row*>(rows_.begin(), rows_.end());
-    if (left_ == NULL) return linear_filter(boundary);
+std::vector<const Row*>  KDVertice::search(const QueryBoundary& query_boundary) const {
+    if (query_boundary.contains(boundary_)) return filter_non_index_conditions(query_boundary);
+    if (left_ == NULL) return linear_filter(query_boundary);
 
-    std::vector<const Row*> result = left_->search(boundary);
-    std::vector<const Row*> result2 = right_->search(boundary);
+    std::vector<const Row*> result = left_->search(query_boundary);
+    std::vector<const Row*> result2 = right_->search(query_boundary);
     result.insert(result.end(), result2.begin(), result2.end());
 
     return result;
@@ -85,4 +85,30 @@ std::vector<const Row*>  KDVertice::search(const QueryBoundary& boundary) const 
 void KDVertice::rebuild() {
     //TODO
     return ;
+}
+
+
+std::vector<const Row*>  KDVertice::linear_filter(const QueryBoundary& query_boundary) const {
+    std::vector<const Row*> rows;
+
+    for(std::set<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+        if (query_boundary.get_query_params()->is_matching(*it)) {
+            rows.push_back(*it);
+        }
+    }
+
+    return rows;
+}
+
+std::vector<const Row*>  KDVertice::filter_non_index_conditions(const QueryBoundary& query_boundary) const {
+    //TODO I am filtering ALL conditions
+    std::vector<const Row*> rows;
+
+    for(std::set<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+        if (query_boundary.get_query_params()->is_matching(*it)) {
+            rows.push_back(*it);
+        }
+    }
+
+    return rows;
 }

@@ -4,15 +4,16 @@
 #include "boundary.hpp"
 #include "../query/search/query_parameters.hpp"
 
-class QueryBoundary : Boundary
+class QueryBoundary : public Boundary
 {
     public:
-        QueryBoundary(boost::shared_ptr<QueryParameters> query_params);
+        QueryBoundary(const TableIndexInfo& table_index_info, boost::shared_ptr<QueryParameters> query_params);
         virtual ~QueryBoundary();
 
-        virtual bool contains(const Boundary& other_boundary) const ;
+        boost::shared_ptr<QueryParameters> get_query_params() const ;
     protected:
     private:
+        boost::shared_ptr<QueryParameters> query_params_;
 };
 
 #endif // QUERYBOUNDARY_H

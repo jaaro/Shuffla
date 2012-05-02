@@ -3,7 +3,7 @@
 
 TableIndex::TableIndex(TableIndexInfo index_info) : index_info_(index_info)
 {
-    kd_tree_ = new KDVertice(&index_info_);
+    kd_tree_ = new KDVertice(index_info_);
 }
 
 TableIndex::~TableIndex()
@@ -12,8 +12,8 @@ TableIndex::~TableIndex()
 }
 
 std::vector<const Row*> TableIndex::search(boost::shared_ptr<QueryParameters> query_params) const {
-    QueryBoundary query(query_params);
-    return kd_tree_->search(query);
+    QueryBoundary query_boundary(index_info_, query_params);
+    return kd_tree_->search(query_boundary);
 }
 
 void TableIndex::delete_row(const Row* row) {

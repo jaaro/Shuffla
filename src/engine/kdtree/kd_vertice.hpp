@@ -11,13 +11,13 @@
 class KDVertice
 {
     public:
-        explicit KDVertice(const TableIndexInfo* table_index_info, Boundary boundary);
-        explicit KDVertice(const TableIndexInfo* table_index_info);
+        explicit KDVertice(const TableIndexInfo& table_index_info, Boundary boundary);
+        explicit KDVertice(const TableIndexInfo& table_index_info);
 
         void add_collection(std::vector<const Row*> rows);
         bool insert_row(const Row* row);
         bool delete_row(const Row* row);
-        std::vector<const Row*> search(const QueryBoundary& boundary) const;
+        std::vector<const Row*> search(const QueryBoundary& query_boundary) const;
         void clear();
 
         bool contains_row(const Row* row) const ;
@@ -26,10 +26,11 @@ class KDVertice
         virtual ~KDVertice();
     protected:
         void rebuild();
-        std::vector<const Row*> linear_filter(const QueryBoundary& boundary) const;
+        std::vector<const Row*> linear_filter(const QueryBoundary& query_boundary) const;
+        std::vector<const Row*> filter_non_index_conditions(const QueryBoundary& query_boundary) const ;
     private:
 
-        const TableIndexInfo* table_index_info_;
+        const TableIndexInfo& table_index_info_;
 
         // boundary of this vertice
         Boundary boundary_;
