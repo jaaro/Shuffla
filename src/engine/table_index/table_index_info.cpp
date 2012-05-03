@@ -9,3 +9,7 @@ TableIndexInfo::~TableIndexInfo()
 {
     //dtor
 }
+
+const TableDefinition* TableIndexInfo::get_table_definition() const {
+    return table_definition_;
+}

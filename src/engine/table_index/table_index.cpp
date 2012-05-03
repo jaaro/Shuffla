@@ -21,7 +21,7 @@ void TableIndex::delete_row(const Row* row) {
 }
 
 void TableIndex::insert_row(const Row* row) {
-    kd_tree_->insert_row(row);
+    kd_tree_->insert_row(row, 0);
 }
 
 void TableIndex::bulk_build(std::vector<const Row*> rows) {

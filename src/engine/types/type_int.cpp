@@ -1,4 +1,5 @@
 #include "type_int.hpp"
+#include <iostream>
 
 TypeInt::TypeInt(const TypeInt::TYPE value) : value(value)
 {
@@ -58,5 +59,5 @@ bool TypeInt::is_greater(const std::string& v) const
 
 bool TypeInt::is_greater_or_equal(const std::string& v) const
 {
-    return is_correct_value(v) && Misc::string_to_int( v ) >= value;
+    return is_correct_value(v) && Misc::string_to_int( v ) <= value;
 }

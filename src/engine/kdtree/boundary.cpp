@@ -1,7 +1,7 @@
 #include "boundary.hpp"
 
 Limiter::Limiter(const std::string& property_name, const Type* bound, bool is_upper_bound, bool is_inclusive)
-    : property_name_(property_name), bound_(bound), is_upper_bound_(is_upper_bound), is_inclusive_(is_inclusive)
+    : property_name_(property_name), bound_(bound->clone()), is_upper_bound_(is_upper_bound), is_inclusive_(is_inclusive)
 { }
 
 Limiter::~Limiter() {}
@@ -11,6 +11,7 @@ bool Limiter::is_more_strict(const Limiter& rhs) const
     if (is_upper_bound_ != rhs.is_upper_bound()) {
         //TODO
         std::cerr << "Fatal error 1\n";
+        assert(!"WTF");
     }
 
     if (bound_->equals(rhs.get_bound_value()->to_string())) {
@@ -27,10 +28,10 @@ bool Limiter::is_more_strict(const Limiter& rhs) const
 
 bool Limiter::is_value_matching(const Type* rhs) const
 {
-    if (is_upper_bound_ && is_inclusive_) return bound_->is_smaller_or_equal(rhs->to_string());
-    if (is_upper_bound_ && !is_inclusive_) return bound_->is_smaller(rhs->to_string());
-    if (!is_upper_bound_ && is_inclusive_) return bound_->is_greater_or_equal(rhs->to_string());
-    if (!is_upper_bound_ && !is_inclusive_) return bound_->is_greater(rhs->to_string());
+    if (!is_upper_bound_ && is_inclusive_) return bound_->is_smaller_or_equal(rhs->to_string());
+    if (!is_upper_bound_ && !is_inclusive_) return bound_->is_smaller(rhs->to_string());
+    if (is_upper_bound_ && is_inclusive_) return bound_->is_greater_or_equal(rhs->to_string());
+    if (is_upper_bound_ && !is_inclusive_) return bound_->is_greater(rhs->to_string());
     assert(!"Not possible to get here");
     return false;
 }
@@ -61,6 +62,12 @@ const std::string& Limiter::get_property_name() const
     return property_name_;
 }
 
+void Limiter::debug() const {
+    std::cerr << "LIMITER " << property_name_;
+    std::cerr << (is_upper_bound() ? "<" : ">");
+    std::cerr << (is_inclusive() ? "=" : "");
+    std::cerr << get_bound_value()->to_string() << "\n";
+}
 
 
 
@@ -77,16 +84,32 @@ Boundary::~Boundary()
 
 
 
-void Boundary::add_limiter(Limiter limiter)
+bool Boundary::add_limiter(Limiter limiter)
 {
     bool is_upper_bound = limiter.is_upper_bound();
 
     std::map<std::string, Limiter>& current = (is_upper_bound ? upper_bounds_ : lower_bounds_);
     std::map<std::string, Limiter>::iterator it = current.find(limiter.get_property_name());
     if (it == current.end() || limiter.is_more_strict(it->second)) {
+        if (it != current.end()) current.erase(it);
         current.insert(std::pair<std::string, Limiter>(limiter.get_property_name(), limiter));
+        return true;
     }
+    return false;
+}
 
+bool Boundary::is_good_limiter(const Limiter& limiter) const
+{
+    return is_good_limiter_internal(limiter) && is_good_limiter_internal(limiter.createReverseLimiter());
+}
+
+bool Boundary::is_good_limiter_internal(const Limiter& limiter) const
+{
+    bool is_upper_bound = limiter.is_upper_bound();
+
+    const std::map<std::string, Limiter>& current = (is_upper_bound ? upper_bounds_ : lower_bounds_);
+    std::map<std::string, Limiter>::const_iterator it = current.find(limiter.get_property_name());
+    return (it == current.end() || limiter.is_more_strict(it->second));
 }
 
 const std::map<std::string, Limiter>& Boundary::get_upper_bounds() const {
@@ -97,18 +120,18 @@ const std::map<std::string, Limiter>& Boundary::get_lower_bounds() const {
     return lower_bounds_;
 }
 
-bool Boundary::is_point_inside(const Row* boundary) const
+bool Boundary::is_point_inside(const Row* point) const
 {
     for(std::map<std::string, Limiter>::const_iterator it = lower_bounds_.begin(); it!=lower_bounds_.end(); it++) {
         const Limiter& limit = it->second;
-        if (!limit.is_value_matching(boundary->get_value(limit.get_property_name()))) {
+        if (!limit.is_value_matching(point->get_value(limit.get_property_name()))) {
             return false;
         }
     }
 
     for(std::map<std::string, Limiter>::const_iterator it = upper_bounds_.begin(); it!=upper_bounds_.end(); it++) {
         const Limiter& limit = it->second;
-        if (!limit.is_value_matching(boundary->get_value(limit.get_property_name()))) {
+        if (!limit.is_value_matching(point->get_value(limit.get_property_name()))) {
             return false;
         }
     }
@@ -130,4 +153,18 @@ bool Boundary::contains(const Boundary& other_boundary) const
     }
 
     return true;
+}
+
+void Boundary::debug() const
+{
+    std::cerr << "==== BOUNDARY ====\n";
+    for(std::map<std::string, Limiter>::const_iterator it = get_lower_bounds().begin(); it != get_lower_bounds().end(); it++) {
+        const Limiter& other_limit = it->second;
+        other_limit.debug();
+    }
+
+    for(std::map<std::string, Limiter>::const_iterator it = get_upper_bounds().begin(); it != get_upper_bounds().end(); it++) {
+        const Limiter& other_limit = it->second;
+        other_limit.debug();
+    }
 }

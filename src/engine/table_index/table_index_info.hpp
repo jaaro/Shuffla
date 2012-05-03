@@ -10,6 +10,8 @@ class TableIndexInfo
         TableIndexInfo(const TableDefinition* table_definition, const std::vector<std::string>& index_properties);
         virtual ~TableIndexInfo();
 
+        const TableDefinition* get_table_definition() const;
+
     protected:
     private:
         const TableDefinition* table_definition_;

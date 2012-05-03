@@ -15,7 +15,7 @@ class KDVertice
         explicit KDVertice(const TableIndexInfo& table_index_info);
 
         void add_collection(std::vector<const Row*> rows);
-        bool insert_row(const Row* row);
+        bool insert_row(const Row* row, int k);
         bool delete_row(const Row* row);
         std::vector<const Row*> search(const QueryBoundary& query_boundary) const;
         void clear();

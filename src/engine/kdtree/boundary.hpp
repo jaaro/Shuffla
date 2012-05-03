@@ -21,6 +21,7 @@ class Limiter {
         const std::string& get_property_name() const ;
 
         Limiter createReverseLimiter() const ;
+        void debug() const;
 
     private:
 
@@ -39,13 +40,17 @@ class Boundary
 
         virtual bool is_point_inside(const Row* boundary) const ;
         virtual bool contains(const Boundary& other_boundary) const ;
-        virtual void add_limiter(Limiter limiter) ;
+        virtual bool add_limiter(Limiter limiter) ;
 
-    protected:
+        virtual bool is_good_limiter(const Limiter& limiter) const ;
+        virtual bool is_good_limiter_internal(const Limiter& limiter) const ;
 
+            //TODO should be protected or private
         virtual const std::map<std::string, Limiter>& get_upper_bounds() const ;
         virtual const std::map<std::string, Limiter>& get_lower_bounds() const ;
 
+        void debug() const;
+    protected:
         const TableIndexInfo& table_index_info_;
     private:
 
