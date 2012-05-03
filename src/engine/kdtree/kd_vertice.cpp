@@ -2,12 +2,14 @@
 
 KDVertice::KDVertice(const TableIndexInfo& table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
 {
-    //TODO
+    left_ = NULL;
+    right_ = NULL;
 }
 
 KDVertice::KDVertice(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info))
 {
-    //TODO
+    left_ = NULL;
+    right_ = NULL;
 }
 
 KDVertice::~KDVertice()
@@ -25,7 +27,7 @@ void KDVertice::clear() {
 
 void KDVertice::dump_all_rows(DumpSaver& dump_saver) const {
     dump_saver.append(Misc::int_to_string(rows_.size()) + "\n");
-    for(std::set<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+    for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
         dump_saver.append((*it)->to_string());
     }
 }
@@ -91,7 +93,7 @@ void KDVertice::rebuild() {
 std::vector<const Row*>  KDVertice::linear_filter(const QueryBoundary& query_boundary) const {
     std::vector<const Row*> rows;
 
-    for(std::set<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+    for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
         if (query_boundary.get_query_params()->is_matching(*it)) {
             rows.push_back(*it);
         }
@@ -104,7 +106,7 @@ std::vector<const Row*>  KDVertice::filter_non_index_conditions(const QueryBound
     //TODO I am filtering ALL conditions
     std::vector<const Row*> rows;
 
-    for(std::set<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+    for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
         if (query_boundary.get_query_params()->is_matching(*it)) {
             rows.push_back(*it);
         }

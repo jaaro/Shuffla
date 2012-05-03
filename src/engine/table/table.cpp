@@ -37,6 +37,10 @@ Table::~Table()
 void Table::set_table_definition(const TableDefinition* td)
 {
     table_definition = new TableDefinition(td);
+
+    //work around, todo
+    TableIndexInfo index_info(table_definition, table_definition->get_property_names());
+    indexes.push_back(new TableIndex(index_info));
 }
 
 std::string Table::get_table_name() const
@@ -65,7 +69,27 @@ void Table::dump_table(DumpSaver& dump_saver) const
 
 SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
 {
-    return new SearchResults(params, indexes[0]->search(params), 777);
+    std::vector<const Row*> results = indexes[0]->search(params);
+
+    if (params->order_by.size() > 0 ) {
+        std::string order_by = params->order_by[0].first;
+        bool ascending = (params->order_by[0].second == QueryParameters::ASC);
+
+        auto comp = [&](const Row* a, const Row* b)-> bool {
+            bool res = a->get_value(order_by)->is_greater(b->get_value(order_by)->to_string());
+            if (ascending) res = !res;
+            return res;
+        };
+
+        sort(results.begin(), results.end(), comp);
+    }
+
+    int count = results.size();
+    int start = std::min(count, params->offset);
+    int end = (int)std::min((long long)count, (long long)params->offset + params->limit);
+    std::vector<const Row*> sliced_results(results.begin() + start, results.begin() + end);
+
+    return new SearchResults(params, sliced_results, count);
 }
 
 

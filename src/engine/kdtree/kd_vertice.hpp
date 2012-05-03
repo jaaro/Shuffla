@@ -36,7 +36,7 @@ class KDVertice
         Boundary boundary_;
 
         // elements that are in this boundary
-        std::set<const Row*> rows_;
+        std::multiset<const Row*> rows_;
 
         // left and right subtree and divider
         int divieder_property_number_;
