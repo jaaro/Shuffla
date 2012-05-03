@@ -82,6 +82,12 @@ bool QueryParameters::set(const TableDefinition* table_definition, const DataWit
     return true;
 }
 
+
+const std::vector<SearchFunction*> QueryParameters::get_parameters() const
+{
+    return parameters;
+}
+
 bool QueryParameters::is_matching(const Row* row) const
 {
     for(std::size_t i=0; i<parameters.size(); i++) {

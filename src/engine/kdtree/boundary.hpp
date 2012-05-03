@@ -14,6 +14,7 @@ class Limiter {
 
         bool is_more_strict(const Limiter& rhs) const ;
         bool is_value_matching(const Type* value) const ;
+        bool is_disjoint(const Limiter& rhs) const ;
 
         bool is_upper_bound() const ;
         bool is_inclusive() const ;
@@ -40,6 +41,7 @@ class Boundary
 
         virtual bool is_point_inside(const Row* boundary) const ;
         virtual bool contains(const Boundary& other_boundary) const ;
+        virtual bool disjoint(const Boundary& other_boundary) const ;
         virtual bool add_limiter(Limiter limiter) ;
 
         virtual bool is_good_limiter(const Limiter& limiter) const ;

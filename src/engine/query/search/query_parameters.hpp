@@ -20,7 +20,7 @@ public:
 
     bool set(const TableDefinition* table, const DataWithoutTyping& data);
     bool is_matching(const Row* row) const ;
-
+    const std::vector<SearchFunction*> get_parameters() const;
 
     int offset;
     int limit;

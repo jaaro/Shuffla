@@ -49,7 +49,7 @@ bool KDVertice::contains_row(const Row* row) const {
 bool KDVertice::insert_row(const Row* row, int k) {
     if (!boundary_.is_point_inside(row)) return false;
     if (contains_row(row)) return false;
-    std::cerr << "INSERT " << row << " " << k << "\n";
+    //std::cerr << "INSERT " << row << " " << k << "\n";
     rows_.insert(row);
 
     if (left_ == NULL) {
@@ -75,10 +75,18 @@ bool KDVertice::delete_row(const Row* row) {
 }
 
 std::vector<const Row*>  KDVertice::search(const QueryBoundary& query_boundary) const {
-    if (query_boundary.contains(boundary_)) return filter_non_index_conditions(query_boundary);
+    if (query_boundary.contains(boundary_)) {
+        //if (!query_boundary.are_there_extra_requiremens()) return std::vector<const Row*>(rows_.begin(), rows_.end());
+        return filter_non_index_conditions(query_boundary);
+    }
+
+    if (query_boundary.disjoint(boundary_)) {
+        return std::vector<const Row*>();
+    }
+
     if (left_ == NULL) return linear_filter(query_boundary);
 
-    std::cerr << "SEARCH " << &query_boundary << " " << boundary_.get_lower_bounds().size() + boundary_.get_upper_bounds().size() << "\n";
+    //std::cerr << "SEARCH " << &query_boundary << " " << boundary_.get_lower_bounds().size() + boundary_.get_upper_bounds().size() << "\n";
     std::vector<const Row*> result = left_->search(query_boundary);
     std::vector<const Row*> result2 = right_->search(query_boundary);
     result.insert(result.end(), result2.begin(), result2.end());

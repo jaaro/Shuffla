@@ -11,9 +11,11 @@ class QueryBoundary : public Boundary
         virtual ~QueryBoundary();
 
         boost::shared_ptr<QueryParameters> get_query_params() const ;
+        bool are_there_extra_requiremens() const;
     protected:
     private:
         boost::shared_ptr<QueryParameters> query_params_;
+        bool are_there_extra_requiremens_;
 };
 
 #endif // QUERYBOUNDARY_H

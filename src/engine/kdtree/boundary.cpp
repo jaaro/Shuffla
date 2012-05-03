@@ -36,6 +36,17 @@ bool Limiter::is_value_matching(const Type* rhs) const
     return false;
 }
 
+bool Limiter::is_disjoint(const Limiter& rhs) const {
+    if (rhs.is_upper_bound() == is_upper_bound()) return false;
+
+    if (bound_->equals(rhs.get_bound_value()->to_string())) {
+        return !rhs.is_inclusive() || !is_inclusive();
+    }
+
+    if (is_upper_bound()) return bound_->is_smaller(rhs.get_bound_value()->to_string());
+    else return bound_->is_greater(rhs.get_bound_value()->to_string());
+}
+
 Limiter Limiter::createReverseLimiter() const
 {
     return Limiter(property_name_, bound_, !is_upper_bound_, !is_inclusive_);
@@ -142,17 +153,44 @@ bool Boundary::contains(const Boundary& other_boundary) const
 {
     for(std::map<std::string, Limiter>::const_iterator it = other_boundary.get_lower_bounds().begin(); it != other_boundary.get_lower_bounds().end(); it++) {
         const Limiter& other_limit = it->second;
-        if (lower_bounds_.find(other_limit.get_property_name()) != lower_bounds_.end()) return false;
-        if (other_limit.is_more_strict(lower_bounds_.find(other_limit.get_property_name())->second)) return false;
+        if (lower_bounds_.find(other_limit.get_property_name()) == lower_bounds_.end()) continue;
+        if (lower_bounds_.find(other_limit.get_property_name())->second.is_more_strict(other_limit)) return false;
     }
 
     for(std::map<std::string, Limiter>::const_iterator it = other_boundary.get_upper_bounds().begin(); it != other_boundary.get_upper_bounds().end(); it++) {
         const Limiter& other_limit = it->second;
-        if (upper_bounds_.find(other_limit.get_property_name()) != upper_bounds_.end()) return false;
-        if (other_limit.is_more_strict(upper_bounds_.find(other_limit.get_property_name())->second)) return false;
+        if (upper_bounds_.find(other_limit.get_property_name()) == upper_bounds_.end()) continue;
+        if (upper_bounds_.find(other_limit.get_property_name())->second.is_more_strict(other_limit)) return false;
+    }
+
+    for(std::map<std::string, Limiter>::const_iterator it = get_lower_bounds().begin(); it != get_lower_bounds().end(); it++) {
+        const Limiter& other_limit = it->second;
+        if (other_boundary.get_lower_bounds().find(other_limit.get_property_name()) ==  other_boundary.get_lower_bounds().end()) return false;
+    }
+
+    for(std::map<std::string, Limiter>::const_iterator it = get_upper_bounds().begin(); it != get_upper_bounds().end(); it++) {
+        const Limiter& other_limit = it->second;
+        if (other_boundary.get_upper_bounds().find(other_limit.get_property_name()) ==  other_boundary.get_upper_bounds().end()) return false;
     }
 
     return true;
+}
+
+bool Boundary::disjoint(const Boundary& other_boundary) const
+{
+    for(std::map<std::string, Limiter>::const_iterator it = other_boundary.get_lower_bounds().begin(); it != other_boundary.get_lower_bounds().end(); it++) {
+        const Limiter& other_limit = it->second;
+        if (upper_bounds_.find(other_limit.get_property_name()) == upper_bounds_.end()) continue;
+        if (upper_bounds_.find(other_limit.get_property_name())->second.is_disjoint(other_limit)) return true;
+    }
+
+    for(std::map<std::string, Limiter>::const_iterator it = other_boundary.get_upper_bounds().begin(); it != other_boundary.get_upper_bounds().end(); it++) {
+        const Limiter& other_limit = it->second;
+        if (lower_bounds_.find(other_limit.get_property_name()) == lower_bounds_.end()) continue;
+        if (lower_bounds_.find(other_limit.get_property_name())->second.is_disjoint(other_limit)) return true;
+    }
+
+    return false;
 }
 
 void Boundary::debug() const
