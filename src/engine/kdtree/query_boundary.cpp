@@ -29,30 +29,28 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
         }
 
         if (dynamic_cast<SearchFunctionGreater*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
+            add_limiter(Limiter(params[i]->get_property_name(), value, false, false));
         }
 
-        /*else if (dynamic_cast<SearchFunctionGreaterOrEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, false, false));
-        }*/
+        else if (dynamic_cast<SearchFunctionGreaterOrEqual*>(params[i]) != NULL) {
+            add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
+        }
         else if (dynamic_cast<SearchFunctionSmaller*>(params[i]) != NULL) {
+            add_limiter(Limiter(params[i]->get_property_name(), value, true, false));
+        }
+        else if (dynamic_cast<SearchFunctionSmallerOrEqual*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, true, true));
         }
-        /*else if (dynamic_cast<SearchFunctionSmallerOrEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, true, false));
-        }*/
         else if (dynamic_cast<SearchFunctionEqual*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, true, true));
             add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
         }
-      /*  else if (dynamic_cast<SearchFunctionPrefix*>(params[i]) != NULL) {
+        else if (dynamic_cast<SearchFunctionPrefix*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
             std::string text = value->to_string();
-            (*(text.rend()))++;
-
-/// wtf should be true, false
-            add_limiter(Limiter(params[i]->get_property_name(), new TypeString(text), false, true));
-        }*/ else {
+            text[text.size() - 1]++;
+            add_limiter(Limiter(params[i]->get_property_name(), new TypeString(text), true, false));
+        } else {
              are_there_extra_requiremens_ = true;
         }
     }

@@ -76,7 +76,7 @@ bool KDVertice::delete_row(const Row* row) {
 
 std::vector<const Row*>  KDVertice::search(const QueryBoundary& query_boundary) const {
     if (query_boundary.contains(boundary_)) {
-        //if (!query_boundary.are_there_extra_requiremens()) return std::vector<const Row*>(rows_.begin(), rows_.end());
+        if (!query_boundary.are_there_extra_requiremens()) return std::vector<const Row*>(rows_.begin(), rows_.end());
         return filter_non_index_conditions(query_boundary);
     }
 
@@ -111,12 +111,6 @@ void KDVertice::rebuild() {
             if (boundary_.is_good_limiter(limit)) {
                 break;
             }
-            /*std::cout << "FIGHTING! "<< props[0] << "\n";
-            limit.debug();
-            boundary_.debug();
-            for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
-                std::cout << ((*it)->to_string()) << "\n";
-            }*/
         }
 
         Limiter limit(props[0], (*(rows_.begin()))->get_value(props[0]), x, y);
@@ -135,16 +129,6 @@ void KDVertice::rebuild() {
                 right_collection.push_back(*it);
             }
         }
-
-
-        limit.debug();
-        boundary_.debug();
-
-        //std::cerr << left_collection[0]->get_value(props[0])->to_string() << "\n";
-        //std::cerr << right_collection[0]->to_string() << "\n";
-        //assert(0);
-
-        std::cerr << "REBUILD " << left_collection.size() << " " << right_collection.size() << "\n";
 
         left_->add_collection(left_collection);
         right_->add_collection(right_collection);
