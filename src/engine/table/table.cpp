@@ -13,16 +13,23 @@ Table::Table()
 Table::Table(DumpLoader& dump_loader)
 {
     table_definition = new TableDefinition(dump_loader);
+
+    int number_of_indexes = Misc::string_to_int(dump_loader.get_line());
+    while(number_of_indexes --> 0) {
+        TableIndexInfo index_info(table_definition, dump_loader);
+        indexes.push_back(new TableIndex(index_info));
+    }
+
     std::vector<const Row*> rows;
-    std::string line = dump_loader.get_line();
-    int size = Misc::string_to_int(line);
+    int size = dump_loader.get_next_int();
     while(size--) {
         rows.push_back(new Row(table_definition, dump_loader));
     }
     dump_loader.get_line();
-    TableIndexInfo index_info(table_definition, table_definition->get_property_names());
-    indexes.push_back(new TableIndex(index_info));
-    indexes[0]->bulk_build(rows);
+
+    for(std::size_t i=0; i<indexes.size(); i++) {
+        indexes[i]->bulk_build(rows);
+    }
 }
 
 Table::~Table()
@@ -39,7 +46,7 @@ void Table::set_table_definition(const TableDefinition* td)
     table_definition = new TableDefinition(td);
 
     //work around, todo
-    TableIndexInfo index_info(table_definition, table_definition->get_property_names());
+    TableIndexInfo index_info(table_definition, table_definition->get_property_names(), std::vector<std::string>());
     indexes.push_back(new TableIndex(index_info));
 }
 
@@ -64,6 +71,11 @@ void Table::insert(const Row* new_row)
 void Table::dump_table(DumpSaver& dump_saver) const
 {
     dump_saver.append(table_definition->to_string());
+    dump_saver.append(Misc::int_to_string(indexes.size()) + "\n");
+
+    for(std::size_t i=0; i<indexes.size(); i++) {
+        dump_saver.append(indexes[i]->get_index_info().to_string());
+    }
     indexes[0]->dump_all_rows(dump_saver);
 }
 

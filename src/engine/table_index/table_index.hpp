@@ -17,6 +17,8 @@ class TableIndex
         void bulk_build(std::vector<const Row*> rows);
         void dump_all_rows(DumpSaver& dump_saver) const ;
 
+        const TableIndexInfo& get_index_info() const ;
+
     protected:
     private:
         const TableIndexInfo index_info_;

@@ -32,3 +32,7 @@ void TableIndex::bulk_build(std::vector<const Row*> rows) {
 void TableIndex::dump_all_rows(DumpSaver& dump_saver) const {
     kd_tree_->dump_all_rows(dump_saver);
 }
+
+const TableIndexInfo& TableIndex::get_index_info() const {
+    return index_info_;
+}

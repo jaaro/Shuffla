@@ -159,7 +159,7 @@ bool QueryParameters::set_special_property(const TableDefinition* table_definiti
         }
         return true;
     } else {
-        Logger::getInstance().log_error("Developer error in QueryParameters. Please contact author of this software.");
+        Logger::getInstance().log_error("Error in QueryParameters. Please report this as a bug.");
         return false;
     }
     return true;

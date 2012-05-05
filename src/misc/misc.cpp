@@ -15,8 +15,6 @@ Misc::~Misc()
     //dtor
 }
 
-
-
 int Misc::string_to_int(const std::string& value)
 {
     return boost::lexical_cast<int>( value );

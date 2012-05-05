@@ -52,6 +52,13 @@ std::string DumpLoader::get_next_chars(const int size)
     return res;
 }
 
+std::string DumpLoader::get_next_string() {
+    std::string res;
+    *input >> res;
+
+    return res;
+}
+
 void DumpLoader::close()
 {
     input->close();

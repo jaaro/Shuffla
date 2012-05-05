@@ -37,23 +37,23 @@
 	<File name="src/dump/save_dump_manager.hpp" open="0" top="0" tabpos="16">
 		<Cursor position="355" topLine="0" />
 	</File>
-	<File name="src/engine/kdtree/boundary.cpp" open="0" top="0" tabpos="4">
-		<Cursor position="5714" topLine="110" />
+	<File name="src/engine/kdtree/boundary.cpp" open="1" top="0" tabpos="14">
+		<Cursor position="2526" topLine="54" />
 	</File>
-	<File name="src/engine/kdtree/boundary.hpp" open="0" top="0" tabpos="5">
-		<Cursor position="1513" topLine="0" />
+	<File name="src/engine/kdtree/boundary.hpp" open="1" top="0" tabpos="15">
+		<Cursor position="423" topLine="0" />
 	</File>
-	<File name="src/engine/kdtree/kd_vertice.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="1304" topLine="30" />
+	<File name="src/engine/kdtree/kd_vertice.cpp" open="1" top="0" tabpos="13">
+		<Cursor position="4093" topLine="98" />
 	</File>
 	<File name="src/engine/kdtree/kd_vertice.hpp" open="0" top="0" tabpos="2">
 		<Cursor position="486" topLine="0" />
 	</File>
-	<File name="src/engine/kdtree/query_boundary.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="849" topLine="0" />
+	<File name="src/engine/kdtree/query_boundary.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="1819" topLine="5" />
 	</File>
-	<File name="src/engine/kdtree/query_boundary.hpp" open="0" top="0" tabpos="5">
-		<Cursor position="474" topLine="0" />
+	<File name="src/engine/kdtree/query_boundary.hpp" open="1" top="0" tabpos="12">
+		<Cursor position="600" topLine="0" />
 	</File>
 	<File name="src/engine/query/create_table/query_create_table.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="313" topLine="0" />
@@ -146,7 +146,7 @@
 		<Cursor position="297" topLine="0" />
 	</File>
 	<File name="src/engine/query/search/query_parameters.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="2938" topLine="43" />
+		<Cursor position="31" topLine="102" />
 	</File>
 	<File name="src/engine/query/search/query_parameters.hpp" open="1" top="0" tabpos="3">
 		<Cursor position="505" topLine="0" />
@@ -265,8 +265,8 @@
 	<File name="src/misc/slow_log.hpp" open="0" top="0" tabpos="26">
 		<Cursor position="188" topLine="0" />
 	</File>
-	<File name="src/scripts/integral_tests.cpp" open="0" top="0" tabpos="6">
-		<Cursor position="330" topLine="154" />
+	<File name="src/scripts/integral_tests.cpp" open="1" top="1" tabpos="16">
+		<Cursor position="959" topLine="30" />
 	</File>
 	<File name="src/server/http/connection.cpp" open="0" top="0" tabpos="21">
 		<Cursor position="2834" topLine="25" />

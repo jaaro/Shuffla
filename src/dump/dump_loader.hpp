@@ -20,6 +20,7 @@ public:
     int get_next_int();
     char get_next_char();
     std::string get_next_chars(const int size);
+    std::string get_next_string();
 
 
     bool is_eof();
