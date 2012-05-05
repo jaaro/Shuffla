@@ -36,11 +36,7 @@ void KDVertice::dump_all_rows(DumpSaver& dump_saver) const
 
 void KDVertice::add_collection(std::vector<const Row*> rows)
 {
-    //TODO possible optimization
-    for(std::size_t i=0; i<rows.size(); i++) {
-        rows_.insert(rows[i]);
-    }
-
+    rows_.insert(rows.begin(), rows.end());
     rebuild();
 }
 
@@ -54,7 +50,7 @@ bool KDVertice::insert_row(const Row* row, int k)
 {
     if (!boundary_.is_point_inside(row)) return false;
     if (contains_row(row)) return false;
-    //std::cerr << "INSERT " << row << " " << k << "\n";
+
     rows_.insert(row);
 
     if (left_ == NULL) {
@@ -93,7 +89,6 @@ std::vector<const Row*>  KDVertice::search(const QueryBoundary& query_boundary) 
 
     if (left_ == NULL) return linear_filter(query_boundary);
 
-    //std::cerr << "SEARCH " << &query_boundary << " " << boundary_.get_lower_bounds().size() + boundary_.get_upper_bounds().size() << "\n";
     std::vector<const Row*> result = left_->search(query_boundary);
     std::vector<const Row*> result2 = right_->search(query_boundary);
     result.insert(result.end(), result2.begin(), result2.end());
@@ -108,21 +103,7 @@ void KDVertice::rebuild()
     }
 
     if (rows_.size() > 50 && left_ == NULL) {
-        std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
-
-        bool x, y;
-        while(true) {
-            random_shuffle(props.begin(), props.end());
-
-            x = rand() % 2;
-            y = rand() % 2;
-            Limiter limit(props[0], (*(rows_.begin()))->get_value(props[0]), x, y);
-            if (boundary_.is_good_limiter(limit)) {
-                break;
-            }
-        }
-
-        Limiter limit(props[0], (*(rows_.begin()))->get_value(props[0]), x, y);
+        Limiter limit = find_good_limiter();
 
         Boundary left_boundary(boundary_);
         left_boundary.add_limiter(limit);
@@ -133,8 +114,9 @@ void KDVertice::rebuild()
         right_ = new KDVertice(table_index_info_, right_boundary);
         std::vector<const Row*> left_collection, right_collection;
 
+        std::string property = limit.get_property_name();
         for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
-            if (limit.is_value_matching((*it)->get_value(props[0]))) {
+            if (limit.is_value_matching((*it)->get_value(property))) {
                 left_collection.push_back(*it);
             } else {
                 right_collection.push_back(*it);
@@ -144,9 +126,53 @@ void KDVertice::rebuild()
         left_->add_collection(left_collection);
         right_->add_collection(right_collection);
     }
-    return ;
 }
 
+Limiter KDVertice::find_good_limiter() const
+{
+    std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
+    std::vector<Limiter> limiters;
+
+    for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
+        for(int mask = 0; mask < 4; mask++) {
+            if (rand() % (rows_.size() / 5 + 1) == 0) {
+                std::string property = props[rand() % props.size()];
+                limiters.push_back(Limiter(property, (*it)->get_value(property), mask/2, mask&1));
+            }
+        }
+    }
+
+    int best_index = -1;
+    int res = INT_MAX;
+    for(std::size_t i=0; i<limiters.size(); i++) {
+        int local_res = calculate_limiter_efficiency(limiters[i]);
+        if (local_res < res) {
+            best_index = i;
+            res = local_res;
+        }
+        if (res <= signed(rows_.size()) / 8) {
+            break;
+        }
+    }
+
+    return limiters[best_index];
+}
+
+int KDVertice::calculate_limiter_efficiency(const Limiter& limit) const
+{
+    int res = 0;
+    std::string prop = limit.get_property_name();
+
+    for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
+        if (limit.is_value_matching((*it)->get_value(prop))) {
+            res++;
+        } else {
+            res--;
+        }
+    }
+
+    return abs(res);
+}
 
 std::vector<const Row*>  KDVertice::linear_filter(const QueryBoundary& query_boundary) const
 {

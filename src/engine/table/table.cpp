@@ -88,7 +88,7 @@ SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
         bool ascending = (params->order_by[0].second == QueryParameters::ASC);
 
         auto comp = [&](const Row* a, const Row* b)-> bool {
-            bool res = a->get_value(order_by)->is_greater(b->get_value(order_by)->to_string());
+            bool res = a->get_value(order_by)->is_greater(b->get_value(order_by));
             if (ascending) res = !res;
             return res;
         };

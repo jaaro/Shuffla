@@ -26,6 +26,10 @@ public:
     virtual ~KDVertice();
 protected:
     void rebuild();
+
+    Limiter find_good_limiter() const ;
+    int calculate_limiter_efficiency(const Limiter& limit) const;
+
     std::vector<const Row*> linear_filter(const QueryBoundary& query_boundary) const;
     std::vector<const Row*> filter_non_index_conditions(const QueryBoundary& query_boundary) const ;
 private:

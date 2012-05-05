@@ -112,13 +112,13 @@ struct Command {
 
         int modulo;
 
-        modulo = 50;
-        if (rand() % 10 == 0) modulo = 1000000;
+        modulo = 30;
+        if (rand() % 100 == 0) modulo = 1000000;
         values.push_back(boost::lexical_cast<std::string>(rand() % modulo));
         props.push_back("OFFSET");
 
-        modulo = 50;
-        if (rand() % 10 == 0) modulo = 1000000;
+        modulo = 30;
+        if (rand() % 100 == 0) modulo = 1000000;
         values.push_back(boost::lexical_cast<std::string>(rand() % modulo));
         props.push_back("LIMIT");
 

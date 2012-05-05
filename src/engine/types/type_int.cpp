@@ -1,5 +1,6 @@
 #include "type_int.hpp"
-#include <iostream>
+
+#include <cassert>
 
 TypeInt::TypeInt(const TypeInt::TYPE value) : value(value)
 {
@@ -37,27 +38,51 @@ bool TypeInt::is_correct_value(const std::string& value) const
     return Misc::can_be_parsed_to_int(value);
 }
 
-bool TypeInt::equals(const std::string& v) const
+bool TypeInt::is_smaller(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_int( v ) == value;
+    const TypeInt* v = dynamic_cast<const TypeInt*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_int() > get_int();
 }
 
-bool TypeInt::is_smaller(const std::string& v) const
+bool TypeInt::is_smaller_or_equal(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_int( v ) > value;
+    const TypeInt* v = dynamic_cast<const TypeInt*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_int() >= get_int();
 }
 
-bool TypeInt::is_smaller_or_equal(const std::string& v) const
+bool TypeInt::is_greater(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_int( v ) >= value;
+    const TypeInt* v = dynamic_cast<const TypeInt*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_int() < get_int();
 }
 
-bool TypeInt::is_greater(const std::string& v) const
+bool TypeInt::is_greater_or_equal(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_int( v ) < value;
+    const TypeInt* v = dynamic_cast<const TypeInt*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_int() <= get_int();
 }
 
-bool TypeInt::is_greater_or_equal(const std::string& v) const
+bool TypeInt::equals(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_int( v ) <= value;
+    const TypeInt* v = dynamic_cast<const TypeInt*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_int() == get_int();
+}
+
+int TypeInt::get_int() const {
+    return value;
 }

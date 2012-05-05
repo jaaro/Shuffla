@@ -24,12 +24,11 @@ public:
     virtual std::string to_string() const = 0;
     virtual bool is_correct_value(const std::string& value) const = 0;
 
-    virtual bool is_smaller(const std::string& value) const = 0;
-    virtual bool is_smaller_or_equal(const std::string& value) const = 0;
-    virtual bool is_greater(const std::string& value) const = 0;
-    virtual bool is_greater_or_equal(const std::string& value) const = 0;
-
-    virtual bool equals(const std::string& value) const = 0;
+    virtual bool is_smaller(const Type* type) const = 0;
+    virtual bool is_smaller_or_equal(const Type* type) const = 0;
+    virtual bool is_greater(const Type* type) const = 0;
+    virtual bool is_greater_or_equal(const Type* type) const = 0;
+    virtual bool equals(const Type* type) const = 0;
 protected:
 private:
 };

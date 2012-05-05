@@ -1,7 +1,11 @@
 #ifndef SEARCHFUNCTION_H
 #define SEARCHFUNCTION_H
 
-#include "../../../types/type.hpp"
+
+#include "../../../types/type_int.hpp"
+#include "../../../types/type_string.hpp"
+#include "../../../types/type_double.hpp"
+
 #include "../../../storage/row.hpp"
 #include "../../../../misc/misc.hpp"
 
@@ -11,10 +15,10 @@ public:
     SearchFunction();
     virtual ~SearchFunction();
 
-    virtual bool set_value(const std::string& value);
+    virtual bool set_value(const Type* type, const std::string& value);
     virtual bool set_property_name(const std::string& value);
     virtual std::string get_property_name() const;
-    virtual std::string get_value() const;
+    virtual Type* get_value() const;
 
     virtual bool is_matching(const Row* row) const = 0;
     virtual bool set(const std::string& name) = 0;
@@ -22,7 +26,7 @@ public:
     virtual SearchFunction* clone() const = 0;
 
 protected:
-    std::string value;
+    Type* value;
     std::string property_name;
 private:
 };

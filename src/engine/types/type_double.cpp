@@ -1,4 +1,5 @@
 #include <boost/lexical_cast.hpp>
+#include <cassert>
 
 #include "type_double.hpp"
 
@@ -38,27 +39,52 @@ bool TypeDouble::is_correct_value(const std::string& value) const
     return Misc::can_be_parsed_to_double(value);
 }
 
-bool TypeDouble::equals(const std::string& v) const
+bool TypeDouble::is_smaller(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_double( v ) == value;
+    const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_double() > get_double();
 }
 
-bool TypeDouble::is_smaller(const std::string& v) const
+bool TypeDouble::is_smaller_or_equal(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_double( v ) > value;
+    const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_double() >= get_double();
 }
 
-bool TypeDouble::is_smaller_or_equal(const std::string& v) const
+bool TypeDouble::is_greater(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_double( v ) >= value;
+
+    const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_double() < get_double();
 }
 
-bool TypeDouble::is_greater(const std::string& v) const
+bool TypeDouble::is_greater_or_equal(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_double( v ) < value;
+    const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_double() <= get_double();
 }
 
-bool TypeDouble::is_greater_or_equal(const std::string& v) const
+bool TypeDouble::equals(const Type* type) const
 {
-    return is_correct_value(v) && Misc::string_to_double( v ) <= value;
+    const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return v->get_double() == get_double();
+}
+
+double TypeDouble::get_double() const {
+    return value;
 }

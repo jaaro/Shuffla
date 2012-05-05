@@ -15,9 +15,16 @@ bool SearchFunctionPrefix::is_matching(const Row* row) const
 {
     Type* prop_value = row->get_value(get_property_name());
     TypeString* type = static_cast<TypeString*>(prop_value);
+    TypeString* local_value = static_cast<TypeString*>(get_value());
 
     if (type == NULL) return false;
-    return type->is_prefix(get_value());
+    if (local_value == NULL) return false;
+
+
+
+
+
+    return type->is_prefix(local_value->c_str());
 }
 
 bool SearchFunctionPrefix::is_available_for_type(const Type* type) const

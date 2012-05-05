@@ -1,7 +1,7 @@
 #include "type_string.hpp"
 
 #include <cstring>
-#include <iostream>
+#include <cassert>
 
 TypeString::TypeString(const TypeString::TYPE value) : value_(new char[value.size() + 1])
 {
@@ -33,15 +33,10 @@ bool TypeString::is_correct_value(const std::string& value) const
     return true;
 }
 
-bool TypeString::equals(const std::string& v) const
-{
-    return strcmp(value_, v.c_str()) == 0;
-}
-
-bool TypeString::is_prefix(const std::string& prefix) const
+bool TypeString::is_prefix(const char* prefix) const
 {
     std::size_t i = 0;
-    while(i < prefix.size()) {
+    while(prefix[i]) {
         if (prefix[i] != value_[i]) {
             return false;
         }
@@ -50,23 +45,51 @@ bool TypeString::is_prefix(const std::string& prefix) const
     return true;
 }
 
-
-bool TypeString::is_smaller(const std::string& v) const
+bool TypeString::is_smaller(const Type* type) const
 {
-    return strcmp(v.c_str(), value_) > 0;
+    const TypeString* v = dynamic_cast<const TypeString*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return strcmp(v->c_str(), value_) > 0;
 }
 
-bool TypeString::is_smaller_or_equal(const std::string& v) const
+bool TypeString::is_smaller_or_equal(const Type* type) const
 {
-    return strcmp(v.c_str(), value_) >= 0;
+    const TypeString* v = dynamic_cast<const TypeString*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return strcmp(v->c_str(), value_) >= 0;
 }
 
-bool TypeString::is_greater(const std::string& v) const
+bool TypeString::is_greater(const Type* type) const
 {
-    return strcmp(v.c_str(), value_) < 0;
+    const TypeString* v = dynamic_cast<const TypeString*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return strcmp(v->c_str(), value_) < 0;
 }
 
-bool TypeString::is_greater_or_equal(const std::string& v) const
+bool TypeString::is_greater_or_equal(const Type* type) const
 {
-    return strcmp(v.c_str(), value_) <= 0;
+    const TypeString* v = dynamic_cast<const TypeString*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return strcmp(v->c_str(), value_) <= 0;
+}
+
+bool TypeString::equals(const Type* type) const
+{
+    const TypeString* v = dynamic_cast<const TypeString*>(type);
+    if (v == NULL) {
+        assert(!"Comparision of different types");
+    }
+    return strcmp(v->c_str(), value_) == 0;
+}
+
+const char* TypeString::c_str() const {
+    return value_;
 }

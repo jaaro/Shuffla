@@ -7,17 +7,25 @@ SearchFunction::SearchFunction()
 
 SearchFunction::~SearchFunction()
 {
-    //dtor
+    //TODO
+    //delete value;
 }
 
 
-bool SearchFunction::set_value(const std::string& v)
+bool SearchFunction::set_value(const Type* type, const std::string& v)
 {
-    value = v;
+    if (type->get_name() == "int") {
+        value = new TypeInt(v);
+    } else if (type->get_name() == "string") {
+        value = new TypeString(v);
+    } else if (type->get_name() == "double") {
+        value = new TypeDouble(v);
+    }
+
     return true;
 }
 
-std::string SearchFunction::get_value() const
+Type* SearchFunction::get_value() const
 {
     return value;
 }

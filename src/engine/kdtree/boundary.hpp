@@ -3,36 +3,9 @@
 
 #include "../table_index/table_index_info.hpp"
 #include "../storage/row.hpp"
+#include "limiter.hpp"
 
 #include <map>
-
-class Limiter
-{
-public:
-    Limiter(const std::string& property_name, const Type* value, bool is_max, bool is_inclusive);
-
-    virtual ~Limiter();
-
-    bool is_more_strict(const Limiter& rhs) const ;
-    bool is_value_matching(const Type* value) const ;
-    bool is_disjoint(const Limiter& rhs) const ;
-
-    bool is_upper_bound() const ;
-    bool is_inclusive() const ;
-    const Type* get_bound_value() const ;
-    const std::string& get_property_name() const ;
-
-    Limiter createReverseLimiter() const ;
-    void debug() const;
-
-private:
-
-    const std::string property_name_;
-    const Type* bound_;
-
-    const bool is_upper_bound_;
-    const bool is_inclusive_;
-};
 
 class Boundary
 {

@@ -75,7 +75,7 @@ bool QueryParameters::set(const TableDefinition* table_definition, const DataWit
             return false;
         }
 
-        function->set_value(value);
+        function->set_value(type, value);
         parameters.push_back(function);
     }
 

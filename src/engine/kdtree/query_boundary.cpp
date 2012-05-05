@@ -17,17 +17,7 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
     are_there_extra_requiremens_ = false;
     for(std::size_t i=0; i<params.size(); i++) {
         std::string property_name = params[i]->get_property_name();
-        const Type* type = table_index_info.get_table_definition()->get_property_type(property_name);
-
-        Type* value = NULL;
-
-        if (type->get_name() == "int") {
-            value = new TypeInt(params[i]->get_value());
-        } else if (type->get_name() == "string") {
-            value = new TypeString(params[i]->get_value());
-        } else if (type->get_name() == "double") {
-            value = new TypeDouble(params[i]->get_value());
-        }
+        Type* value = params[i]->get_value()->clone();
 
         if (dynamic_cast<SearchFunctionGreater*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, false, false));
@@ -47,8 +37,6 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
             std::string text = value->to_string();
             text[text.size() - 1]++;
             add_limiter(Limiter(params[i]->get_property_name(), new TypeString(text), true, false));
-        } else {
-            are_there_extra_requiremens_ = true;
         }
     }
 }
