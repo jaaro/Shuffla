@@ -26,11 +26,13 @@ TableIndexInfo::~TableIndexInfo()
     //dtor
 }
 
-const TableDefinition* TableIndexInfo::get_table_definition() const {
+const TableDefinition* TableIndexInfo::get_table_definition() const
+{
     return table_definition_;
 }
 
-const std::string TableIndexInfo::to_string() const {
+const std::string TableIndexInfo::to_string() const
+{
     std::stringstream result;
 
     // adding comparable properties

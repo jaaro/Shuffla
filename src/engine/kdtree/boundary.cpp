@@ -36,7 +36,8 @@ bool Limiter::is_value_matching(const Type* rhs) const
     return false;
 }
 
-bool Limiter::is_disjoint(const Limiter& rhs) const {
+bool Limiter::is_disjoint(const Limiter& rhs) const
+{
     if (rhs.is_upper_bound() == is_upper_bound()) return false;
 
     if (bound_->equals(rhs.get_bound_value()->to_string())) {
@@ -73,7 +74,8 @@ const std::string& Limiter::get_property_name() const
     return property_name_;
 }
 
-void Limiter::debug() const {
+void Limiter::debug() const
+{
     std::cerr << "LIMITER " << property_name_;
     std::cerr << (is_upper_bound() ? "<" : ">");
     std::cerr << (is_inclusive() ? "=" : "");
@@ -123,11 +125,13 @@ bool Boundary::is_good_limiter_internal(const Limiter& limiter) const
     return (it == current.end() || limiter.is_more_strict(it->second));
 }
 
-const std::map<std::string, Limiter>& Boundary::get_upper_bounds() const {
+const std::map<std::string, Limiter>& Boundary::get_upper_bounds() const
+{
     return upper_bounds_;
 }
 
-const std::map<std::string, Limiter>& Boundary::get_lower_bounds() const {
+const std::map<std::string, Limiter>& Boundary::get_lower_bounds() const
+{
     return lower_bounds_;
 }
 

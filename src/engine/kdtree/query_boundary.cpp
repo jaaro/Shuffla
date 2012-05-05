@@ -10,7 +10,8 @@
 #include "../query/search/functions/search_function_smaller_or_equal.hpp"
 #include "../query/search/functions/search_function_greater_or_equal.hpp"
 
-QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shared_ptr<QueryParameters> query_params) : Boundary(table_index_info), query_params_(query_params) {
+QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shared_ptr<QueryParameters> query_params) : Boundary(table_index_info), query_params_(query_params)
+{
     const std::vector<SearchFunction*> params = query_params_->get_parameters();
 
     are_there_extra_requiremens_ = false;
@@ -34,36 +35,35 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
 
         else if (dynamic_cast<SearchFunctionGreaterOrEqual*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
-        }
-        else if (dynamic_cast<SearchFunctionSmaller*>(params[i]) != NULL) {
+        } else if (dynamic_cast<SearchFunctionSmaller*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, true, false));
-        }
-        else if (dynamic_cast<SearchFunctionSmallerOrEqual*>(params[i]) != NULL) {
+        } else if (dynamic_cast<SearchFunctionSmallerOrEqual*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, true, true));
-        }
-        else if (dynamic_cast<SearchFunctionEqual*>(params[i]) != NULL) {
+        } else if (dynamic_cast<SearchFunctionEqual*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, true, true));
             add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
-        }
-        else if (dynamic_cast<SearchFunctionPrefix*>(params[i]) != NULL) {
+        } else if (dynamic_cast<SearchFunctionPrefix*>(params[i]) != NULL) {
             add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
             std::string text = value->to_string();
             text[text.size() - 1]++;
             add_limiter(Limiter(params[i]->get_property_name(), new TypeString(text), true, false));
         } else {
-             are_there_extra_requiremens_ = true;
+            are_there_extra_requiremens_ = true;
         }
     }
 }
 
-QueryBoundary::~QueryBoundary() {
+QueryBoundary::~QueryBoundary()
+{
 
 }
 
-boost::shared_ptr<QueryParameters> QueryBoundary::get_query_params() const {
+boost::shared_ptr<QueryParameters> QueryBoundary::get_query_params() const
+{
     return query_params_;
 }
 
-bool QueryBoundary::are_there_extra_requiremens() const {
+bool QueryBoundary::are_there_extra_requiremens() const
+{
     return are_there_extra_requiremens_;
 }
