@@ -125,3 +125,13 @@ void Boundary::debug() const
         other_limit.debug();
     }
 }
+
+const Type* Boundary::get_lower_bound_for_property(const std::string& property_name) const {
+    if (lower_bounds_.find(property_name) == lower_bounds_.end()) return NULL;
+    else return lower_bounds_.find(property_name)->second.get_bound_value();
+}
+
+const Type* Boundary::get_upper_bound_for_property(const std::string& property_name) const {
+    if (upper_bounds_.find(property_name) == upper_bounds_.end()) return NULL;
+    else return upper_bounds_.find(property_name)->second.get_bound_value();
+}

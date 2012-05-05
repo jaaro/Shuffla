@@ -21,6 +21,9 @@ public:
     virtual bool is_good_limiter(const Limiter& limiter) const ;
     virtual bool is_good_limiter_internal(const Limiter& limiter) const ;
 
+    virtual const Type* get_lower_bound_for_property(const std::string& property_name) const ;
+    virtual const Type* get_upper_bound_for_property(const std::string& property_name) const ;
+
     //TODO should be protected or private
     virtual const std::map<std::string, Limiter>& get_upper_bounds() const ;
     virtual const std::map<std::string, Limiter>& get_lower_bounds() const ;

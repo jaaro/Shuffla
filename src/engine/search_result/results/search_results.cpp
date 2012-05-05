@@ -17,7 +17,7 @@ SearchResults::~SearchResults()
 std::string SearchResults::to_string() const
 {
     boost::property_tree::ptree root;
-    root.put<int>("overall_count", count );
+    //root.put<int>("overall_count", count );
     root.put<int>("offset", params->offset);
     root.put<int>("limit", params->limit);
 

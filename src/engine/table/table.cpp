@@ -82,7 +82,7 @@ void Table::dump_table(DumpSaver& dump_saver) const
 SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
 {
     std::vector<const Row*> results = indexes[0]->search(params);
-
+/*
     if (params->order_by.size() > 0 ) {
         std::string order_by = params->order_by[0].first;
         bool ascending = (params->order_by[0].second == QueryParameters::ASC);
@@ -95,13 +95,9 @@ SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
 
         sort(results.begin(), results.end(), comp);
     }
+*/
 
-    int count = results.size();
-    int start = std::min(count, params->offset);
-    int end = (int)std::min((long long)count, (long long)params->offset + params->limit);
-    std::vector<const Row*> sliced_results(results.begin() + start, results.begin() + end);
-
-    return new SearchResults(params, sliced_results, count);
+    return new SearchResults(params, results, 7);
 }
 
 

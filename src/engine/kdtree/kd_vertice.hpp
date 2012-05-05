@@ -5,8 +5,12 @@
 #include "query_boundary.hpp"
 #include "../table_index/table_index_info.hpp"
 #include "../../dump/dump_saver.hpp"
+#include "search_tasks.hpp"
 
 #include <set>
+
+class SearchTask ;
+class SearchTaskSearchNode ;
 
 class KDVertice
 {
@@ -17,11 +21,12 @@ public:
     void add_collection(std::vector<const Row*> rows);
     bool insert_row(const Row* row, int k);
     bool delete_row(const Row* row);
-    std::vector<const Row*> search(const QueryBoundary& query_boundary) const;
+    std::vector<SearchTask*> search(const QueryBoundary& query_boundary) const;
     void clear();
 
     bool contains_row(const Row* row) const ;
     void dump_all_rows(DumpSaver& dump_saver) const;
+    const Boundary& get_boundary() const;
 
     virtual ~KDVertice();
 protected:

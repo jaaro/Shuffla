@@ -76,22 +76,33 @@ bool KDVertice::delete_row(const Row* row)
     return true;
 }
 
-std::vector<const Row*>  KDVertice::search(const QueryBoundary& query_boundary) const
+std::vector<SearchTask*>  KDVertice::search(const QueryBoundary& query_boundary) const
 {
-    if (query_boundary.contains(boundary_)) {
-        if (!query_boundary.are_there_extra_requiremens()) return std::vector<const Row*>(rows_.begin(), rows_.end());
-        return filter_non_index_conditions(query_boundary);
-    }
-
     if (query_boundary.disjoint(boundary_)) {
-        return std::vector<const Row*>();
+        return std::vector<SearchTask*>();
     }
 
-    if (left_ == NULL) return linear_filter(query_boundary);
+    if (query_boundary.contains(boundary_)) {
+        std::vector<const Row*> rows;
+        if (!query_boundary.are_there_extra_requiremens()) rows = std::vector<const Row*>(rows_.begin(), rows_.end());
+        else rows = filter_non_index_conditions(query_boundary);
 
-    std::vector<const Row*> result = left_->search(query_boundary);
-    std::vector<const Row*> result2 = right_->search(query_boundary);
-    result.insert(result.end(), result2.begin(), result2.end());
+        std::vector<SearchTask*> res;
+        for(std::size_t i=0; i<rows.size(); i++) res.push_back(new SearchTaskFoundRow(rows[i]));
+        return res;
+    }
+
+    if (left_ == NULL) {
+        std::vector<const Row*> rows = linear_filter(query_boundary);
+
+        std::vector<SearchTask*> res;
+        for(std::size_t i=0; i<rows.size(); i++) res.push_back(new SearchTaskFoundRow(rows[i]));
+        return res;
+    }
+
+    std::vector<SearchTask*> result;
+    result.push_back(new SearchTaskSearchNode(left_));
+    result.push_back(new SearchTaskSearchNode(right_));
 
     return result;
 }
@@ -130,6 +141,8 @@ void KDVertice::rebuild()
 
 Limiter KDVertice::find_good_limiter() const
 {
+    bool only_first = rand() % 2;
+
     std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
     std::vector<Limiter> limiters;
 
@@ -137,6 +150,7 @@ Limiter KDVertice::find_good_limiter() const
         for(int mask = 0; mask < 4; mask++) {
             if (rand() % (rows_.size() / 5 + 1) == 0) {
                 std::string property = props[rand() % props.size()];
+                if (only_first) property = props[0];
                 limiters.push_back(Limiter(property, (*it)->get_value(property), mask/2, mask&1));
             }
         }
@@ -199,4 +213,8 @@ std::vector<const Row*>  KDVertice::filter_non_index_conditions(const QueryBound
     }
 
     return rows;
+}
+
+const Boundary& KDVertice::get_boundary() const {
+    return boundary_;
 }
