@@ -28,18 +28,20 @@ std::vector<const Row*> TableIndex::search(boost::shared_ptr<QueryParameters> qu
     QueryBoundary query_boundary(index_info_, query_params);
 
     bool order_by_defined = query_params->order_by.size();
-    std::string order_by;
+    int order_by_index;
+    int order_by_boundary_index;
     bool is_desc;
 
     if (order_by_defined) {
-        order_by = query_params->order_by[0].first;
+        order_by_index = index_info_.get_table_definition()->get_property_index(query_params->order_by[0].first);
+        order_by_boundary_index = index_info_.get_boundary_index(order_by_index);
         is_desc = (query_params->order_by[0].second == QueryParameters::DESC);
     }
 
     auto comp = [&](const SearchTask* lhs, const SearchTask* rhs ) -> bool {
         if (order_by_defined) {
-            const Type* left = lhs->get_comparision_value(order_by, is_desc);
-            const Type* right = rhs->get_comparision_value(order_by, is_desc);
+            const Type* left = lhs->get_comparision_value(order_by_index, order_by_boundary_index, is_desc);
+            const Type* right = rhs->get_comparision_value(order_by_index, order_by_boundary_index, is_desc);
 
             if (left == NULL) return false;
             if (right == NULL) return true;

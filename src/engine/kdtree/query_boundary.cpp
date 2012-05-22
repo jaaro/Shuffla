@@ -18,25 +18,26 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
     for(std::size_t i=0; i<params.size(); i++) {
         std::string property_name = params[i]->get_property_name();
         Type* value = params[i]->get_value()->clone();
+        int property_index = table_index_info.get_table_definition()->get_property_index(property_name);
 
         if (dynamic_cast<SearchFunctionGreater*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, false, false));
+            add_limiter(Limiter(property_index, value, false, false));
         }
 
         else if (dynamic_cast<SearchFunctionGreaterOrEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
+            add_limiter(Limiter(property_index, value, false, true));
         } else if (dynamic_cast<SearchFunctionSmaller*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, true, false));
+            add_limiter(Limiter(property_index, value, true, false));
         } else if (dynamic_cast<SearchFunctionSmallerOrEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, true, true));
+            add_limiter(Limiter(property_index, value, true, true));
         } else if (dynamic_cast<SearchFunctionEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, true, true));
-            add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
+            add_limiter(Limiter(property_index, value, true, true));
+            add_limiter(Limiter(property_index, value, false, true));
         } else if (dynamic_cast<SearchFunctionPrefix*>(params[i]) != NULL) {
-            add_limiter(Limiter(params[i]->get_property_name(), value, false, true));
+            add_limiter(Limiter(property_index, value, false, true));
             std::string text = value->to_string();
             text[text.size() - 1]++;
-            add_limiter(Limiter(params[i]->get_property_name(), new TypeString(text), true, false));
+            add_limiter(Limiter(property_index, new TypeString(text), true, false));
         }
     }
 }

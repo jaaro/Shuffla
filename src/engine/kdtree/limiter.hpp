@@ -7,7 +7,8 @@
 class Limiter
 {
 public:
-    Limiter(const std::string& property_name, const Type* value, bool is_max, bool is_inclusive);
+    Limiter(int property_index, const Type* value, bool is_max, bool is_inclusive);
+    Limiter();
 
     virtual ~Limiter();
 
@@ -18,14 +19,15 @@ public:
     bool is_upper_bound() const ;
     bool is_inclusive() const ;
     const Type* get_bound_value() const ;
-    const std::string& get_property_name() const ;
+    int get_property_index() const ;
 
     Limiter createReverseLimiter() const ;
     void debug() const;
 
+    bool is_unbounded() const ;
 private:
 
-    std::string property_name_;
+    int property_index_;
     Type* bound_;
 
     bool is_upper_bound_;

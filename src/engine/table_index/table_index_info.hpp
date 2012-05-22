@@ -14,11 +14,14 @@ public:
     const TableDefinition* get_table_definition() const;
     const std::string to_string() const ;
 
+    int get_property_index_limit() const ;
+    int get_boundary_index(int property_index) const ;
+
 protected:
 private:
     const TableDefinition* table_definition_;
-    std::vector<std::string> comparable_properties_;
-    std::vector<std::string> substring_properties_;
+    std::vector<int> comparable_properties_indexes_;
+    std::vector<int> substring_properties_indexes_;
 };
 
 #endif // TABLEINDEXINFO_H

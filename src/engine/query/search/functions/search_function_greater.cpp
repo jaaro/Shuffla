@@ -14,7 +14,7 @@ SearchFunctionGreater::~SearchFunctionGreater()
 
 bool SearchFunctionGreater::is_matching(const Row* row) const
 {
-    Type* type = row->get_value(get_property_name());
+    const Type* type = row->get_value(get_property_name());
 
     if (type == NULL) return false;
     return type->is_greater(get_value());

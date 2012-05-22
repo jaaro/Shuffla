@@ -179,3 +179,16 @@ TableDefinition::TableDefinition(DumpLoader& dump_loader)
     }
 
 }
+
+
+int TableDefinition::get_property_index(const std::string& property) const
+{
+    for(std::size_t i=0; i<property_names.size(); i++) {
+        if (property_names[i] == property) {
+            return i;
+        }
+    }
+
+    //TODO log error
+    assert(0);
+}
