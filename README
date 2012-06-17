@@ -1,10 +1,9 @@
 Performance
 -----------
 
-On table with 1GB data (1M elements)
-Inserting: unknown
-Querying: unknown
-Searching: unknown
+On table with 100MB data (1M elements)
+Inserting: 2000 req/sec
+Searching: 150-1500 req/sec
 
 You can test it yourself by installing shuffla and running script shuffla-benchmark.sh. (TODO)
 
@@ -14,9 +13,6 @@ Shuffla requires boost, version >= 1.49. For information about installing boost 
 * windows users: http://www.boost.org/doc/libs/1_49_0/more/getting_started/windows.html
 * other OS: http://www.boost.org/doc/libs/1_49_0/more/getting_started/unix-variants.html
 
-Right know you need to open project in codeblocks and just compile it.
-
-I will change it in the future to:
 After installing boost:
 ./configure
 make
@@ -71,7 +67,7 @@ result:
  }
 }
 
-query:http://0.0.0.0:15942/search/users/?name=Ashley&offset=1&limit=1
+query:http://0.0.0.0:15942/search/users/?name=Ashley&OFFSET=1&LIMIT=1
 result:
 {
  count: 2,
@@ -80,7 +76,7 @@ result:
   }
 }
 
-query: http://0.0.0.0:15942/search/users/?prefix(name)=A&order_by=age
+query: http://0.0.0.0:15942/search/users/?PREFIX(name)=A&ORDER_BY=age
 result:
 {
  count: 3,
@@ -91,7 +87,7 @@ result:
  }
 }
 
-query: http://0.0.0.0:15942/search/users/?prefix(name)=A&age<=34&age>=32
+query: http://0.0.0.0:15942/search/users/?PREFIX(name)=A&SMALLER_OR_EQUAL(age)=34&GREATER_OR_EQUAL(age)=32
 result:
 {
  count: 0,
