@@ -17,10 +17,10 @@ Config::Config()
 
     is_append_log_enabled = false;
 
-    dump_file_name = "/home/jaaro/dump.shu";
+    dump_file_name = "dump.shu";
 
     is_slow_log_enabled = 1;
-    slow_log_file_name = "/home/jaaro/slow_log.log";
+    slow_log_file_name = "slow_log.log";
     slow_log_miliseconds_bound = 30.0;
 
     set("save_dump", "20 1");

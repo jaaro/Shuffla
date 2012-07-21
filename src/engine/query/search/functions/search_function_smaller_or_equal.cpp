@@ -15,7 +15,7 @@ SearchFunctionSmallerOrEqual::~SearchFunctionSmallerOrEqual()
 
 bool SearchFunctionSmallerOrEqual::is_matching(const Row* row) const
 {
-    Type* type = row->get_value(get_property_name());
+    const Type* type = row->get_value(get_property_name());
 
     if (type == NULL) return false;
     return type->is_smaller_or_equal(get_value());

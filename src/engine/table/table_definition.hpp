@@ -29,6 +29,8 @@ public:
     bool is_correct_value_for_property(const std::string& property, const std::string& value) const ;
 
     const Type* get_property_type(const std::string& property) const ;
+    int get_property_index(const std::string& property) const ;
+
     std::string to_string() const ;
 protected:
 private:

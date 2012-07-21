@@ -11,6 +11,8 @@ class Boundary
 {
 public:
     Boundary(const TableIndexInfo& table_index_info);
+    Boundary(const Boundary& boundary);
+
     virtual ~Boundary();
 
     virtual bool is_point_inside(const Row* boundary) const ;
@@ -21,20 +23,17 @@ public:
     virtual bool is_good_limiter(const Limiter& limiter) const ;
     virtual bool is_good_limiter_internal(const Limiter& limiter) const ;
 
-    virtual const Type* get_lower_bound_for_property(const std::string& property_name) const ;
-    virtual const Type* get_upper_bound_for_property(const std::string& property_name) const ;
-
-    //TODO should be protected or private
-    virtual const std::map<std::string, Limiter>& get_upper_bounds() const ;
-    virtual const std::map<std::string, Limiter>& get_lower_bounds() const ;
+    virtual const Limiter& get_upper_bound(int index) const ;
+    virtual const Limiter& get_lower_bound(int index) const ;
 
     void debug() const;
+
 protected:
     const TableIndexInfo& table_index_info_;
 private:
-
-    std::map<std::string, Limiter> upper_bounds_;
-    std::map<std::string, Limiter> lower_bounds_;
+    Limiter* upper_bounds_;
+    Limiter* lower_bounds_;
+    int size_;
 };
 
 #endif // BOUNDARY_H

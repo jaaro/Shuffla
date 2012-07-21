@@ -17,7 +17,8 @@ public:
     explicit Row(const TableDefinition* table_definition, const DataWithoutTyping& data);
     virtual ~Row();
 
-    Type* get_value(const std::string& name) const ;
+    const Type* get_value(const std::string& name) const ;
+    const Type* get_value(int index) const ;
     std::string to_string() const ;
 
     boost::property_tree::ptree get_property_tree() const;

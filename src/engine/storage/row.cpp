@@ -79,7 +79,7 @@ boost::property_tree::ptree Row::get_property_tree() const
     return root;
 }
 
-Type* Row::get_value (const std::string& name) const
+const Type* Row::get_value (const std::string& name) const
 {
     std::vector<std::string> property_names = table_definition->get_property_names();
     for(std::size_t i=0; i<property_names.size(); i++) {
@@ -89,4 +89,8 @@ Type* Row::get_value (const std::string& name) const
     return NULL;
 }
 
+
+const Type* Row::get_value(int index) const {
+        return values[index];
+    }
 

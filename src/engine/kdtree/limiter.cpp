@@ -1,10 +1,12 @@
 #include "limiter.hpp"
 
-Limiter::Limiter(const std::string& property_name, const Type* bound, bool is_upper_bound, bool is_inclusive)
-    : property_name_(property_name), bound_(bound->clone()), is_upper_bound_(is_upper_bound), is_inclusive_(is_inclusive)
+Limiter::Limiter(int property_index, const Type* bound, bool is_upper_bound, bool is_inclusive)
+    : property_index_(property_index), bound_(bound->clone()), is_upper_bound_(is_upper_bound), is_inclusive_(is_inclusive)
 { }
 
-Limiter::~Limiter() {}
+Limiter::Limiter() : property_index_(-1), bound_(NULL), is_upper_bound_(false), is_inclusive_(false) {}
+
+Limiter::~Limiter() { /* TODO delete bound_;*/ }
 
 bool Limiter::is_more_strict(const Limiter& rhs) const
 {
@@ -48,7 +50,7 @@ bool Limiter::is_disjoint(const Limiter& rhs) const
 
 Limiter Limiter::createReverseLimiter() const
 {
-    return Limiter(property_name_, bound_, !is_upper_bound_, !is_inclusive_);
+    return Limiter(property_index_, bound_, !is_upper_bound_, !is_inclusive_);
 }
 
 const Type* Limiter::get_bound_value() const
@@ -67,15 +69,20 @@ bool Limiter::is_inclusive() const
 }
 
 
-const std::string& Limiter::get_property_name() const
+int Limiter::get_property_index() const
 {
-    return property_name_;
+    return property_index_;
 }
 
 void Limiter::debug() const
 {
-    std::cerr << "LIMITER " << property_name_;
+    std::cerr << "LIMITER " << property_index_;
     std::cerr << (is_upper_bound() ? "<" : ">");
     std::cerr << (is_inclusive() ? "=" : "");
     std::cerr << get_bound_value()->to_string() << "\n";
 }
+
+
+    bool Limiter::is_unbounded() const {
+    return bound_ == NULL;
+    }

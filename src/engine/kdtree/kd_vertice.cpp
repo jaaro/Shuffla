@@ -125,9 +125,9 @@ void KDVertice::rebuild()
         right_ = new KDVertice(table_index_info_, right_boundary);
         std::vector<const Row*> left_collection, right_collection;
 
-        std::string property = limit.get_property_name();
+        int property_index = limit.get_property_index();
         for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
-            if (limit.is_value_matching((*it)->get_value(property))) {
+            if (limit.is_value_matching((*it)->get_value(property_index))) {
                 left_collection.push_back(*it);
             } else {
                 right_collection.push_back(*it);
@@ -151,7 +151,9 @@ Limiter KDVertice::find_good_limiter() const
             if (rand() % (rows_.size() / 5 + 1) == 0) {
                 std::string property = props[rand() % props.size()];
                 if (only_first) property = props[0];
-                limiters.push_back(Limiter(property, (*it)->get_value(property), mask/2, mask&1));
+                int property_index = table_index_info_.get_table_definition()->get_property_index(property);
+
+                limiters.push_back(Limiter(property_index, (*it)->get_value(property), mask/2, mask&1));
             }
         }
     }
@@ -175,10 +177,10 @@ Limiter KDVertice::find_good_limiter() const
 int KDVertice::calculate_limiter_efficiency(const Limiter& limit) const
 {
     int res = 0;
-    std::string prop = limit.get_property_name();
+    int property_index = limit.get_property_index();
 
     for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
-        if (limit.is_value_matching((*it)->get_value(prop))) {
+        if (limit.is_value_matching((*it)->get_value(property_index))) {
             res++;
         } else {
             res--;

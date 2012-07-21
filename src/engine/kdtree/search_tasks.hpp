@@ -8,14 +8,14 @@ class KDVertice;
 class SearchTask {
     public:
         virtual ~SearchTask(){}
-        virtual const Type* get_comparision_value(const std::string& property_name, bool is_order_descending) const = 0;
+        virtual const Type* get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const = 0;
 };
 
 class SearchTaskFoundRow : public SearchTask {
     public:
         SearchTaskFoundRow(const Row* row);
         virtual ~SearchTaskFoundRow();
-        virtual const Type* get_comparision_value(const std::string& property_name, bool is_order_descending) const ;
+        virtual const Type* get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const ;
         const Row* get_row() const ;
 
 
@@ -27,7 +27,7 @@ class SearchTaskSearchNode : public SearchTask {
     public:
         SearchTaskSearchNode(KDVertice* row);
         virtual ~SearchTaskSearchNode();
-        virtual const Type* get_comparision_value(const std::string& property_name, bool is_order_descending) const ;
+        virtual const Type* get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const ;
 
         KDVertice* get_vertice() const ;
     private:
