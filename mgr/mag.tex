@@ -1,20 +1,36 @@
-\documentclass{llncs}
+\documentclass[10pt,a4paper]{article}
 
+\usepackage[a4paper,hmargin=2.5cm,vmargin=3cm] {geometry}
+\usepackage{fix-cm}
 \usepackage{amsmath,amssymb}
 \usepackage{tikz}
 \usepackage{graphicx}
-\usetikzlibrary{automata}
 \usepackage[polish,english]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{url}
-\usepackage[a4paper,hmargin=2.5cm,vmargin=3cm] {geometry}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{ae}
+\usepackage[ruled]{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage[breaklinks]{hyperref}
+\usepackage[polish,english]{babel}
+\usepackage{multirow}
 
-\renewcommand{\labelenumi}{(\roman{enumi})}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
 \definecolor{myRed}{rgb}{0.9,0.3,0.1}
 \newcommand{\pawel}[1]{\noindent\colorbox{myRed}{Pawel: #1}}
+\newcommand{\Oh}{\mathcal{O}}
 
 \begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{roman}
 
 \topmargin-20pt
 \oddsidemargin0pt
@@ -24,11 +40,11 @@
 
 \selectlanguage{polish}
 \begin{titlepage}
-\large
+\Large
 
 \begin{center}
 
-\textbf{\normalsize%
+\textbf{\large%
 Uniwersytet Wrocławski\\
 Wydział Matematyki i Informatyki\\
 Instytut Informatyki}
@@ -43,10 +59,9 @@ Shuffla: fast and scalable full-text search engine}
 
 \end{center}
 
-
 \vspace{7cm}
 \begin{flushright}
-\begin{minipage}[c]{6cm}
+\begin{minipage}[c]{6.2cm}
   Praca magisterska\\
   napisana pod kierunkiem\\
   dr. Pawła Gawrychowskiego
@@ -62,16 +77,44 @@ Shuffla: fast and scalable full-text search engine}
 \newpage
 
 \end{titlepage}
-\selectlanguage{english}
+
+\newpage
+
+\thispagestyle{empty}
+
+\Large
+
+~\vfill
+Oświadczam, że pracę magisterską wykonałem samodzielnie i zgłaszam ją do oceny.
+
+\vspace{2cm}
+Data: \dotfill\quad Podpis autora pracy: \dotfill
+
+
+\vspace{4cm}
+Oświadczam, że praca jest gotowa do oceny przez recenzenta.
+
+\vspace{2cm}
+Data: \dotfill\quad Podpis opiekuna pracy: \dotfill
+
+\normalsize
+
+\restoregeometry
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newpage
+\thispagestyle{empty}
 
+\begin{abstract}
+\pawel{Tutaj powinno być streszczenie po polsku.}
+\end{abstract}
+
+\selectlanguage{english}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \title{Shuffla: fast and scalable full-text search engine}
 \author{Jarosław Gomułka}
-\institute{}
 
 \maketitle
 
@@ -97,6 +140,7 @@ I'm working on nk.pl (which is biggest polish social networking website) since t
 \noindent \textbf{Keywords:} database, nosql
 \end{abstract}
 
+\pagenumbering{arabic}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Problem definition}
@@ -132,10 +176,12 @@ Complexities (where $d>=2$)
 
 \begin{tabular}{|l|c|c|c|c|}
 \hline Algorithm & Insert (without balancing) & Delete (without balancing) & Search & Space \\
-\hline K-D tree & O($\log{n}$) & O($\log{n}$) & O($n^{1-1/d} + k$) & O($n$) \\
-\hline Range tree & O($\log^{d-1}{n}$) & O($\log^{d-1}{n}$) & O($\log^d{n}$) & O($n*\log^{d-1}{n}$) \\
+\hline K-D tree & $\Oh(\log{n})$ & $Oh(\log{n})$ & $\Oh(n^{1-1/d} + k)$ & $\Oh(n)$ \\
+\hline Range tree & $\Oh(\log^{d-1}{n})$ & $\Oh(\log^{d-1}{n})$ & $\Oh(\log^d{n})$ & $\Oh(n\log^{d-1}{n})$ \\
 \hline 
 \end{tabular}
+
+\pawel{Wszystkie dalsze big-O też używając makra Oh i w math mode}
 
 \bigskip
 
@@ -236,6 +282,7 @@ Instead of running search events right away we could insert such events on a pri
   \includegraphics[width=8cm]{simple_boundary.png}%
   \caption{Storing whole area covered by nodes}
 \end{figure}
+\pawel{Dałoby się zrobić te rysunki wektorowo?}
 
 Imagine that we want to find point with smallest value at coordinate x. We need to process all nodes
 that doesn't have lower bound for coordinate x. Lets count them:
