@@ -18,6 +18,7 @@
 \usepackage[breaklinks]{hyperref}
 \usepackage[polish,english]{babel}
 \usepackage{multirow}
+\usepackage{listings}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -106,7 +107,27 @@ Data: \dotfill\quad Podpis opiekuna pracy: \dotfill
 \thispagestyle{empty}
 
 \begin{abstract}
-\pawel{Tutaj powinno być streszczenie po polsku.}
+Mając duży zbiór użytkowników portalu społecznościowego (imie, nazwisko, wiek, miejsce zamieszkania) chcemy stworzyć szybkie, skalowalne narzędzie do przeszukiwania dokładnie takiego zbioru danych.
+
+Użytkownik portalu może wyszukiwać innych użytkowników poprzez:
+\bigskip
+\begin{enumerate}
+\item{podanie imienia (jego prefix lub podsłowo) }
+\item{podanie nazwiska (jego prefix lub podsłowo)}
+\item{podanie wieku (użytownik może zdefiniować dolną/górną granice wieku)}
+\item{podanie miejsca zamieszkania (jego prefix lub podsłowo)}
+\end{enumerate}
+
+\bigskip
+Kolejnym założeniem jest to, że wyniki powinny być personalizowane. Dla przykładu użytkownik z San Francisco szukający Jane powienien dostać w pierwszej kolejności osoby o imieniu Jane's z San Francisco, następnie osoby z Kaliforni, Stanów Zjednoczonych, reszty świata. 
+
+Jednym z możliwych rozwiązań jest zastosowanie relacyjnej bazy danych. Inną możliwością jest zastosowanie wyszukiwarki tekstowej, np. Apache Solr or Sphinx Search. Inną możliwością jest zaimplementowanie własnego, wyspecjalizowanego narzędzia do rozwiązywania tego problemu. W tej pracy opisze Shuffle, wyszukiwarkę stworzoną przez mnie. Porównam jej działanie z PostgreSQL, Apache Solr, Sphinx Search oraz MemSQL - nowoczesną relacyjną bazą danych która przechowuje dane w pamięci RAM.
+
+\bigskip
+Pracuje nad portalem nk.pl (który jest największym polskim portalem społecznościowym) od początku roku 2011. W sierpniu 2011 roku zostało mi powierzone rozwiązanie tego problemu. W nk wybraliśmy Solra.
+
+\bigskip
+\noindent \textbf{Słowa kluczowe:} bazy danych, nosql
 \end{abstract}
 
 \selectlanguage{english}
@@ -131,7 +152,7 @@ User can narrow search results by:
 \end{enumerate}
 
 \bigskip
-It would be great if results could be personalized. For example, if user from San Francisco is looking for Jane, top results should show Jane's from San Francisco, then Jane's from California, then rest of U.S. One of possible solution is to use relational database. Other solution is to use full-text search engine like Solr or Sphinx. Another solution is to develop very own search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr and PostgreSQL. 
+It would be great if results could be personalized. For example, if user from San Francisco is looking for Jane, top results should show Jane's from San Francisco, then Jane's from California, then rest of U.S. One of possible solution is to use relational database. Other solution is to use full-text search engine like Solr or Sphinx. Another solution is to develop very own search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, PostgreSQL and MemSQL - newly created database which stores data in RAM memory. 
 
 \bigskip
 I'm working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve task described above. In nk we actually chose Solr.
@@ -181,8 +202,6 @@ Complexities (where $d>=2$)
 \hline 
 \end{tabular}
 
-\pawel{Wszystkie dalsze big-O też używając makra Oh i w math mode}
-
 \bigskip
 
 I chose to implement K-D trees because:
@@ -196,13 +215,12 @@ We also have queries with substring conditions. In each node of K-D tree we coul
 
 Complexities:
 \begin{enumerate}
-\item Adding text to tree: O(|text|)
-\item Removing text from tree O(|text|)
-\item Searching text in tree O(|text|)
+\item Adding text to tree: $\Oh(|text|)$
+\item Removing text from tree $\Oh(|text|)$
+\item Searching text in tree $\Oh(|text|)$
 \end{enumerate}
 
-Unfortunately adding linear structure to every node of K-D tree cause grow of space complexity to O(n
-log n)
+Unfortunately adding linear structure to every node of K-D tree cause grow of space complexity to $\Oh(n \log n)$
 
 \section{Implementation}
 
@@ -302,8 +320,7 @@ There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered
   \caption{Area covered by points inside nodes}
 \end{figure}
 
-If values are unique then, there are only $O(\log (n))$ nodes, that have minimal coordinate x (because there is only one such point, and it belongs to $O(\log (n))$ nodes). Therefore, with
-usage of priority queue, complexity for such case could be O(log n * log log n) (TODO make it faster).
+If values are unique then, there are only $\Oh(\log n)$ nodes, that have minimal coordinate x (because there is only one such point, and it belongs to $\Oh(\log n)$ nodes). Therefore, with usage of priority queue, complexity for such case could be $\Oh(\log n \log \log n)$ (TODO make it faster).
 
 \subsection{Raw pointers instead of boost::shared\textunderscore ptr}
 
@@ -321,20 +338,20 @@ Assumptions
 \item Rebuilding node causes number of nodes in one of its subtree to be not greater than twice the number of nodes in opposite subtree.
 \end{enumerate}
 
-Let n be number of points in the tree. Tree is somehow balanced so it's height is $O(\log n)$. Every point belongs to $O(\log n)$ nodes. Let $|X|$ be number of points in subtree X.
+Let n be number of points in the tree. Tree is somehow balanced so it's height is $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. Let $|X|$ be number of points in subtree X.
 
 \subsection{Inserting/deleting point X}
 \begin{lemma}\label{lem:1}
-Rebuilding tree of size S takes $O(|S| \log |S|)$.
+Rebuilding tree of size S takes $\Oh(|S| \log |S|)$.
 \end{lemma}
 
-In linear time we can find median. After that lets recursivly rebuild two smaller subtrees. Complexity of such solution is $T(S) = 2 * T(S/2) + O(S)$ which is $T(S) = O(|S| * \log |S|).$
+In linear time we can find median. After that lets recursivly rebuild two smaller subtrees. Complexity of such solution is $T(S) = 2 T(S/2) + \Oh(S)$ which is $T(S) = \Oh(|S| \log |S|).$
 
 \begin{lemma}\label{lem:2}
 Approximate time of insert and delete is $O(log^2 (n))$
 \end{lemma}
 
-Consider that every node which is visited by update/insert gets $O(\log N)$ credits. By proving that each subtree has more credits than $|S| \log |S|)$ I will prove that approximate complexity of insert/delete is $O(\log^2{N})$ .
+Consider that every node which is visited by update/insert gets $\Oh(\log N)$ credits. By proving that each subtree has more credits than $|S| \log |S|)$ I will prove that approximate complexity of insert/delete is $\Oh(\log^2{N})$ .
 
 There are two cases:
 \begin{enumerate}
@@ -368,16 +385,53 @@ We need to delete at least $\frac{5 - 2}{2 + 10} |S| = \frac{3}{12} |S|$ points 
 \end{enumerate}
 
 \subsection{Search}
-Complexity of K-D tree doesn't change, it's still O($n^{1-1/d} + k$). What was most important for me: search queries with small offset+limit ordered by some column. It actually works in O($S \log^2 S$) where S = offset + limit. 
+Complexity of K-D tree doesn't change, it's still $\Oh(n^{1-1/d} + k)$. What was most important for me: search queries with small offset+limit ordered by some column. It actually works in $\Oh(S \log^2 S)$ where S = offset + limit. 
 
 TODO rachunki
 
 
-\section{Testing data}
-\subsection{Shuffla}
-\subsection{PostgreSQL}
+\section{Tested engines}
 \subsection{Solr}
+
+Solr is popular open source search platform from the Apache Lucene project. It has lots of very cool features like faceted searches, geospatial searches, string tokenizers(makes Jarek and Jaruś to be interpreted as the same word). It is easily extendable for new features. Solr implements master-slave replication which solves scalability problems. Everything is great except one thing. 
+
+Solr doesn't modify database in real-time. After every insert, data isn't added immediately to database. Data is actually inserted after calling commit. Commit is very costly operation because it requires all caches to be invalidated.
+Even for table with few entries, commit takes more than 0.1 sec. Time for commit grows with growing size of data. Instance of Solr in nk contains 40 million entries and commit takes about 20 seconds. Commit doesn't block database which is very important.
+
+There is a rumour that twitter was able to modify source of Solr so they could have real-time modifications (apparently they succeeded, source needed).
+
+Schema used in testing is:
+
+\begin{lstlisting}
+<fields>
+  <field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
+   <field name="first_name" type="text_general" indexed="true"
+             stored="true" required="true" /> 
+   <field name="last_name" type="text_general" indexed="true" 
+             stored="true" required="true"/>
+   <field name="age" type="int" indexed="true" stored="true" /> 
+   <field name="city" type="text_general" indexed="true" stored="true"/>
+</fields>
+
+<uniqueKey>id</uniqueKey> 
+\end{lstlisting}
+
+
+\subsection{PostgreSQL}
+
+PostgreSQL is very popular and most trendy relational database nowadays. Defined requirements for this search engine are easily fulfilled by every relational databases. Only question is: How slow could it be ?
+
+\begin{enumerate}
+\item Prefix queries are handled by `property LIKE "text\%"`
+\item Substring queries are handled by `property LIKE "\%text\%"`
+\end{enumerate}
+
+For text-search PostgreSQL implemented special type of indexes: GIN and GIST \cite{PSQLINDEXES}
+
 \subsection{Sphinx}
+
+
+\subsection{MemSQL}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -393,7 +447,10 @@ TODO rachunki
 \bibitem{REDPE} \url{http://redis.io/topics/persistence}
 
 \bibitem{ASIOHTTP} \url{http://www.boost.org}
-\end{thebibliography}
+
+\bibitem{PSQLINDEXES} \url{http://www.postgresql.org/docs/9.1/static/textsearch-indexes.html}
+
+\end{thebibliography}\
 
 \end{document}
 
