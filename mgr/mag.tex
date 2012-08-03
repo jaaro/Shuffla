@@ -397,6 +397,7 @@ Solr is popular open source search platform from the Apache Lucene project. It h
 
 Solr doesn't modify database in real-time. After every insert, data isn't added immediately to database. Data is actually inserted after calling commit. Commit is very costly operation because it requires all caches to be invalidated.
 Even for table with few entries, commit takes more than 0.1 sec. Time for commit grows with growing size of data. Instance of Solr in nk contains 40 million entries and commit takes about 20 seconds. Commit doesn't block database which is very important.
+After commit, search engine is in warming stage. It means that all caches are deleted, so first queries can run slowly. After number of processed queries, engine is past warming stage and queries are handled much faster.
 
 There is a rumour that twitter was able to modify source of Solr so they could have real-time modifications (apparently they succeeded, source needed).
 
@@ -426,9 +427,11 @@ PostgreSQL is very popular and most trendy relational database nowadays. Defined
 \item Substring queries are handled by `property LIKE "\%text\%"`
 \end{enumerate}
 
-For text-search PostgreSQL implemented special type of indexes: GIN and GIST \cite{PSQLINDEXES}
+For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST cite{PSQLGIST} 
+In these paper I will compare both GIN and GIST.
 
 \subsection{Sphinx}
+
 
 
 \subsection{MemSQL}
@@ -447,6 +450,10 @@ For text-search PostgreSQL implemented special type of indexes: GIN and GIST \ci
 \bibitem{REDPE} \url{http://redis.io/topics/persistence}
 
 \bibitem{ASIOHTTP} \url{http://www.boost.org}
+
+\bibitem{PSQLGIN} \url{http://www.sai.msu.su/~megera/wiki/Gin}
+
+\biitem{PSQLGIST} \url{http://www.postgresql.org/docs/9.1/static/gist-implementation.html}
 
 \bibitem{PSQLINDEXES} \url{http://www.postgresql.org/docs/9.1/static/textsearch-indexes.html}
 
