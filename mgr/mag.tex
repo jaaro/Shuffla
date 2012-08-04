@@ -428,14 +428,13 @@ PostgreSQL is very popular and most trendy relational database nowadays. Defined
 \end{enumerate}
 
 For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST cite{PSQLGIST} 
-In these paper I will compare both GIN and GIST.
+In these paper I will compare GIN and GIST and plain indexes.
 
-\subsection{Sphinx}
+\subsection{Sphinx search}
 
+In nk we were really close to choose Sphinx search over Solr. We didn't choose Sphinx because it dosn't have replication. It was the only reason. Replication is very important to us because in case of server failure we want to be able to avoid downtime. I'm considering sphinx search in this paper because maybe some day they are going to implement some kind of replication.
 
-
-\subsection{MemSQL}
-
+For this problem real-time indexes will be best \cite{SPHINXRT} .
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -456,6 +455,8 @@ In these paper I will compare both GIN and GIST.
 \biitem{PSQLGIST} \url{http://www.postgresql.org/docs/9.1/static/gist-implementation.html}
 
 \bibitem{PSQLINDEXES} \url{http://www.postgresql.org/docs/9.1/static/textsearch-indexes.html}
+
+\bibitem{SPHINXRT} \url{http://sphinxsearch.com/docs/current.html#rt-indexes}
 
 \end{thebibliography}\
 
