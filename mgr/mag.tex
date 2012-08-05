@@ -25,6 +25,9 @@
 
 \definecolor{myRed}{rgb}{0.9,0.3,0.1}
 \newcommand{\pawel}[1]{\noindent\colorbox{myRed}{Pawel: #1}}
+\definecolor{myYellow}{rgb}{0.99,0.99,0.05}
+\newcommand{\jarek}[1]{\noindent\colorbox{myYellow}{Jarek: #1}}
+
 \newcommand{\Oh}{\mathcal{O}}
 
 \begin{document}
@@ -189,8 +192,8 @@ limit
 
 Narrowing result described in abstract is possible with defined model. Personalizing results can be done by mapping cities to GPS coordinates. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
 \begin{enumerate}
-\item someLatitiude - RADIUS <= latitude AND latitude <= someLatitude + RADIUS
-\item someLongitude - RADIUS <= longitude AND longitude <= someLongitude + RADIUS
+\item{someLatitiude - radius $\leq$ latitude $\wedge$ latitude $\geq$ someLatitude + radius}
+\item{someLongitude - radius $\leq$ longitude $\wedge$ longitude $\geq$ someLongitude + radius}
 \end{enumerate}
 
 \section{Algorithm description}
@@ -292,7 +295,7 @@ Unfortunately this library doesn't support unicode by default. It is possible to
 
 \section{Implemented optimizations}
 \subsection{Queue event}
-Web search-engines usually shows maximum of 10-20 results per page. High percentage of users wouldn't look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. But they actually shows us only 10 first results. Such cases are very typical and they must be processed very fast, i.e. \pawel{troche się tu offset rozjeżdza w math mode, tak będzie ok ?!} $\Oh$((offset + limit) * ?) instead of $\Oh$(number of results * ?).
+Web search-engines usually shows maximum of 10-20 results per page. High percentage of users wouldn't look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. But they actually shows us only 10 first results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(number of results $*$ ?).
 
 In classical K-D tree, search is performed using a simple recurrence. Lets define a single recurrence call during the search as a search event.
 
@@ -338,7 +341,7 @@ Right now I think it was biggest mistake in the project. Source code became real
 
 \subsection{Balancing K-D tree}
 K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 5 times larger that number of nodes in opposite subtree, then I'm rebuilding their parent subtree from the beginning.
-This is the same idea which is used, for example, in the $\alpha$-balanced binary search trees \pawel{find the source, I'm too lazy to do this}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity is actually rather good. \pawel{reference to amortized complexity}
+This is the same idea which is used, for example, in the $\alpha$-balanced binary search trees \cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity \cite{AMOR} is actually rather good.
 
 
 \section{Complexities:}
@@ -359,7 +362,7 @@ Rebuilding tree of size S takes $\Oh(|S| \log |S|)$.
 In linear time we can find median. After that we recursively rebuild two smaller subtrees. Complexity of such solution is $T(S) = 2 T(S/2) + \Oh(S)$ which is $T(S) = \Oh(|S| \log |S|).$
 
 \begin{lemma}\label{lem:2}
-Amortized time of insert/delete is $O(log^2 (n))$.
+Amortized time of insert/delete is $\Oh(\log^2 (n))$.
 \end{lemma}
 
 Consider that every node which is visited by insert/delete gets $\Oh(\log N)$ credits. By proving that each subtree has more credits than $|S| \log |S|)$ I will prove that amortized complexity of insert/delete is $\Oh(\log^2{N})$ .
@@ -396,10 +399,7 @@ We need to delete at least $\frac{5 - 2}{2 + 10} |S| = \frac{3}{12} |S|$ points 
 \end{enumerate}
 
 \subsection{Search}
-Complexity of K-D tree doesn't change, it's still $\Oh(n^{1-1/d} + k)$. What was most important for me: search queries with small offset+limit ordered by some column. It actually works in $\Oh(S \log^2 S)$ where S = offset + limit. 
-
-TODO rachunki
-
+Complexity of K-D tree doesn't change, it's still $\Oh(n^{1-1/d} + k)$. Lets remember that this complexity is worst case scenario. \jarek{Uważasz, że pisanie o average casie ma sens? Taki fragment jest przydany, ale bez względu na to jak go napiszę, brzmi jak wyciąganie królika z kapelusza;/} For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit. Explanation: when algorithm recursively enters node of K-D tree, then it usually finds some results. It means that finding single row, usually takes $\Oh(\log n)$.
 
 \section{Tested engines}
 \subsection{Solr}
@@ -437,7 +437,7 @@ PostgreSQL is very popular and the most trendy relational database nowadays. Def
 \item Substring queries are handled by `property LIKE "\%text\%"`
 \end{enumerate}
 
-For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST \cite{PSQLGIST}. Unfortunately I was unsuccessful to make them work with Polish words. Therefore I'm testing PostgreSQL with default indexes.
+For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST \cite{PSQLGIST}. Unfortunately I was unsuccessful in making them work with polish words. Therefore I'm testing PostgreSQL with default indexes.
 
 \subsection{Sphinx search}
 
@@ -470,7 +470,11 @@ For this problem real-time indexes are best \cite{SPHINXRT}.
 \bibitem{BINOMHEAPS}
 Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. Introduction to Algorithms, Second Edition. MIT Press and McGraw-Hill, 2001. ISBN 0-262-03293-7. Chapter 19: Binomial Heaps, pp.455–475.
 
-\end{thebibliography}\
+\bibitem{ALPHATREES} Arne Andersson, Maintaining alpha-balanced Trees by Partial Rebuilding
+
+\bibitem{AMOR} Robert Trajan, Amortized Computational Complexity
+
+\end{thebibliography}
 
 \end{document}
 
