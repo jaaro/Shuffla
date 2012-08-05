@@ -107,7 +107,7 @@ Data: \dotfill\quad Podpis opiekuna pracy: \dotfill
 \thispagestyle{empty}
 
 \begin{abstract}
-Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania dużego zbioru użytkowników portalu społecznościowego, dla których przechowujemy dane typu imię, nazwisko, wiek, czy miejsce zamieszkania.
+Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania zbioru użytkowników dużego portalu społecznościowego. Rrzechowane dane to imię, nazwisko, wiek, oraz miejsce zamieszkania.
 
 Użytkownik portalu może wyszukiwać innych użytkowników poprzez:
 \bigskip
@@ -122,11 +122,10 @@ Użytkownik portalu może wyszukiwać innych użytkowników poprzez:
 
 Kolejnym założeniem jest konieczność personalizacji wyników wyszukiwania. Na przykładu użytkownik z San Francisco szukający Jane powinien dostać w pierwszej kolejności osoby o imieniu Jane z San Francisco, następnie osoby z Kaliforni, Stanów Zjednoczonych, a dopiero na samym końcu z innych części świata.
 
-Jednym z możliwych rozwiązań tak postawionego problemu jest zastosowanie jednej z popularnych relacyjnych baz danych. Inną możliwością jest użycie wyszukiwarki tekstowej takiej jak Apache Solr czy Sphinx Search. Jeszcze innym pomysłem jest zaimplementowanie własnego narzędzia. Celem tej pracy jest przedstawienie Shuffli, wyspecjalizowanej wyszukiwarki stworzonej przeze mnie z myślą o tym konkretnym problemie. Oprócz przedstawienia architektury i szczegółów implementacji, porównuję jej efektywność z PostgreSQL, Apache Solr, Sphinx Search oraz MemSQL (nowoczesną relacyjną bazą danych, która przechowuje dane w pamięci RAM).
+Jednym z możliwych rozwiązań tak postawionego problemu jest zastosowanie jednej z popularnych relacyjnych baz danych. Inną możliwością jest użycie wyszukiwarki tekstowej takiej jak Apache Solr czy Sphinx Search. Jeszcze innym pomysłem jest zaimplementowanie własnego narzędzia. Celem tej pracy jest przedstawienie Shuffli, wyspecjalizowanej wyszukiwarki stworzonej przeze mnie z myślą o tym konkretnym problemie. Oprócz przedstawienia architektury i szczegółów implementacji, porównam jej efektywność z PostgreSQL, Apache Solr, Sphinx Search.
 
 \bigskip
-Pracuję nad portalem nk.pl (który jest największym polskim portalem społecznościowym) od początku roku 2011. W sierpniu 2011 roku zostało mi powierzone rozwiązanie tego problemu. W nk wybraliśmy Solra.
-\pawel{ostatnie zdanie nie brzmi zachęcająco}
+Pracuję nad portalem nk.pl (który jest największym polskim portalem społecznościowym) od początku roku 2011. W sierpniu 2011 roku zostało mi powierzone rozwiązanie tego problemu.
 
 \bigskip
 \noindent \textbf{Słowa kluczowe:} bazy danych, nosql
@@ -154,10 +153,10 @@ User can narrow search results by:
 \end{enumerate}
 
 \bigskip
-It would be great if results could be personalized. For example, if user from San Francisco is looking for Jane, top results should show Jane's from San Francisco, then Jane's from California, then rest of U.S. One of possible solution is to use relational database. Other solution is to use full-text search engine like Solr or Sphinx. Another solution is to develop very own search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, PostgreSQL and MemSQL - newly created database which stores data in RAM memory. 
+It would be great if results could be personalized. For example, if user from San Francisco is looking for Jane, top results should show Jane's from San Francisco, then Jane's from California, then rest of U.S. One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop very own search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, PostgreSQL. 
 
 \bigskip
-I'm working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve task described above. In nk we actually chose Solr.
+I'm working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve task described above. 
 
 \bigskip
 \noindent \textbf{Keywords:} database, nosql
@@ -176,7 +175,7 @@ Lets define table definition by combination of
 Type of column can be either string or number
 
 \subsection{Selecting data}
-There are different possible conditions for different types. Possible conditions for numbers are comparison, inequalities and strict inequalities. Strings are compared using lexicographic order, so comparison, inequalities and strict inequalities should be supported. There are two additional conditions
+There are different possible conditions for different types. Possible conditions for numbers are comparisons, inequalities and strict inequalities. Strings are compared using lexicographic order, so comparisons, inequalities and strict inequalities should be supported. There are two additional conditions
 \begin{enumerate}
 \item Checking if given string is prefix of value of selected column. 
 \item Checking if given string is substring of value of selected column. 
@@ -184,7 +183,14 @@ There are different possible conditions for different types. Possible conditions
 Presenting results:
 \begin{enumerate}
 \item User can define order in which results will be returned.
-\item User can narrow number of results by defining offset and limit
+\item User can narrow number of results by defining offset and 
+limit
+\end{enumerate}
+
+Narrowing result described in abstract is possible with defined model. Personalizing results can be done by mapping cities to GPS coordinates. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
+\begin{enumerate}
+\item someLatitiude - RADIUS <= latitude AND latitude <= someLatitude + RADIUS
+\item someLongitude - RADIUS <= longitude AND longitude <= someLongitude + RADIUS
 \end{enumerate}
 
 \section{Algorithm description}
@@ -199,7 +205,7 @@ Complexities (where $d>=2$)
 
 \begin{tabular}{|l|c|c|c|c|}
 \hline Algorithm & Insert (without balancing) & Delete (without balancing) & Search & Space \\
-\hline K-D tree & $\Oh(\log{n})$ & $Oh(\log{n})$ & $\Oh(n^{1-1/d} + k)$ & $\Oh(n)$ \\
+\hline K-D tree & $\Oh(\log{n})$ & $\Oh(\log{n})$ & $\Oh(n^{1-1/d} + k)$ & $\Oh(n)$ \\
 \hline Range tree & $\Oh(\log^{d-1}{n})$ & $\Oh(\log^{d-1}{n})$ & $\Oh(\log^d{n})$ & $\Oh(n\log^{d-1}{n})$ \\
 \hline 
 \end{tabular}
@@ -213,7 +219,7 @@ I chose to implement K-D trees because:
 \end{enumerate}
 
 \bigskip
-We also have queries with substring conditions. In each node of K-D tree we could store structure which would efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK} .
+We also have queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK} .
 
 Complexities:
 \begin{enumerate}
@@ -274,10 +280,10 @@ Guaranteeing persistence of database which holds data in RAM is difficult \cite{
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
 \begin{enumerate}
-\item every modifying query is saved to disk (without forcing OS to actually do it),
-\item at constant time intervals, snapshots of database are saved to disk.
+\item AOF - append only file, every modifying query is saved to disk (without forcing OS to actually do it),
+\item Snapshotting - in constant time intervals, snapshots of database are saved to disk.
 \end{enumerate}
-I implemented both possibilities. I tried to find a way to combine AOF \pawel{what's AOF?} method with snapshotting so in case of an crash, database could be automatically restored as best as possible. I think the best way is to have a basic bash script that loads a snapshot and executes queries in AOF that were executed after saving last snapshot.
+I implemented both possibilities. I tried to find a way to combine AOF method with snapshotting so in case of an crash, database could be automatically restored as best as possible. I think the best way is to have a basic bash script that loads a snapshot and executes queries in AOF that were executed after saving last snapshot.
 
 \subsection{Presenting results}
 Modern databases and search engines have to support most popular formats. Nowadays these are
@@ -286,7 +292,7 @@ Unfortunately this library doesn't support unicode by default. It is possible to
 
 \section{Implemented optimizations}
 \subsection{Queue event}
-Web search-engines usually shows maximum of 10-20 results per page. High percentage of users wouldn't look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. But they actually shows us only 10 first results. Such cases are very typical and they must be processed very fast, i.e. \pawel{ugly O, fix this!} O((offset + limit) * ?) instead of O(number of results * ?).
+Web search-engines usually shows maximum of 10-20 results per page. High percentage of users wouldn't look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. But they actually shows us only 10 first results. Such cases are very typical and they must be processed very fast, i.e. \pawel{troche się tu offset rozjeżdza w math mode, tak będzie ok ?!} $\Oh$((offset + limit) * ?) instead of $\Oh$(number of results * ?).
 
 In classical K-D tree, search is performed using a simple recurrence. Lets define a single recurrence call during the search as a search event.
 
@@ -323,8 +329,7 @@ There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered
   \label{fig:inside}
 \end{figure}
 
-If values are unique, then there are only $\Oh(\log n)$ nodes with the minimal coordinate x (because there is only one such point, and it belongs to $\Oh(\log n)$ nodes). Therefore, using a priority queue implemented as a binary heap, complexity for such case would be $\Oh(\log n \log \log n)$
-\pawel{consider binomial heaps here}.
+If values are unique, then there are only $\Oh(\log n)$ nodes with the minimal coordinate x (because there is only one such point, and it belongs to $\Oh(\log n)$ nodes). Therefore, using a priority queue implemented as a binary heap, complexity for such case would be $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS} . Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$
 
 \subsection{Raw pointers instead of boost::shared\textunderscore ptr}
 
@@ -399,11 +404,9 @@ TODO rachunki
 \section{Tested engines}
 \subsection{Solr}
 
-Solr is a popular open source search platform from the Apache Lucene project. It has lots of very cool features like faceted searches, geospatial searches, string tokenizers (makes Jarek and Jaruś to be interpreted as the same word). It is easily extendable for new features. Solr implements master-slave replication which solves scalability problems. Everything is great except one thing. 
+Solr is a popular open source search platform from the Apache Lucene project. It has lots of very cool features like faceted searches, geospatial searches, string tokenizers (makes John and Johnny to be interpreted as the same name). It is easily extendable for new features. Solr implements master-slave replication which solves scalability problems. Everything is perfect except one thing. 
 
-Solr doesn't modify database in real-time. After every insert, data isn't added immediately to database. Data is actually inserted after calling commit. Commit is very costly operation because it requires all caches to be invalidated.
-Even for table with few entries, commit takes more than 0.1 sec. Time for commit grows with growing size of data. Instance of Solr in nk contains 40 million entries and commit takes about 20 seconds. Commit doesn't block database which is very important.
-After commit, search engine is in warming stage. It means that all caches are deleted, so first queries can run slowly. After number of processed queries, engine is past warming stage and queries are handled much faster.
+Solr doesn't modify database in real-time. Data isn't added immediately to database after insert/update commands. Data is actually inserted after calling commit command. Commit is very costly operation because it requires all caches to be invalidated. Even for table with few entries, commit takes more than 0.1 sec. Time for commit grows with growing size of data. Instance of Solr in nk contains 40 million entries and commit takes about 20 seconds. Commit doesn't block database which is very important. After commit, search engine is in warming stage. It means that all caches are deleted, so first queries can run slowly. After number of processed queries, engine is past warming stage and queries are handled much faster.
 
 There is a rumour that twitter was able to modify source of Solr so they could have real-time modifications (apparently they succeeded, source needed).
 
@@ -423,6 +426,7 @@ Schema used in testing is:
 <uniqueKey>id</uniqueKey> 
 \end{lstlisting}
 
+Solr requires unique key. Combining all properties isn't enough. For example there are lots of guys named Jan Kowalski in Warsaw. Therefore I created another property named id.
 
 \subsection{PostgreSQL}
 
@@ -433,14 +437,13 @@ PostgreSQL is very popular and the most trendy relational database nowadays. Def
 \item Substring queries are handled by `property LIKE "\%text\%"`
 \end{enumerate}
 
-For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST cite{PSQLGIST} 
-In these paper I will compare GIN and GIST and plain indexes.
+For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST \cite{PSQLGIST}. Unfortunately I was unsuccessful to make them work with Polish words. Therefore I'm testing PostgreSQL with default indexes.
 
 \subsection{Sphinx search}
 
-In nk we were really close to choose Sphinx search over Solr. We didn't choose Sphinx because it dosn't have replication. It was the only reason. Replication is very important to us because in case of server failure we want to be able to avoid downtime. I'm considering sphinx search in this paper because maybe some day they are going to implement some kind of replication.
+In nk we were really close to choosing Sphinx search over Solr. We didn't choose Sphinx because it dosn't have replication. It was the only reason. Replication is very important to us because in case of server failure we want to avoid downtime. I'm considering sphinx search in this paper because maybe some day they are going to implement some kind of replication.
 
-For this problem real-time indexes will be best \cite{SPHINXRT} .
+For this problem real-time indexes are best \cite{SPHINXRT}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -463,6 +466,9 @@ For this problem real-time indexes will be best \cite{SPHINXRT} .
 \bibitem{PSQLINDEXES} \url{http://www.postgresql.org/docs/9.1/static/textsearch-indexes.html}
 
 \bibitem{SPHINXRT} \url{http://sphinxsearch.com/docs/current.html#rt-indexes}
+
+\bibitem{BINOMHEAPS}
+Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. Introduction to Algorithms, Second Edition. MIT Press and McGraw-Hill, 2001. ISBN 0-262-03293-7. Chapter 19: Binomial Heaps, pp.455–475.
 
 \end{thebibliography}\
 
