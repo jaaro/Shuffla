@@ -442,7 +442,11 @@ For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGI
 
 \subsection{Sphinx search}
 
-In nk we were really close to choosing Sphinx search over Solr. We didn't choose Sphinx because it dosn't have replication. It was the only reason. Replication is very important to us because in case of server failure we want to avoid downtime. I'm considering sphinx search in this paper because maybe some day they are going to implement some kind of replication.
+In nk we were really close to choosing Sphinx search over Solr. We didn't choose Sphinx because it dosn't have replication. It was the only reason.
+
+There are serveral high-traffic website with Sphinx search. They horizontally partition searched data accross search nodes and then process it in parallel \cite{SPHINXPARAL}.
+
+Replication is very important to us because in case of server failure we want to avoid downtime. So it was kind a deal breaker for us. I'm considering sphinx search in this paper because maybe some day they are going to implement some kind of replication.
 
 For this problem real-time indexes are best \cite{SPHINXRT}.
 
@@ -474,7 +478,7 @@ Then I'm selecting random column and I'm setting it as order by column. Then I'm
 
 It isn't most important part of testing. It is performed before production deployment and we are doing this part only once. I'm happy as long as indexing time doesn't last longer than a few hours. 
 
-Shuffla inserts data with 1500 request per second. Using single inserts with other engines isn't so efficient. All considered engines are able to read csv file and import data from such file. This is fastest way to import data.
+Shuffla inserts data with 1500 request per second. Using single inserts with other engines isn't so efficient. All considered engines are able to read csv file and import data from such file. This is the only way to import data within few hours.
 
 \todo{wykres z wynikami}
 
@@ -482,10 +486,13 @@ Shuffla inserts data with 1500 request per second. Using single inserts with oth
 
 \subsection{Search statistics}
 
-
 \section{Summary}
 
 \todo{tu troche napiszę}
+
+\section{Few words about Solr in nk}
+
+\todo{Wkleje tu statsy solra produkcjynego, wywiady z adminami i takie tam}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -508,6 +515,8 @@ Shuffla inserts data with 1500 request per second. Using single inserts with oth
 \bibitem{PSQLINDEXES} \url{http://www.postgresql.org/docs/9.1/static/textsearch-indexes.html}
 
 \bibitem{SPHINXRT} \url{http://sphinxsearch.com/docs/current.html#rt-indexes}
+
+\bibitem{SPHINXPARAL} \url{http://sphinxsearch.com/docs/2.0.1/distributed.html}
 
 \bibitem{BINOMHEAPS}
 Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. Introduction to Algorithms, Second Edition. MIT Press and McGraw-Hill, 2001. ISBN 0-262-03293-7. Chapter 19: Binomial Heaps, pp.455–475.
