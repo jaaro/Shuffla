@@ -18,6 +18,7 @@
 \usepackage[breaklinks]{hyperref}
 \usepackage[polish,english]{babel}
 \usepackage{multirow}
+\usepackage{epstopdf}
 \usepackage{listings}
 
 \newtheorem{theorem}{Theorem}
@@ -308,7 +309,7 @@ Instead of running search events right away we could insert such events into a p
 
 \begin{figure}
 \centering
-  \includegraphics[width=8cm]{simple_boundary.png}%
+  \includegraphics[width=8cm]{Figure1}
   \caption{Storing whole area covered by nodes}
   \label{fig:covered}
 \end{figure}
@@ -328,7 +329,7 @@ There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered
 
 \begin{figure}
 \centering
-  \includegraphics[width=8cm]{simple_boundary2.png}%
+  \includegraphics[width=8cm]{Figure2}
   \caption{Area covered by points inside nodes}
   \label{fig:inside}
 \end{figure}
@@ -476,7 +477,7 @@ Then I'm selecting random column and I'm setting it as order by column. Then I'm
 
 8 million rows. Average string contains 7 characters. It means that size of inserted data is about 250 MB. There is always some overhead in keeping data structures. It causes shuffla to use 6 GB RAM.
 
-It isn't most important part of testing. It is performed before production deployment and we are doing this part only once. I'm happy as long as indexing time doesn't last longer than a few hours. 
+Inserting 8 million rows isn't most important part of testing. It is performed before production deployment and we are doing this part only once. I'm happy as long as indexing time doesn't last longer than a few hours. 
 
 Shuffla inserts data with 1500 request per second. Using single inserts with other engines isn't so efficient. All considered engines are able to read csv file and import data from such file. This is the only way to import data within few hours.
 
@@ -484,7 +485,35 @@ Shuffla inserts data with 1500 request per second. Using single inserts with oth
 
 \subsection{Insert statistics}
 
+\begin{tabular}{|l|c|c|}
+\hline  & Request per second \\
+\hline PostgreSQL & X \\
+\hline Shuffla & X \\
+\hline Apache Solr & X \\
+\hline Sphinx Search & X \\
+\hline 
+\end{tabular}
+
+\bigskip
+
+Shuffla is superior in inserts. It is caused by very low time insert complexity and small number of read/writes to disk. Shuffla actually requires single write to append log file but these writes can be disabled (see chapter about database persistance). Other engines are running with similar speed. Lets remember that Solr, Sphinx and PostgreSQL are based on index which is stored on disk. This results were expected by me. Lets remember that Apache Solr doesn't cause changes to appear in results right away, so it's score is overrated. 
+
 \subsection{Search statistics}
+
+\begin{tabular}{|l|c|c|}
+\hline  & Request per second \\
+\hline PostgreSQL & X \\
+\hline Shuffla & X \\\begin{scriptsize}
+•
+\end{scriptsize}
+\hline Apache Solr & X \\
+\hline Sphinx Search & X \\
+\hline 
+\end{tabular}
+
+\bigskip
+
+Here Sphinx Search and Shuffla are best. They run with similar speed. It is amazing that they were able to equal shuffla results because they are working based on disk index and shuffla works in RAM memory. Apache Solr is a little bit slower than two winners. PostgreSQL is far behind which is caused by substring and prefix queries.
 
 \section{Summary}
 
