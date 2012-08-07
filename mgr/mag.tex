@@ -496,7 +496,7 @@ Shuffla inserts data with 1500 request per second. Using single inserts with oth
 
 \bigskip
 
-Shuffla is superior in inserts. It is caused by very low time insert complexity and small number of read/writes to disk. Shuffla actually requires single write to append log file but these writes can be disabled (see chapter about database persistance). Other engines are running with similar speed. Lets remember that Solr, Sphinx and PostgreSQL are based on index which is stored on disk. This results were expected by me. Lets remember that Apache Solr doesn't cause changes to appear in results right away, so it's score is overrated. 
+Shuffla is superior in inserts. It is caused by very low time complexity of insert and small number of reads/writes to disk. Shuffla actually requires writes to append log and slow log file but these writes can be disabled. Other engines are running with similar speed. Lets remember that Solr, Sphinx and PostgreSQL are based on index which is stored on disk. This results were expected. Lets remember that Apache Solr doesn't cause changes to appear in results right away, so it's score is overrated. 
 
 \subsection{Search statistics}
 
@@ -513,7 +513,7 @@ Shuffla is superior in inserts. It is caused by very low time insert complexity 
 
 \bigskip
 
-Here Sphinx Search and Shuffla are best. They run with similar speed. It is amazing that they were able to equal shuffla results because they are working based on disk index and shuffla works in RAM memory. Apache Solr is a little bit slower than two winners. PostgreSQL is far behind which is caused by substring and prefix queries.
+Here Sphinx Search and Shuffla are best. They run with similar speed. It is amazing that Sphinx was able to equal shuffla results because they are working on disk index and shuffla works in RAM memory. Apache Solr is a little bit slower than two winners. PostgreSQL is far behind which is caused by substring and prefix queries.
 
 \section{Summary}
 
