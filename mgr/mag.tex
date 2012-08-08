@@ -479,7 +479,7 @@ Then I'm selecting random column and I'm setting it as order by column. Then I'm
 
 Inserting 8 million rows isn't most important part of testing. It is performed before production deployment and we are doing this part only once. I'm happy as long as indexing time doesn't last longer than a few hours. 
 
-Shuffla inserts data with 1500 request per second. Using single inserts with other engines isn't so efficient. All considered engines are able to read csv file and import data from such file. This is the only way to import data within few hours.
+Shuffla inserts data with 1000 request per second. Using single inserts with other engines isn't so efficient. All considered engines are able to read csv file and import data from such file. This is the only way to import data within few hours.
 
 \todo{wykres z wynikami}
 
@@ -487,10 +487,10 @@ Shuffla inserts data with 1500 request per second. Using single inserts with oth
 
 \begin{tabular}{|l|c|c|}
 \hline  & Request per second \\
-\hline PostgreSQL & X \\
-\hline Shuffla & X \\
-\hline Apache Solr & X \\
-\hline Sphinx Search & X \\
+\hline PostgreSQL & 172 \\
+\hline Shuffla & 1032 \\
+\hline Apache Solr & 140 \\
+\hline Sphinx Search & 89 \\
 \hline 
 \end{tabular}
 
@@ -502,18 +502,16 @@ Shuffla is superior in inserts. It is caused by very low time complexity of inse
 
 \begin{tabular}{|l|c|c|}
 \hline  & Request per second \\
-\hline PostgreSQL & X \\
-\hline Shuffla & X \\\begin{scriptsize}
-•
-\end{scriptsize}
-\hline Apache Solr & X \\
-\hline Sphinx Search & X \\
+\hline PostgreSQL & 17 \\
+\hline Shuffla & 99 \\
+\hline Apache Solr & 126  \\
+\hline Sphinx Search & 115 \\
 \hline 
 \end{tabular}
 
 \bigskip
 
-Here Sphinx Search and Shuffla are best. They run with similar speed. It is amazing that Sphinx was able to equal shuffla results because they are working on disk index and shuffla works in RAM memory. Apache Solr is a little bit slower than two winners. PostgreSQL is far behind which is caused by substring and prefix queries.
+Here Sphinx Search, Solr and Shuffla are best. They run with similar speed. It is amazing Sphinx and Solr were able to outrun shuffla because they are working on disk index and shuffla works in RAM memory. PostgreSQL is far behind which is caused by substring and prefix queries.
 
 \section{Summary}
 
