@@ -112,7 +112,7 @@ Data: \dotfill\quad Podpis opiekuna pracy: \dotfill
 \thispagestyle{empty}
 
 \begin{abstract}
-Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania zbioru użytkowników dużego portalu społecznościowego. Rrzechowane dane to imię, nazwisko, wiek, oraz miejsce zamieszkania.
+Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania zbioru użytkowników dużego portalu społecznościowego. Przechowane dane to imię, nazwisko, wiek, oraz miejsce zamieszkania.
 
 Użytkownik portalu może wyszukiwać innych użytkowników poprzez:
 \bigskip
@@ -238,7 +238,7 @@ Unfortunately adding linear structure to every node of K-D tree cause grow of sp
 \section{Implementation}
 
 \subsection{Architecture}
-I decided that it would be best if search engine could mimic RESTful service. Every search/insert/delete request should be sent as a HTTP request. Server should work in the multi-threaded environment. As a base I used $example3$ \cite{ASIOHTTP} from $boost::asio$ documentation which fulfils my
+I decided that it would be best if search engine could mimic RESTful service. Every search/insert/delete request should be sent as a HTTP request. Server should work in the multi-threaded environment \pawel{Should = works? :)}. As a base I used $example3$ \cite{ASIOHTTP} from \verb|boost::asio| documentation which fulfills my
 requirements.
 
 Every request is converted to a corresponding class. For example, search request is converted to SearchQuery,
@@ -281,7 +281,7 @@ Single row stores:
 \end{enumerate}
 
 \subsection{Database persistence}
-Guaranteeing persistence of database which holds data in RAM is difficult \cite{REDPE} . After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solutions, preferred way is to have “almost durable” system.
+Guaranteeing persistence of database which holds data in RAM is difficult~\cite{REDPE} . After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solutions, preferred way is to have “almost durable” system.
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
 \begin{enumerate}
@@ -292,7 +292,7 @@ I implemented both possibilities. I tried to find a way to combine AOF method wi
 
 \subsection{Presenting results}
 Modern databases and search engines have to support most popular formats. Nowadays these are
-JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data without any assumptions of the selected output format. Chosen library should be providing interface for implementing new formats (so if a new format becomes popular, our software can support it right away). Support for unicode characters is necessary. That is why I chose boost::property\textunderscore tree . 
+JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data without any assumptions of the selected output format. Chosen library should be providing interface for implementing new formats (so if a new format becomes popular, our software can support it right away). Support for unicode characters is necessary. That is why I chose \verb|boost::property_tree|. 
 Unfortunately this library doesn't support unicode by default. It is possible to fix it, by following \cite{SOANS} .
 
 \section{Implemented optimizations}
@@ -334,19 +334,19 @@ There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered
   \label{fig:inside}
 \end{figure}
 
-If values are unique, then there are only $\Oh(\log n)$ nodes with the minimal coordinate x (because there is only one such point, and it belongs to $\Oh(\log n)$ nodes). Therefore, using a priority queue implemented as a binary heap, complexity for such case would be $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS} . Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$
+If values are unique, then there are only $\Oh(\log n)$ nodes with the minimal coordinate x (because there is only one such point, and it belongs to $\Oh(\log n)$ nodes). Therefore, using a priority queue implemented as a binary heap, complexity for such case would be $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS} . Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$.
 
-\subsection{Raw pointers instead of boost::shared\textunderscore ptr}
+\subsection{Raw pointers instead of \texttt{boost::shared\textunderscore ptr}}
 
 In modern C++ pointers shouldn't be used, and shared pointers are recommended instead. Idea behind shared pointer is to automate releasing resources. Basically shared pointer keeps counter representing the number of copies of current pointer. When shared pointer is created, counter is incremented. When shared pointer is deleted, then counter is decremented. When counter is down to zero, then resource is released. With such a tool, developer is free from most common cause of memory leaks. Unfortunately such tool comes with time and space overhead. I decided to use raw pointers which give better running and space time.
 Right now I think it was biggest mistake in the project. Source code became really messy, even small change in legacy code could create bugs.
 
 \subsection{Balancing K-D tree}
 K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 5 times larger that number of nodes in opposite subtree, then I'm rebuilding their parent subtree from the beginning.
-This is the same idea which is used, for example, in the $\alpha$-balanced binary search trees \cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity \cite{AMOR} is actually rather good.
+This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity~\cite{AMOR} is actually rather good.
 
 
-\section{Complexities:}
+\section{Complexities}
 
 Assumptions
 \begin{enumerate}
@@ -401,7 +401,9 @@ We need to delete at least $\frac{5 - 2}{2 + 10} |S| = \frac{3}{12} |S|$ points 
 \end{enumerate}
 
 \subsection{Search}
-Complexity of K-D tree doesn't change, it's still $\Oh(n^{1-1/d} + k)$. Lets remember that this complexity is worst case scenario. \jarek{Uważasz, że pisanie o average casie ma sens? Taki fragment jest przydany, ale bez względu na to jak go napiszę, brzmi jak wyciąganie królika z kapelusza;/} For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit. Explanation: when algorithm recursively enters node of K-D tree, then it usually finds some results. It means that finding single row, usually takes $\Oh(\log n)$.
+Complexity of K-D tree doesn't change, it's still $\Oh(n^{1-1/d} + k)$. Lets remember that this complexity is worst case scenario. \jarek{Uważasz, że pisanie o average casie ma sens? Taki fragment jest przydany, ale bez względu na to jak go napiszę, brzmi jak wyciąganie królika z kapelusza;/}
+\pawel{Może i przydatny, tylko to explanation bym zmienił.  I dodał, że chodzi Ci o losowe punkty?}
+ For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit. Explanation: when algorithm recursively enters node of K-D tree, then it usually finds some results. It means that finding single row, usually takes $\Oh(\log n)$.
 
 \section{Tested engines}
 \subsection{Solr}
@@ -414,7 +416,7 @@ There is a rumour that twitter was able to modify source of Solr so they could h
 
 Schema used in testing is:
 
-\begin{lstlisting}
+\begin{verbatim}
 <fields>
   <field name="id" type="uuid" indexed="true" stored="true" default="NEW"/>
    <field name="first_name" type="text_general" indexed="true"
@@ -426,17 +428,17 @@ Schema used in testing is:
 </fields>
 
 <uniqueKey>id</uniqueKey> 
-\end{lstlisting}
+\end{verbatim}
 
 Solr requires unique key. Combining all properties isn't enough. For example there are lots of guys named Jan Kowalski in Warsaw. Therefore I created another property named id.
 
 \subsection{PostgreSQL}
 
-PostgreSQL is very popular and the most trendy relational database nowadays. Defined requirements for this search engine are easily fulfilled by every relational databases. Only question is: How slow could it be ?
+PostgreSQL is very popular and the most trendy relational database nowadays. Defined requirements for this search engine are easily fulfilled by every relational databases. Only question is: How slow could it be?
 
 \begin{enumerate}
-\item Prefix queries are handled by `property LIKE "text\%"`
-\item Substring queries are handled by `property LIKE "\%text\%"`
+\item Prefix queries are handled by \verb|property LIKE "text\%"|
+\item Substring queries are handled by \verb|property LIKE "\%text\%"|
 \end{enumerate}
 
 For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST \cite{PSQLGIST}. Unfortunately I was unsuccessful in making them work with polish words. Therefore I'm testing PostgreSQL with default indexes.
@@ -523,38 +525,9 @@ Here Sphinx Search, Solr and Shuffla are best. They run with similar speed. It i
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{thebibliography}{99}
-
-\bibitem{CGAAA} de Berg, Mark; Cheong, Otfried; van Kreveld, Marc; Overmars, Mark (2008). Computational Geometry 99-110
-
-\bibitem{STUKK} E. Ukkonen. (1995). On-line construction of suffix trees. Algorithmica 14(3):249-260.
-
-\bibitem{SOANS} http://stackoverflow.com/questions/10260688/boostproperty-treejson-parser-and-two-byte-wide-characters
-
-\bibitem{REDPE} \url{http://redis.io/topics/persistence}
-
-\bibitem{ASIOHTTP} \url{http://www.boost.org}
-
-\bibitem{PSQLGIN} \url{http://www.sai.msu.su/~megera/wiki/Gin}
-
-\bibitem{PSQLGIST} \url{http://www.postgresql.org/docs/9.1/static/gist-implementation.html}
-
-\bibitem{PSQLINDEXES} \url{http://www.postgresql.org/docs/9.1/static/textsearch-indexes.html}
-
-\bibitem{SPHINXRT} \url{http://sphinxsearch.com/docs/current.html#rt-indexes}
-
-\bibitem{SPHINXPARAL} \url{http://sphinxsearch.com/docs/2.0.1/distributed.html}
-
-\bibitem{BINOMHEAPS}
-Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein. Introduction to Algorithms, Second Edition. MIT Press and McGraw-Hill, 2001. ISBN 0-262-03293-7. Chapter 19: Binomial Heaps, pp.455–475.
-
-\bibitem{ALPHATREES} Arne Andersson, Maintaining alpha-balanced Trees by Partial Rebuilding
-
-\bibitem{AMOR} Robert Trajan, Amortized Computational Complexity
-
-\end{thebibliography}
+\bibliographystyle{abbrv}
+\bibliography{biblio}
 
 \end{document}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
