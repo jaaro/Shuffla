@@ -2,7 +2,7 @@
 
 \usepackage[a4paper,hmargin=2.5cm,vmargin=3cm] {geometry}
 \usepackage{fix-cm}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,amsthm}
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage[polish,english]{babel}
@@ -348,59 +348,53 @@ This is known as partial rebuilding, a simple yet very powerful paradigm often u
 
 \section{Complexities}
 
-Assumptions
+Assumptions:
 \begin{enumerate}
-\item All values of columns are different.
-\item Rebuilding node causes number of nodes in one of its subtree to be not greater than twice the number of nodes in the opposite subtree.
+\item all values of columns are different,
+\item rebuilding node causes number of nodes in one of its subtree to be not greater than twice the number of nodes in the opposite subtree.
 \end{enumerate}
 
-Let $n$ be number of points in the tree. Tree is somehow balanced so its height is $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. Let $|X|$ be number of points in subtree $X$.
+\pawel{Somehow..hmmm?}
+Let $n$ be number of points in the tree. Tree is somehow balanced so its height is $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
 \subsection{Inserting/deleting point $X$}
+
+\pawel{Zwróć uwagę na to, że dowody są oznaczone jako dowody...}
+
+\pawel{Tutaj używałeś S jako liczby, a potem pisałeś |S|?!}
 \begin{lemma}\label{lem:1}
-Rebuilding tree of size S takes $\Oh(|S| \log |S|)$.
+Rebuilding tree of size $n$ takes $\Oh(n \log n)$.
 \end{lemma}
 
-In linear time we can find median. After that we recursively rebuild two smaller subtrees. Complexity of such solution is $T(S) = 2 T(S/2) + \Oh(S)$ which is $T(S) = \Oh(|S| \log |S|).$
+\begin{proof}
+We can find the median in linear time~\cite{FIVE}. Hence in order to rebuild a tree, we first find the median, and then recursively rebuild two subtrees half the size.  Complexity of such procedure can be described by $T(n) = 2 T(n/2) + \Oh(n)$, which solves to $T(n) = \Oh(n \log n).$
+\end{proof}
 
 \begin{lemma}\label{lem:2}
-Amortized time of insert/delete is $\Oh(\log^2 (n))$.
+Amortized time of insert/delete is $\Oh(\log^2 n)$.
 \end{lemma}
 
-Consider that every node which is visited by insert/delete gets $\Oh(\log N)$ credits. By proving that each subtree has more credits than $|S| \log |S|)$ I will prove that amortized complexity of insert/delete is $\Oh(\log^2{N})$ .
+\begin{proof}
 
-There are two cases:
+We will give $3\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $3|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is almost balanced, this is at most $n\log n$). We must prove that the invariant still holds after each insert/delete and that we always have enough credits to amortize the rebuilding. We consider those two parts separately.
+
 \begin{enumerate}
-\item Subtree was never rebuild. Then this node has at least $10 |X| \log |X|$ credits. It is enough to rebuild subtree X.
-\item Subtree was rebuild. Let $\xi$ be $|X|$ after last rebuild. Lets find smallest number of modifications required for another rebuild. We could either add points to larger subtree, or remove points from smaller subtree.
-\begin{enumerate}
-\item Inserting points to bigger subtree.
 
-\begin{tabular}{|l|c|c|}
-\hline  & Size of smaller subtree & Size of bigger subtree  \\
-\hline Before & $x$ & $2x$ \\
-\hline After & $x$ & $5x$ \\
-\hline 
-\end{tabular}
+\item Each node visited during an insert/delete operation gets $3\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $3|n_{l}-n_{r}|\log n$ by at most $3\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
 
-We need to insert at least $ \frac{5 - 2}{1 + 5} |S| = \frac{1}{2} |S|$ points to cause another rebuild. It means that at least $5 |S| \log |S|$ credits will be given which is enough. 
-
-\bigskip
-\item Deleting points from smaller subtree.
-
-\begin{tabular}{|l|c|c|}
-\hline  & Size of smaller subtree & Size of bigger subtree  \\
-\hline Before & $5x$ & $10x$ \\
-\hline After & $2x$ & $10x$ \\
-\hline 
-\end{tabular}
-
-We need to delete at least $\frac{5 - 2}{2 + 10} |S| = \frac{3}{12} |S|$ points to cause another rebuild. It means that at least $\frac{5}{2} |S| \log |S|$ credits will be given which is enough. 
+\item We rebuild a node as soon as one subtree is twice as large as the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least $3|n_{l}-n_{r}|\log n = 3n_{r}\log n \geq n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
 
 \end{enumerate}
-\end{enumerate}
+
+There is one additional details. The value of $\log n$ can (and will) actually change during the execution of the algorithm. We actually care about its integer part, tough. In order for it to increase, we need to perform $n$ insert/delete operations. Hence if we charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, we will have $cn\log^{2} n$ credits available. Now, for each node of the tree we need to add $n\log n$ credits, hence the total required number of credits is described by the recurrence $T(n)=n\log n+T(\alpha n)+T((1-\alpha)n)$, where $\frac{1}{3}\leq \alpha \leq \frac{2}{3}$. The recurrence solves to $T(n)=\Theta(n\log^{2}n)$, so we have enough credits to pay for the increase.
+\end{proof}
+\pawel{Przeczytaj ten dowód i powiedz mi czy ma sens.}
+
+
+\pawel{Tutaj fajnie byłoby skontruować przykład, że ta złożoność to faktycznie $\log^{2}n$, tzn ciąg $n$ insertów, które w sumie wymagają czasu $n\log^{2}n$...}
 
 \subsection{Search}
+\pawel{Jak dla mnie to does change... mi wychodzi $\Oh(n^{1-1/d+\epsilon}+k)$, $\epsilon$ zależy jakoś od balansu między dziećmi}
 Complexity of K-D tree doesn't change, it's still $\Oh(n^{1-1/d} + k)$. Lets remember that this complexity is worst case scenario. \jarek{Uważasz, że pisanie o average casie ma sens? Taki fragment jest przydany, ale bez względu na to jak go napiszę, brzmi jak wyciąganie królika z kapelusza;/}
 \pawel{Może i przydatny, tylko to explanation bym zmienił.  I dodał, że chodzi Ci o losowe punkty?}
  For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit. Explanation: when algorithm recursively enters node of K-D tree, then it usually finds some results. It means that finding single row, usually takes $\Oh(\log n)$.
