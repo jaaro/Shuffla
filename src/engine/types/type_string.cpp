@@ -45,6 +45,11 @@ bool TypeString::is_prefix(const char* prefix) const
     return true;
 }
 
+bool TypeString::is_substring(const char* pattern) const
+{
+    return strstr(value_, pattern) != NULL;
+}
+
 bool TypeString::is_smaller(const Type* type) const
 {
     const TypeString* v = dynamic_cast<const TypeString*>(type);

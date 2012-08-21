@@ -62,14 +62,16 @@ TableDefinition* Table::get_table_definition() const
 
 void Table::insert(const Row* new_row)
 {
+    boost::unique_lock< boost::shared_mutex > lock(_access);
     for(std::size_t index = 0; index<indexes.size(); index++) {
         indexes[index]->insert_row(new_row);
     }
 }
 
 
-void Table::dump_table(DumpSaver& dump_saver) const
+void Table::dump_table(DumpSaver& dump_saver)
 {
+    boost::shared_lock< boost::shared_mutex > lock(_access);
     dump_saver.append(table_definition->to_string());
     dump_saver.append(Misc::int_to_string(indexes.size()) + "\n");
 
@@ -79,8 +81,9 @@ void Table::dump_table(DumpSaver& dump_saver) const
     indexes[0]->dump_all_rows(dump_saver);
 }
 
-SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
+SearchResult* Table::search(boost::shared_ptr<QueryParameters> params)
 {
+    boost::shared_lock< boost::shared_mutex > lock(_access);
     std::vector<const Row*> results = indexes[0]->search(params);
 /*
     if (params->order_by.size() > 0 ) {
@@ -96,13 +99,14 @@ SearchResult* Table::search(boost::shared_ptr<QueryParameters> params) const
         sort(results.begin(), results.end(), comp);
     }
 */
-
     return new SearchResults(params, results, 7);
 }
 
 
 int Table::remove(boost::shared_ptr<QueryParameters> params)
 {
+    boost::unique_lock< boost::shared_mutex > lock(_access);
+
     std::vector<const Row*> results = indexes[0]->search(params);
 
     for(std::size_t index = 0; index<indexes.size(); index++) {

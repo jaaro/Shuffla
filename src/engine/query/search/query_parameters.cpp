@@ -1,6 +1,7 @@
 #include "query_parameters.hpp"
 #include "functions/search_function_equal.hpp"
 #include "functions/search_function_prefix.hpp"
+#include "functions/search_function_substring.hpp"
 #include "functions/search_function_smaller.hpp"
 #include "functions/search_function_greater.hpp"
 #include "functions/search_function_smaller_or_equal.hpp"
@@ -103,6 +104,7 @@ void QueryParameters::register_functions()
     registered_functions.clear();
     registered_functions.push_back(new SearchFunctionEqual());
     registered_functions.push_back(new SearchFunctionPrefix());
+    registered_functions.push_back(new SearchFunctionSubstring());
     registered_functions.push_back(new SearchFunctionSmaller());
     registered_functions.push_back(new SearchFunctionGreater());
     registered_functions.push_back(new SearchFunctionSmallerOrEqual());
