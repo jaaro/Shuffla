@@ -39,5 +39,5 @@ SearchFunction* SearchFunctionPrefix::clone() const
 
 bool SearchFunctionPrefix::is_correct_prefix(const std::string& prefix) const
 {
-    return (prefix == "PREFIX" || prefix == "STARTS_WITH"|| prefix == "SUBSTR" || prefix == "SUBSTRING");
+    return (prefix == "PREFIX" || prefix == "STARTS_WITH");
 }

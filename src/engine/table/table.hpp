@@ -9,6 +9,9 @@
 #include "../query/search/query_parameters.hpp"
 #include "../table_index/table_index.hpp"
 
+#include <boost/thread/shared_mutex.hpp>
+#include <boost/thread/locks.hpp>
+
 class Table
 {
 public:
@@ -24,13 +27,15 @@ public:
     // insert, search, remove
     void insert(const Row* row);
     int remove(boost::shared_ptr<QueryParameters> params);
-    SearchResult* search(boost::shared_ptr<QueryParameters> params) const ;
+    SearchResult* search(boost::shared_ptr<QueryParameters> params) ;
 
-    void dump_table(DumpSaver& dump_processor) const;
-protected:
+    void dump_table(DumpSaver& dump_processor);
+
 private:
     TableDefinition* table_definition;
     std::vector<TableIndex*> indexes;
+
+    boost::shared_mutex _access;
 };
 
 #endif // TABLE_H
