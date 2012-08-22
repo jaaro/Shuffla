@@ -28,6 +28,7 @@ public:
     virtual bool equals(const Type* type) const ;
 
     bool is_prefix(const char* prefix) const ;
+    bool is_substring(const char* pattern) const ;
     virtual std::string to_string() const;
     TYPE get_value() const ;
 

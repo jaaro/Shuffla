@@ -14,7 +14,7 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
 {
     const std::vector<SearchFunction*> params = query_params_->get_parameters();
 
-    are_there_extra_requiremens_ = false;
+    are_there_extra_requiremens_ = true;
     for(std::size_t i=0; i<params.size(); i++) {
         std::string property_name = params[i]->get_property_name();
         Type* value = params[i]->get_value()->clone();

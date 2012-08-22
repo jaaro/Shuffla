@@ -23,7 +23,7 @@ Config::Config()
     slow_log_file_name = "slow_log.log";
     slow_log_miliseconds_bound = 30.0;
 
-    set("save_dump", "20 1");
+    set("save_dump", "5 5");
 }
 
 Config::~Config() {}
