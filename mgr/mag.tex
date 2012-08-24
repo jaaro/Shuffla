@@ -258,7 +258,17 @@ Locking table:
 \item write queries can be performed if no other query is performed.
 \end{enumerate}
 
-All requests should be inserted into queue. When read-only query arrives, query is executed instantly. When write query arrives, queue waits until no query is currently executed. It can be achieved by storing atomic counter which holds number of currently processing requests. 
+This locking schema can be imlemented using only mutexes and locks from boost. Boost implements five kinds of locks. Every lock takes mutex as it argument and locks table. Differences between locks are shown when other locks try to ackquire locked mutex. There are:
+
+\begin{enumerate}
+\item lock_guard - \todo{short descriptions}
+\item unique_lock
+\item shared_lock
+\item upgrade_lock
+\item upgrade_to_unique_lock
+\end{enumerate}
+
+My solution requires every table to have is own mutex. Then read-only request are using shared_lock and write request are using unique_lock.
 
 \subsection{How data is stored}
 Requirements:
