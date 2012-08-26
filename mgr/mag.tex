@@ -161,7 +161,7 @@ User can narrow search results by:
 It would be great if results could be personalized. For example, if user from San Francisco is looking for Jane, top results should show Jane's from San Francisco, then Jane's from California, then rest of U.S. One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop very own search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, PostgreSQL. 
 
 \bigskip
-I'm working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve task described above. 
+I'm working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve the task described above. 
 
 \bigskip
 \noindent \textbf{Keywords:} database, nosql
@@ -199,7 +199,7 @@ Narrowing result described in abstract is possible with defined model. Personali
 \end{enumerate}
 
 \section{Algorithm description}
-We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as half-plane (or half-planes) which narrows search space. There are two data structures for performing efficient searches in multidimensional space:
+We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as half-plane (or half-planes) which narrows the search space. There are two data structures for performing efficient searches in a multidimensional space:
 
 \begin{enumerate}
 \item Range Tree \cite{CGAAA}
@@ -219,7 +219,7 @@ Complexities (where $d>=2$)
 
 I chose to implement K-D trees because:
 \begin{enumerate}
-\item They are only worse in processing search requests. Operations which modify data i.e. insert/delete are more important. If they are very fast, scaling can be easily achieved (for example by implementing master-slave replication).
+\item They are only worse in processing search requests. Operations which modify data i.e. insert/delete are more important. If they are very fast, scaling can be easily achieved (for example by implementing master-slave replication). Moreover, while the search bounds are worse in theory, they seem to be significantly better in practice.
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
@@ -233,7 +233,7 @@ Complexities:
 \item Searching text in tree $\Oh(|text|)$
 \end{enumerate}
 
-Unfortunately adding linear structure to every node of K-D tree cause grow of space complexity to $\Oh(n \log n)$
+Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$
 
 \section{Implementation}
 
@@ -254,21 +254,21 @@ Instances of query classes are sent to SearchEngine class. SearchEngine class is
 
 Locking table:
 \begin{enumerate}
-\item read-only queries can run unless write query is performed,
-\item write queries can be performed if no other query is performed.
+\item any number of read-only queries can be run concurrently as long as no write query is being performed at the moment,
+\item write query can be performed if no other query is being performed at the moment.
 \end{enumerate}
 
-This locking schema can be imlemented using only mutexes and locks from boost. Boost implements five kinds of locks. Every lock takes mutex as it argument and locks table. Differences between locks are shown when other locks try to ackquire locked mutex. There are:
+This locking schema has the advantage that it can be implemented using only mutexes and locks from boost. Boost implements five kinds of locks, each taking a mutex as an argument and locking it. Differences between different locks come up when other locks try to acquire an already locked mutex. There are:
 
 \begin{enumerate}
-\item lock_guard - \todo{short descriptions}
-\item unique_lock
-\item shared_lock
-\item upgrade_lock
-\item upgrade_to_unique_lock
+\item \verb|lock_guard| - \todo{short descriptions}
+\item \verb|unique_lock|
+\item \verb|shared_lock|
+\item \verb|upgrade_lock|
+\item \verb|upgrade_to_unique_lock|
 \end{enumerate}
 
-My solution requires every table to have is own mutex. Then read-only request are using shared_lock and write request are using unique_lock.
+My solution requires every table to have is own mutex. Then read-only request use \verb|shared_lock| and write request use \verb|unique_lock|.
 
 \subsection{How data is stored}
 Requirements:
