@@ -202,10 +202,10 @@ Narrowing result described in abstract is possible with defined model. Personali
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
 
 \subsection{Relational databases}
-Relational databases. In these paper I'm only testing PostgreSQL which is considered best RDBMs nowadays \todo{source do tego fajnego artykułu z reddita}.
+In these paper I'm only testing PostgreSQL which is considered best RDBMs nowadays \todo{source do tego fajnego artykułu z reddita}.
 
 \subsubsection{PostgreSQL}
-PostgreSQL has really cool features like: real time index creation, geospatial index \todo{Uzupełnij to}. PostgreSQL implements replication (\todo{what kinds}), slow log, error log, it's performance can be easily overlooked \todo{to chyba zle slowo} by monitoring software like munin, new relic \todo{Jak to działa}. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree. \todo{Opisz jak wygląda persistence}. Example of processing query by B-tree: first name = John $\wedge$ SUBSTRING(last name) = qwertyabc LIMIT 1. In this case engine is finding first person with first name John. It takes $O(\log n)$ time. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring qwertyabc. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
+PostgreSQL has really cool features like: real time index creation, geospatial index \todo{Uzupełnij to}. PostgreSQL implements replication (\todo{what kinds}), slow log, error log, it's performance can be easily overlooked \todo{to chyba zle slowo} by monitoring software like munin, new relic \todo{Jak to działa}. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree. \todo{Opisz jak wygląda persistence}. Example of processing query by B-tree: \verb|first name = John| $\wedge$ \verb|substring(last name) = qwertyabc| $\wedge$ \verb|limit 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
 
 \subsection{Full-text search engine}
 Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx search and Lucene Solr. Almost all big players are choosing Sphinx and Solr over others such as Elastic Search, \todo{Nie pamiętam tych 2 nazw już} so I'm going to consider only these two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occuring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be \todo{english na postrzegana} as procedure
@@ -213,7 +213,7 @@ Another solution is to use full-text search engine. The most popular full-text s
 \item Narrow words from inverted index which need to be process as much as possible. 
 \item Process remaining words. 
 \end{enumerate}
-For example if query is first name = John $\wedge$  LIMIT 1 then we are only interested in word John from inverted index. Engine finds first occurence and returns it. If query is first name = John $\wedge$ SUBSTRING(last name) = qwertyabc LIMIT 1 then it is likely that there are more Johns then all people with last name containing qwertyabc. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such a case could be SUBSTRING(last name)=a $\wedge$ SUBSTRING(last name) = b $\wedge$ ... $\wedge$ SUBSTRING(last name) = z LIMIT 1. Almost whole inverted index must be processed but still result set will be empty.
+For example if query is \verb|first name = John| $\wedge$ \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurence and returns it. If query is \verb|first name = John| $\wedge$ \verb|substring(last name) = qwertyabc| $\wedge$ \verb|limit 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such a case could be \verb|substring(last name)=a| $\wedge$ \verb|substring(last name) = b| $\wedge$ ... $\wedge$ \verb|substring(last name) = z| $\wedge$ \verb|limit 1|. Almost whole inverted index must be processed but still result set will be empty.
 
 \subsubsection{Solr}
 
@@ -235,7 +235,7 @@ There are several high-traffic websites with Sphinx search. They horizontally pa
 Replication is very important to us because in case of server failure we want to avoid downtime. So it was kind a deal breaker for us. I'm considering sphinx search in this paper because maybe some day they are going to implement some kind of replication.
 
 \bigskip
-It seems that none of existing solutions are processing search queries very fast. In worst case scenario it's always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM is \todo{english for chleb powszedni}. Although data stored on disk could be transfer to RAM by ramdisks, it shows that such solution isn't primary target to software creators. For me it seems that in this area is room for improvement. That's why I decided to create my own search engine.  
+It seems that none of existing solutions are processing search queries very fast. In worst case scenario it's always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average solutions working in RAM memory are \todo{english na mile widziane}. Although data stored on disk could be transfer to RAM by ramdisks, it shows that such solution isn't primary target to software creators. For me it seems that this area has room for improvement. That's why I decided to create my own search engine.  
 
 \section{Algorithm description}
 We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as half-plane (or half-planes) which narrows the search space. There are three data structures for performing efficient searches in a multidimensional space:
@@ -280,12 +280,34 @@ Unfortunately adding linear structure to every node of K-D tree increases the sp
 
 \section{Implementation}
 
-\subsection{Architecture}
-\jarek{Tu fajnie byłoby wrzucić diagram i na podstawie niego opisywać co się dzieje}
-I decided that it would be best if search engine could mimic RESTful service. Every search/insert/delete request should be sent as a HTTP request. Server works in the multi-threaded environment. As a base I used $example3$ \cite{ASIOHTTP} from \verb|boost::asio| documentation which fulfills my requirements. \todo{Jak działa example3, pula wątków}
+\subsection{HTTP Service}
 
-Every request is converted to a corresponding class. For example, search request is converted to SearchQuery, insert is converted InsertQuery, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors.
-Instances of query classes are sent to SearchEngine class. SearchEngine class is responsible for:
+
+ (Figure~\ref{fig:httpservice}).
+
+\begin{figure}
+\centering
+  \includegraphics[width=16cm]{start}
+  \caption{Processing request begins}
+  \label{fig:httpservice}
+\end{figure}
+
+I decided that it would be best if search engine could mimic RESTful service. Every search/insert/delete request should be sent as a HTTP request. Server works in the multi-threaded environment. As a base I used \verb|example2| \cite{ASIOHTTP} from \verb|boost::asio| documentation which fulfills my requirements. \todo{Jak działa example2, pula wątków} There is another thread for periodical functions. Currently its invoking only saving snapshots.
+
+ (Figure~\ref{fig:passing}).
+
+\subsection{Validation and passing queries to SearchEngine class}
+
+\begin{figure}
+\centering
+  \includegraphics[width=16cm]{passingtosearchengine}
+  \caption{Passing control to SearchEngine class}
+  \label{fig:passing}
+\end{figure}
+
+\verb|http::server2::request_handler::handle_request| passes requesting url to \verb|QueryDispatcher|. QueryDispatcher converts every request to corresponding class by using \verb|QueryCreate|. For example, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
+
+Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
 \item data validation (types, correspondence to table definition),
 \item measuring running time (slow log purpose),
@@ -293,25 +315,55 @@ Instances of query classes are sent to SearchEngine class. SearchEngine class is
 \item passing valid requests to K-D Trees.
 \end{enumerate}
 
-Locking table:
+\subsection{Processing insert/delete requests}
+
+Inserting/deleting without tree balancing is pretty straight-forward. Just simple recursion. Balancing is a little bit tricky. 
+
+ (Figure~\ref{fig:rebuild}).
+
+\begin{figure}
+\centering
+  \includegraphics[width=16cm]{rebuild}
+  \caption{Rebuilding process}
+  \label{fig:rebuild}
+\end{figure}
+
+Balancing can be done using any linear algorithm for finding median in set. I've decided to take different approach. In \verb|KDVertex::fing_good_limiter| I'm selecting randomly about 30 rows belonging to node and I'm iterating over them. Based on current coordinate value in this row I'm creating Limiter. \verb|Limiter| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row| limiter can check if given Row satisfy condition defined inside \verb|Limiter|. Algorithm iterates over all rows in node and in linear time calculates limiter efficiency. If limiter efficiency is good enough (See definition of well-balanced tree) than I'm stopping calculations. I've got \todo{Jak ładnie nazwać element podziału} and I'm recursively rebuilding two subtrees. I've decided for this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reach linear size, than during rebuilding root, memory usage could double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{3}$ of elements are creating good limiters.
+
+\subsection{Processing search requests}
+
+ (Figure~\ref{fig:search}).
+
+\begin{figure}
+\centering
+  \includegraphics[width=16cm]{search}
+  \caption{Processing search request}
+  \label{fig:search}
+\end{figure}
+
+When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begins here. Lets look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different event objects for different \todo{Brakuje mi słowa}. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfy all conditions defined in search request. Both these classes extends abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow| queue just adds row to result set. When processing \verb|SearchTaskSearchNode| queue passes control to \verb|KDVertex::search| which returns all events that should be added to queue. \verb|KDVertex::search| checks if boundary defined by query contains/is disjoint with current node's boundary. If it's disjoint there is nothing more to do. If boundary defined by query contains current node's boundary than every row from this node should be added to queue. When none of these conditions are true, algorithm simply adds two sons of current node to queue. There was idea to add possibility for multiple index creation. Such index could be created for some subset of table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
+
+\subsection{Locking tables}
 \begin{enumerate}
 \item any number of read-only queries can be run concurrently as long as no write query is being performed at the moment,
 \item write query can be performed if no other query is being performed at the moment.
 \end{enumerate}
 
-This locking schema has the advantage that it can be implemented using only mutexes and locks from boost. Boost implements five kinds of locks, each taking a mutex as an argument and locking it. Differences between different locks come up when other locks try to acquire an already locked mutex. There are:
+This locking schema has the advantage that it can be implemented using only mutexes and locks from boost. A mutex object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. Boost.Thread supplies recursive and non-recursive mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex. \todo{3 ostatnie zdania są przeklejone z dokumentacji boosta, nie wiem czy tak może być}
+There are three most common kinds of locks. All locks are working in similar fashion. Mutex is passed as constructor parameter to lock. Ownership of mutex is acquired in constructor. Ownership of mutex is released when lock object is destroyed.  
 
 \begin{enumerate}
-\item \verb|lock_guard| - \todo{short descriptions}
-\item \verb|unique_lock|
-\item \verb|shared_lock|
-\item \verb|upgrade_lock|
-\item \verb|upgrade_to_unique_lock|
+\item \verb|unique_lock| - When mutex is acquired by unique lock, then no one can acquire this lock until unique lock will release lock. 
+\item \verb|shared_lock| - Multiple shared locks can acquire the same mutex.
+\item \verb|upgrade_lock| - Acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
 \end{enumerate}
 
-My solution requires every table to have is own mutex. Then read-only request use \verb|shared_lock| and write request use \verb|unique_lock|.
+My solution requires every table to have is own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|.
 
 \subsection{How data is stored}
+
+\todo{Tutaj super by diagramik UML pasował}
+
 Requirements:
 \begin{enumerate}
 \item all data can be easily serializable,
@@ -390,7 +442,7 @@ There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered
   \label{fig:inside}
 \end{figure}
 
-Lets revised this idea on example where point with minimal value of coordinate x is searched. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly on of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ are processed. Finding minimum value of coordinate x of node takes $O(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$.
+Lets revised this idea on example where point with minimal value of coordinate x is searched. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ are processed. Finding minimum value of coordinate x of node takes $O(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$.
 
 \subsection{Raw pointers instead of shared pointers}
 
@@ -498,7 +550,7 @@ For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGI
 
 \subsection{Sphinx search}
 
-For this problem real-time indexes are best \cite{SPHINXRT}. Scheme is the same as for PostgreSQL.
+For this problem real-time indexes are best \cite{SPHINXRT}. Scheme is the same as for PostgreSQL. \todo{Jakie są indeksy, czemu real-time, jak realizowane są zapytania w sensie składniowym}
 
 \section{Tested results}
 
