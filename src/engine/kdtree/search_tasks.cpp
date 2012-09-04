@@ -20,7 +20,7 @@ const Row* SearchTaskFoundRow::get_row() const
 }
 
 
-SearchTaskSearchNode::SearchTaskSearchNode(KDVertice* vertice) : vertice_(vertice)
+SearchTaskSearchNode::SearchTaskSearchNode(KDVertex* vertex) : vertex_(vertex)
 {
 
 }
@@ -33,11 +33,11 @@ SearchTaskSearchNode::~SearchTaskSearchNode()
 
 const Type* SearchTaskSearchNode::get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const
 {
-    if (is_order_descending) return vertice_->get_boundary().get_upper_bound(boundary_index).get_bound_value();
-    else return vertice_->get_boundary().get_lower_bound(boundary_index).get_bound_value();
+    if (is_order_descending) return vertex_->get_boundary().get_upper_bound(boundary_index).get_bound_value();
+    else return vertex_->get_boundary().get_lower_bound(boundary_index).get_bound_value();
 }
 
-KDVertice* SearchTaskSearchNode::get_vertice() const
+KDVertex* SearchTaskSearchNode::get_vertex() const
 {
-    return vertice_;
+    return vertex_;
 }

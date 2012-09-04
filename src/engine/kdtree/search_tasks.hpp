@@ -1,9 +1,9 @@
 #ifndef SEARCH_TASKS_H
 #define SEARCH_TASKS_H
 
-#include "kd_vertice.hpp"
+#include "kd_vertex.hpp"
 
-class KDVertice;
+class KDVertex;
 
 class SearchTask {
     public:
@@ -25,13 +25,13 @@ class SearchTaskFoundRow : public SearchTask {
 
 class SearchTaskSearchNode : public SearchTask {
     public:
-        SearchTaskSearchNode(KDVertice* row);
+        SearchTaskSearchNode(KDVertex* row);
         virtual ~SearchTaskSearchNode();
         virtual const Type* get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const ;
 
-        KDVertice* get_vertice() const ;
+        KDVertex* get_vertex() const ;
     private:
-        KDVertice* vertice_;
+        KDVertex* vertex_;
 };
 
 #endif // SEARCH_TASKS_H

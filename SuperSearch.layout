@@ -43,10 +43,10 @@
 	<File name="src/engine/kdtree/boundary.hpp" open="1" top="0" tabpos="8">
 		<Cursor position="275" topLine="0" />
 	</File>
-	<File name="src/engine/kdtree/kd_vertice.cpp" open="1" top="0" tabpos="11">
+	<File name="src/engine/kdtree/kd_vertex.cpp" open="1" top="0" tabpos="11">
 		<Cursor position="3011" topLine="90" />
 	</File>
-	<File name="src/engine/kdtree/kd_vertice.hpp" open="0" top="0" tabpos="15">
+	<File name="src/engine/kdtree/kd_vertex.hpp" open="0" top="0" tabpos="15">
 		<Cursor position="599" topLine="0" />
 	</File>
 	<File name="src/engine/kdtree/limiter.cpp" open="1" top="0" tabpos="5">

@@ -12,11 +12,11 @@
 class SearchTask ;
 class SearchTaskSearchNode ;
 
-class KDVertice
+class KDVertex
 {
 public:
-    explicit KDVertice(const TableIndexInfo& table_index_info, Boundary boundary);
-    explicit KDVertice(const TableIndexInfo& table_index_info);
+    explicit KDVertex(const TableIndexInfo& table_index_info, Boundary boundary);
+    explicit KDVertex(const TableIndexInfo& table_index_info);
 
     void add_collection(std::vector<const Row*> rows);
     bool insert_row(const Row* row, int k);
@@ -28,7 +28,7 @@ public:
     void dump_all_rows(DumpSaver& dump_saver) const;
     const Boundary& get_boundary() const;
 
-    virtual ~KDVertice();
+    virtual ~KDVertex();
 protected:
     void rebuild();
 
@@ -41,7 +41,7 @@ private:
 
     const TableIndexInfo& table_index_info_;
 
-    // boundary of this vertice
+    // boundary of this vertex
     Boundary boundary_;
 
     // elements that are in this boundary
@@ -50,8 +50,8 @@ private:
     // left and right subtree and divider
     int divieder_property_number_;
     Type* divider_;
-    KDVertice* left_;
-    KDVertice* right_;
+    KDVertex* left_;
+    KDVertex* right_;
 };
 
 #endif // KDVERTICE_H

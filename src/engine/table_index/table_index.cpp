@@ -6,7 +6,7 @@
 
 TableIndex::TableIndex(TableIndexInfo index_info) : index_info_(index_info)
 {
-    kd_tree_ = new KDVertice(index_info_);
+    kd_tree_ = new KDVertex(index_info_);
 }
 
 TableIndex::~TableIndex()
@@ -63,7 +63,7 @@ std::vector<const Row*> TableIndex::search(boost::shared_ptr<QueryParameters> qu
 
         SearchTaskSearchNode* search_node = dynamic_cast<SearchTaskSearchNode*>(task);
         if (search_node != NULL) {
-            std::vector<SearchTask*> result = search_node->get_vertice()->search(query_boundary);
+            std::vector<SearchTask*> result = search_node->get_vertex()->search(query_boundary);
             for(std::size_t i=0; i<result.size(); i++) {
                 queue.push(result[i]);
             }

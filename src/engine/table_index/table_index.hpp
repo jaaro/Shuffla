@@ -2,7 +2,7 @@
 #define TABLEINDEX_H
 
 #include "table_index_info.hpp"
-#include "../kdtree/kd_vertice.hpp"
+#include "../kdtree/kd_vertex.hpp"
 #include "../../dump/dump_saver.hpp"
 
 class TableIndex
@@ -22,7 +22,7 @@ public:
 protected:
 private:
     const TableIndexInfo index_info_;
-    KDVertice* kd_tree_;
+    KDVertex* kd_tree_;
 };
 
 #endif // TABLEINDEX_H

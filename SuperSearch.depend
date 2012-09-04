@@ -520,12 +520,12 @@
 
 1335772118 /home/jaaro/Projects/Shuffla/src/engine/table_index/table_index.hpp
 	"table_index_info.hpp"
-	"../kdtree/kd_vertice.hpp"
+	"../kdtree/kd_vertex.hpp"
 
 1335770557 /home/jaaro/Projects/Shuffla/src/engine/table_index/table_index_info.hpp
 	"../table/table_definition.hpp"
 
-1335770554 /home/jaaro/Projects/Shuffla/src/engine/kdtree/kd_vertice.hpp
+1335770554 /home/jaaro/Projects/Shuffla/src/engine/kdtree/kd_vertex.hpp
 	"boundary.hpp"
 	"../table_index/table_index_info.hpp"
 	"../../dump/dump_loader.hpp"

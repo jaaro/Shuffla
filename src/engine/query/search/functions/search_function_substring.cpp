@@ -13,9 +13,9 @@ SearchFunctionSubstring::~SearchFunctionSubstring()
 
 bool SearchFunctionSubstring::is_matching(const Row* row) const
 {
-    Type* prop_value = row->get_value(get_property_name());
-    TypeString* type = static_cast<TypeString*>(prop_value);
-    TypeString* local_value = static_cast<TypeString*>(get_value());
+    const Type* prop_value = row->get_value(get_property_name());
+    const TypeString* type = static_cast<const TypeString*>(prop_value);
+    const TypeString* local_value = static_cast<const TypeString*>(get_value());
 
     if (type == NULL) return false;
     if (local_value == NULL) return false;

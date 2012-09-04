@@ -57,8 +57,8 @@
 		<Unit filename="src/dump/save_dump_manager.hpp" />
 		<Unit filename="src/engine/kdtree/boundary.cpp" />
 		<Unit filename="src/engine/kdtree/boundary.hpp" />
-		<Unit filename="src/engine/kdtree/kd_vertice.cpp" />
-		<Unit filename="src/engine/kdtree/kd_vertice.hpp" />
+		<Unit filename="src/engine/kdtree/kd_vertex.cpp" />
+		<Unit filename="src/engine/kdtree/kd_vertex.hpp" />
 		<Unit filename="src/engine/kdtree/limiter.cpp" />
 		<Unit filename="src/engine/kdtree/limiter.hpp" />
 		<Unit filename="src/engine/kdtree/query_boundary.cpp" />

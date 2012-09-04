@@ -1,32 +1,32 @@
-#include "kd_vertice.hpp"
+#include "kd_vertex.hpp"
 
-KDVertice::KDVertice(const TableIndexInfo& table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
+KDVertex::KDVertex(const TableIndexInfo& table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
 {
     left_ = NULL;
     right_ = NULL;
 }
 
-KDVertice::KDVertice(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info))
+KDVertex::KDVertex(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info))
 {
     left_ = NULL;
     right_ = NULL;
 }
 
-KDVertice::~KDVertice()
+KDVertex::~KDVertex()
 {
     delete left_;
     delete right_;
 }
 
 
-void KDVertice::clear()
+void KDVertex::clear()
 {
     rows_.clear();
     delete left_;
     delete right_;
 }
 
-void KDVertice::dump_all_rows(DumpSaver& dump_saver) const
+void KDVertex::dump_all_rows(DumpSaver& dump_saver) const
 {
     dump_saver.append(Misc::int_to_string(rows_.size()) + "\n");
     for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
@@ -34,19 +34,19 @@ void KDVertice::dump_all_rows(DumpSaver& dump_saver) const
     }
 }
 
-void KDVertice::add_collection(std::vector<const Row*> rows)
+void KDVertex::add_collection(std::vector<const Row*> rows)
 {
     rows_.insert(rows.begin(), rows.end());
     rebuild();
 }
 
-bool KDVertice::contains_row(const Row* row) const
+bool KDVertex::contains_row(const Row* row) const
 {
     return rows_.find(row) != rows_.end();
 }
 
 
-bool KDVertice::insert_row(const Row* row, int k)
+bool KDVertex::insert_row(const Row* row, int k)
 {
     if (!boundary_.is_point_inside(row)) return false;
     if (contains_row(row)) return false;
@@ -65,7 +65,7 @@ bool KDVertice::insert_row(const Row* row, int k)
     return true;
 }
 
-bool KDVertice::delete_row(const Row* row)
+bool KDVertex::delete_row(const Row* row)
 {
     if (!boundary_.is_point_inside(row)) return false;
     if (!contains_row(row)) return false;
@@ -76,7 +76,7 @@ bool KDVertice::delete_row(const Row* row)
     return true;
 }
 
-std::vector<SearchTask*>  KDVertice::search(const QueryBoundary& query_boundary) const
+std::vector<SearchTask*>  KDVertex::search(const QueryBoundary& query_boundary) const
 {
     if (query_boundary.disjoint(boundary_)) {
         return std::vector<SearchTask*>();
@@ -107,7 +107,7 @@ std::vector<SearchTask*>  KDVertice::search(const QueryBoundary& query_boundary)
     return result;
 }
 
-void KDVertice::rebuild()
+void KDVertex::rebuild()
 {
     for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
         assert(boundary_.is_point_inside(*it));
@@ -121,8 +121,8 @@ void KDVertice::rebuild()
         Boundary right_boundary(boundary_);
         right_boundary.add_limiter(limit.createReverseLimiter());
 
-        left_ = new KDVertice(table_index_info_, left_boundary);
-        right_ = new KDVertice(table_index_info_, right_boundary);
+        left_ = new KDVertex(table_index_info_, left_boundary);
+        right_ = new KDVertex(table_index_info_, right_boundary);
         std::vector<const Row*> left_collection, right_collection;
 
         int property_index = limit.get_property_index();
@@ -139,7 +139,7 @@ void KDVertice::rebuild()
     }
 }
 
-Limiter KDVertice::find_good_limiter() const
+Limiter KDVertex::find_good_limiter() const
 {
     bool only_first = rand() % 2;
 
@@ -174,7 +174,7 @@ Limiter KDVertice::find_good_limiter() const
     return limiters[best_index];
 }
 
-int KDVertice::calculate_limiter_efficiency(const Limiter& limit) const
+int KDVertex::calculate_limiter_efficiency(const Limiter& limit) const
 {
     int res = 0;
     int property_index = limit.get_property_index();
@@ -190,7 +190,7 @@ int KDVertice::calculate_limiter_efficiency(const Limiter& limit) const
     return abs(res);
 }
 
-std::vector<const Row*>  KDVertice::linear_filter(const QueryBoundary& query_boundary) const
+std::vector<const Row*>  KDVertex::linear_filter(const QueryBoundary& query_boundary) const
 {
     std::vector<const Row*> rows;
 
@@ -203,7 +203,7 @@ std::vector<const Row*>  KDVertice::linear_filter(const QueryBoundary& query_bou
     return rows;
 }
 
-std::vector<const Row*>  KDVertice::filter_non_index_conditions(const QueryBoundary& query_boundary) const
+std::vector<const Row*>  KDVertex::filter_non_index_conditions(const QueryBoundary& query_boundary) const
 {
     //TODO I am filtering ALL conditions
     std::vector<const Row*> rows;
@@ -217,6 +217,6 @@ std::vector<const Row*>  KDVertice::filter_non_index_conditions(const QueryBound
     return rows;
 }
 
-const Boundary& KDVertice::get_boundary() const {
+const Boundary& KDVertex::get_boundary() const {
     return boundary_;
 }
