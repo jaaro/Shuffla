@@ -113,7 +113,7 @@ void KDVertex::rebuild()
         assert(boundary_.is_point_inside(*it));
     }
 
-    if (rows_.size() > 50 && left_ == NULL) {
+    if (rows_.size() > 33 && left_ == NULL) {
         Limiter limit = find_good_limiter();
 
         Boundary left_boundary(boundary_);
@@ -158,6 +158,8 @@ Limiter KDVertex::find_good_limiter() const
         }
     }
 
+    assert(limiters.size() > 0);
+
     int best_index = -1;
     int res = INT_MAX;
     for(std::size_t i=0; i<limiters.size(); i++) {
@@ -170,6 +172,8 @@ Limiter KDVertex::find_good_limiter() const
             break;
         }
     }
+
+    assert(best_index >= 0);
 
     return limiters[best_index];
 }

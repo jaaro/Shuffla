@@ -3,26 +3,16 @@
 Boundary::Boundary(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info)
 {
     size_ = table_index_info.get_property_index_limit();
-    lower_bounds_ = new Limiter[size_];
-    upper_bounds_ = new Limiter[size_];
+    lower_bounds_ = std::vector<Limiter>(size_, Limiter());
+    upper_bounds_ = std::vector<Limiter>(size_, Limiter());
 }
 
 Boundary::Boundary(const Boundary& boundary) :
     table_index_info_ (boundary.table_index_info_)
 {
     size_ = boundary.size_;
-    lower_bounds_ = new Limiter[size_];
-    upper_bounds_ = new Limiter[size_];
-    for(int i=0; i<size_; i++) {
-        lower_bounds_[i] = boundary.lower_bounds_[i];
-        upper_bounds_[i] = boundary.upper_bounds_[i];
-    }
-}
-
-Boundary::~Boundary()
-{
-    delete[] lower_bounds_;
-    delete[] upper_bounds_;
+    lower_bounds_ = boundary.lower_bounds_;
+    upper_bounds_ = boundary.upper_bounds_;
 }
 
 bool Boundary::add_limiter(Limiter limiter)
@@ -31,7 +21,7 @@ bool Boundary::add_limiter(Limiter limiter)
     int property_index = limiter.get_property_index();
     int boundary_index = table_index_info_.get_boundary_index(property_index);
 
-    Limiter* current = (is_upper_bound ? upper_bounds_ : lower_bounds_);
+    std::vector<Limiter>& current = (is_upper_bound ? upper_bounds_ : lower_bounds_);
     Limiter& it = current[boundary_index];
     if (it.is_unbounded() || limiter.is_more_strict(it)) {
         current[boundary_index] = limiter;
@@ -51,8 +41,8 @@ bool Boundary::is_good_limiter_internal(const Limiter& limiter) const
     int property_index = limiter.get_property_index();
     int boundary_index = table_index_info_.get_boundary_index(property_index);
 
-    Limiter* current = (is_upper_bound ? upper_bounds_ : lower_bounds_);
-    Limiter& it = current[boundary_index];
+    const std::vector<Limiter>& current = (is_upper_bound ? upper_bounds_ : lower_bounds_);
+    const Limiter& it = current[boundary_index];
     return (it.is_unbounded() || limiter.is_more_strict(it));
 }
 

@@ -8,6 +8,8 @@ class Limiter
 {
 public:
     Limiter(int property_index, const Type* value, bool is_max, bool is_inclusive);
+    Limiter& operator=(const Limiter& limiter);
+    Limiter(const Limiter& limiter);
     Limiter();
 
     virtual ~Limiter();

@@ -17,7 +17,7 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
     are_there_extra_requiremens_ = true;
     for(std::size_t i=0; i<params.size(); i++) {
         std::string property_name = params[i]->get_property_name();
-        Type* value = params[i]->get_value()->clone();
+        Type* value = params[i]->get_value();
         int property_index = table_index_info.get_table_definition()->get_property_index(property_name);
 
         if (dynamic_cast<SearchFunctionGreater*>(params[i]) != NULL) {
@@ -37,14 +37,11 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
             add_limiter(Limiter(property_index, value, false, true));
             std::string text = value->to_string();
             text[text.size() - 1]++;
-            add_limiter(Limiter(property_index, new TypeString(text), true, false));
+            TypeString* text_obj = new TypeString(text);
+            add_limiter(Limiter(property_index, text_obj, true, false));
+            delete text_obj;
         }
     }
-}
-
-QueryBoundary::~QueryBoundary()
-{
-
 }
 
 boost::shared_ptr<QueryParameters> QueryBoundary::get_query_params() const

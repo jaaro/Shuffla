@@ -73,10 +73,18 @@ std::vector<const Row*> TableIndex::search(boost::shared_ptr<QueryParameters> qu
             else {
                 result.push_back(found_row->get_row());
                 if (--limit == 0) {
-                    return result;
+                    break;
                 }
             }
         }
+
+        delete task;
+    }
+
+    while(!queue.empty()) {
+        SearchTask* task = queue.top();
+        queue.pop();
+        delete task;
     }
 
     return result;

@@ -13,8 +13,6 @@ public:
     Boundary(const TableIndexInfo& table_index_info);
     Boundary(const Boundary& boundary);
 
-    virtual ~Boundary();
-
     virtual bool is_point_inside(const Row* boundary) const ;
     virtual bool contains(const Boundary& other_boundary) const ;
     virtual bool disjoint(const Boundary& other_boundary) const ;
@@ -31,8 +29,8 @@ public:
 protected:
     const TableIndexInfo& table_index_info_;
 private:
-    Limiter* upper_bounds_;
-    Limiter* lower_bounds_;
+    std::vector<Limiter> upper_bounds_;
+    std::vector<Limiter> lower_bounds_;
     int size_;
 };
 

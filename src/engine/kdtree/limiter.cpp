@@ -1,12 +1,32 @@
 #include "limiter.hpp"
 
 Limiter::Limiter(int property_index, const Type* bound, bool is_upper_bound, bool is_inclusive)
-    : property_index_(property_index), bound_(bound->clone()), is_upper_bound_(is_upper_bound), is_inclusive_(is_inclusive)
+    : property_index_(property_index),
+    bound_(bound != NULL ? bound->clone() : NULL),
+    is_upper_bound_(is_upper_bound),
+    is_inclusive_(is_inclusive)
 { }
+
+Limiter::Limiter(const Limiter& limiter) {
+    property_index_ = limiter.property_index_;
+    bound_ = (limiter.bound_ != NULL ? limiter.bound_->clone() : NULL);
+    is_upper_bound_ = limiter.is_upper_bound_;
+    is_inclusive_ = limiter.is_inclusive_;
+} 
 
 Limiter::Limiter() : property_index_(-1), bound_(NULL), is_upper_bound_(false), is_inclusive_(false) {}
 
-Limiter::~Limiter() { /* TODO delete bound_;*/ }
+Limiter::~Limiter() {
+    delete bound_;
+}
+
+Limiter& Limiter::operator=(const Limiter& limiter){
+    property_index_ = limiter.property_index_;
+    bound_ = (limiter.bound_ != NULL ? limiter.bound_->clone() : NULL);
+    is_upper_bound_ = limiter.is_upper_bound_;
+    is_inclusive_ = limiter.is_inclusive_;
+    return *this;
+} 
 
 bool Limiter::is_more_strict(const Limiter& rhs) const
 {

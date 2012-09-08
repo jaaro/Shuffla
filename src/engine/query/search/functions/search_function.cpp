@@ -2,13 +2,12 @@
 
 SearchFunction::SearchFunction()
 {
-    //ctor
+    value = NULL;
 }
 
 SearchFunction::~SearchFunction()
 {
-    //TODO
-    //delete value;
+    delete value;
 }
 
 

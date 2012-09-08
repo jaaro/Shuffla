@@ -16,7 +16,6 @@
 class Type
 {
 public:
-    virtual ~Type();
 
     virtual Type* clone() const = 0;
 
