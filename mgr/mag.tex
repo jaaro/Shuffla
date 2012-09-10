@@ -462,12 +462,12 @@ Nomenklatura:
 \item right($\theta$) - right subtree of vertex $\theta$
 \end{enumerate}
 
-Let $n$ be number of points in the tree. Tree with root $\theta$ is well-balanced if and only if  sub so it's height is $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
+Let $n$ be number of points in the tree. Tree is X-balanced if and only if \todo{for every vertex X w texu} X * |left($\theta$)| >= |right($\theta$)| $\wedge$ X * |left($\theta$)| >= |right($\theta$)|. Tree is well-balanced if it's 2-balanced. Tree is barely-balanced if it's 5-balanced. Height of both well and barely balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
 Assumptions:
 \begin{enumerate}
-\item all values of all columns are different
-\item rebuilding subtree with root $\theta$ causes $\theta$ to be well-balanced.
+\item all values of all columns are unique
+\item rebuilding subtree with root $\theta$ causes subtree with root $\theta$ to be well-balanced.
 \end{enumerate}
 
 \subsection{Inserting/deleting point $X$}
@@ -495,13 +495,14 @@ We will give $3\log n$ credits to each node visited during insert/delete. As the
 
 \item Each node visited during an insert/delete operation gets $3\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $3|n_{l}-n_{r}|\log n$ by at most $3\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
 
-\item We rebuild a node as soon as one subtree is twice as large as the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least $3|n_{l}-n_{r}|\log n = 3n_{r}\log n \geq n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
+\item We rebuild a node as soon as one subtree is five times larger than the other, say $n_{l} = 5n_{r}$. Then the number of credits accumulated at the node is at least ($n_{l}-2n_{r}
+)\log n = 3n_{r}\log n \geq n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
 
 \end{enumerate}
 
-There is one additional details. The value of $\log n$ can (and will) actually change during the execution of the algorithm. We actually care about its integer part, tough. In order for it to increase, we need to perform $n$ insert/delete operations. Hence if we charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, we will have $cn\log^{2} n$ credits available. Now, for each node of the tree we need to add $n\log n$ credits, hence the total required number of credits is described by the recurrence $T(n)=n\log n+T(\alpha n)+T((1-\alpha)n)$, where $\frac{1}{3}\leq \alpha \leq \frac{2}{3}$. The recurrence solves to $T(n)=\Theta(n\log^{2}n)$ \pawel{proof?}, so we have enough credits to pay for the increase.
+There is one additional details. The value of $\log n$ can (and will) actually change during the execution of the algorithm. We actually care about its integer part, tough. In order for it to increase, we need to perform $n$ insert/delete operations. Hence if we charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, we will have $cn\log^{2} n$ credits available. Now, for each node of the tree we need to add $n\log n$ credits, hence the total required number of credits is described by the recurrence $T(n)=n\log n+T(\alpha n)+T((1-\alpha)n)$, where $\frac{1}{3}\leq \alpha \leq \frac{2}{3}$. The recurrence solves to $T(n)=\Theta(n\log^{2}n)$ \pawel{proof?} \jarek{Teraz bym to indukcyjnie udowadniał, we Wrocławiu otworze konkretną i przypomne sobie jak się takie rzeczy robi} so we have enough credits to pay for the increase.
 \end{proof}
-\pawel{Przeczytaj ten dowód i powiedz mi czy ma sens.}
+
 
 \pawel{Tutaj fajnie byłoby skonstruować przykład, że ta złożoność to faktycznie $\log^{2}n$, tzn ciąg $n$ insertów, które w sumie wymagają czasu $n\log^{2}n$...}
 
@@ -514,6 +515,7 @@ Unfortunately, such worst case bound seems difficult to achieve in our dynamic s
 
 \jarek{Uważasz, że pisanie o average casie ma sens? Taki fragment jest przydany, ale bez względu na to jak go napiszę, brzmi jak wyciąganie królika z kapelusza;/}
 \pawel{Może i przydatny, tylko to explanation bym zmienił.  I dodał, że chodzi Ci o losowe punkty?}
+\bigskip
 
 While the worst case bound might seem somehow disappointing when $d$ is large, one should remember that in practice we will observe a much better performance. For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit. Explanation: when algorithm recursively enters node of K-D tree, then it usually finds some results. It means that finding single row, usually takes $\Oh(\log n)$.
 
@@ -538,15 +540,44 @@ Schema used in testing is:
 
 Solr requires unique key. Combining all properties isn't enough. For example there are lots of guys named Jan Kowalski in Warsaw. Therefore I created another property named id.
 
+Syntax: \todo{Nie pamietam czy w rangu syntax nie jest value:[from,to]}
+\begin{enumerate}
+\item Comparisons: \verb|property:value|
+\item Inequalities are realized by range queries: \verb|property:[from to]|. \verb|From| and \verb|to| can be replaced by *. Number greater or equal to 2 can be searched by \verb|property:[2 *]|. \verb|property:[* *]| matches everything.
+\item Prefix queries: \verb|property:value*|.
+\item Substring queries: \verb|property:*value*|.
+ 
+\end{enumerate}
+
 \subsection{PostgreSQL}
 
+Schema used in testing is: \todo {sprawdź czy dobrze to napisałeś}
+
+\begin{verbatim}
+CREATE TABLE users (
+  id SERIAL,
+  first_name TEXT not null,
+  last_name TEXT not null,
+  age INT not null,
+  city TEXT not null
+
+  PRIMARY KEY(id),
+);
+
+CREATE INDEX index1 ON users (first_name, last_name, age, city);
+CREATE INDEX index2 ON users (last_name, age, city);
+CREATE INDEX index3 ON users (city, age, first_name);
+CREATE INDEX index4 ON users (age, first_name, last_name);
+\end{verbatim}
+
+Syntax:
 \begin{enumerate}
+\item Comparisons and inequalities are realized by \verb|=|, \verb|>=|, \verb|>|, \verb|<=|, \verb|<|
 \item Prefix queries are handled by \verb|property LIKE "text\%"|
 \item Substring queries are handled by \verb|property LIKE "\%text\%"|
 \end{enumerate}
 
 For text-search PostgreSQL implemented special type of indexes: GIN \cite{PSQLGIN} and GIST \cite{PSQLGIST}. Unfortunately I was unsuccessful in making them work with polish words. Therefore I'm testing PostgreSQL with default indexes.
-\todo{Schema create table}
 
 \subsection{Sphinx search}
 
