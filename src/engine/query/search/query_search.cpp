@@ -33,7 +33,7 @@ Query* QuerySearch::parse(const std::string& request) const
     return NULL;
 }
 
-bool QuerySearch::is_modyfing_data() const
+bool QuerySearch::is_modifying_data() const
 {
     return false;
 }

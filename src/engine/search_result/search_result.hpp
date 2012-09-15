@@ -5,7 +5,7 @@
 
 /**
  * Base class for communication between engine and rest of the world.
- * It recives "some results" and should be able to print it in readable form by functiom to_string().
+ * It receives "some results" and should be able to print it in readable form by function to_string().
  */
 class SearchResult
 {

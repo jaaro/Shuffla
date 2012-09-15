@@ -31,7 +31,7 @@ Limiter& Limiter::operator=(const Limiter& limiter){
 bool Limiter::is_more_strict(const Limiter& rhs) const
 {
     if (is_upper_bound_ != rhs.is_upper_bound()) {
-        assert(!"Limiter::is_more_strict error. Please report this as a bug. Stacktrace will be very appriciated.");
+        assert(!"Limiter::is_more_strict error. Please report this as a bug. Stacktrace will be very appreciated.");
     }
 
     if (bound_->equals(rhs.get_bound_value())) {

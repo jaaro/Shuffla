@@ -32,7 +32,7 @@ SearchResult* SearchEngine::process_query(const Query* query)
     processing_query_begin(query);
     SearchResult* result;
 
-    if (query->is_modyfing_data()) {
+    if (query->is_modifying_data()) {
         append_log.append(query);
         SaveDumpManager::getInstance().add_modifying_command();
     }

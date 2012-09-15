@@ -35,7 +35,7 @@ Query* QueryDropTable::parse(const std::string& request) const
     return NULL;
 }
 
-bool QueryDropTable::is_modyfing_data() const
+bool QueryDropTable::is_modifying_data() const
 {
     return true;
 }

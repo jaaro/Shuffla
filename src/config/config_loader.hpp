@@ -6,7 +6,7 @@
 /**
  * ConfigLoader loads values to Config.
  *
- * It is done by load_config function which is executed only once, at the begginng.
+ * It is done by load_config function which is executed only once, at the beginning.
  *
  *
  */

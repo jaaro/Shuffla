@@ -15,7 +15,7 @@ public:
 
     virtual Query* parse(const std::string& request) const ;
     virtual bool set(const std::string& request) ;
-    virtual bool is_modyfing_data() const;
+    virtual bool is_modifying_data() const;
 
     TableDefinition* get_table_definition() const;
     std::string get_table_name() const;

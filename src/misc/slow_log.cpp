@@ -27,7 +27,7 @@ SlowLog& SlowLog::getInstance()
 void SlowLog::log(const double miliseconds, const std::string& request)
 {
     if (miliseconds >= miliseconds_bound) {
-        file << "[" << Misc::format_current_time() <<"] Slow query = " + request << " took " << miliseconds << " miliseconds\n";
+        file << "[" << Misc::format_current_time() <<"] Slow query = " + request << " took " << miliseconds << " milliseconds\n";
 
         //since this is slow query, flushing shouldn't make much difference
         file.flush();

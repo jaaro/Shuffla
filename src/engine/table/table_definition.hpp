@@ -35,7 +35,7 @@ public:
 protected:
 private:
 
-    // returns true if adding property was successfull, false otherwise
+    // returns true if adding property was successful, false otherwise
     bool add_table_property(const Type* type, const std::string& name);
 
     std::string table_name;

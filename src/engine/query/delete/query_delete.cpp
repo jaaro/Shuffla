@@ -33,7 +33,7 @@ Query* QueryDelete::parse(const std::string& request) const
     return NULL;
 }
 
-bool QueryDelete::is_modyfing_data() const
+bool QueryDelete::is_modifying_data() const
 {
     return true;
 }

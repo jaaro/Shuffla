@@ -36,7 +36,7 @@ Query* QueryCreateTable::parse(const std::string& request) const
 }
 
 
-bool QueryCreateTable::is_modyfing_data() const
+bool QueryCreateTable::is_modifying_data() const
 {
     return true;
 }

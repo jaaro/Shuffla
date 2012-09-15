@@ -4,7 +4,7 @@
 #include "../engine/query/query.hpp"
 
 /**
- * Append log. If enabled, saves all comands that are modifying database.
+ * Append log. If enabled, saves all commands that are modifying database.
  */
 class AppendLogManager
 {

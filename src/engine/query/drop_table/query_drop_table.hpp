@@ -13,7 +13,7 @@ public:
 
     virtual bool set(const std::string& request);
     virtual Query* parse(const std::string& request) const ;
-    virtual bool is_modyfing_data() const;
+    virtual bool is_modifying_data() const;
     std::string get_table_name() const;
 protected:
 private:
