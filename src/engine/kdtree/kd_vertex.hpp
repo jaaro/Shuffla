@@ -24,7 +24,6 @@ public:
     std::vector<SearchTask*> search(const QueryBoundary& query_boundary) const;
     void clear();
 
-    bool contains_row(const Row* row) const ;
     void dump_all_rows(DumpSaver& dump_saver) const;
     const Boundary& get_boundary() const;
 
@@ -45,7 +44,7 @@ private:
     Boundary boundary_;
 
     // elements that are in this boundary
-    std::multiset<const Row*> rows_;
+    std::vector<const Row*> rows_;
 
     // left and right subtree and divider
     int divieder_property_number_;

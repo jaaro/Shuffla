@@ -29,31 +29,24 @@ void KDVertex::clear()
 void KDVertex::dump_all_rows(DumpSaver& dump_saver) const
 {
     dump_saver.append(Misc::int_to_string(rows_.size()) + "\n");
-    for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+    for(auto it = rows_.begin(); it!=rows_.end(); it++) {
         dump_saver.append((*it)->to_string());
     }
 }
 
 void KDVertex::add_collection(std::vector<const Row*> rows)
 {
-    rows_.insert(rows.begin(), rows.end());
+    rows_.insert(rows_.end(), rows.begin(), rows.end());
     rebuild();
-}
-
-bool KDVertex::contains_row(const Row* row) const
-{
-    return rows_.find(row) != rows_.end();
 }
 
 
 bool KDVertex::insert_row(const Row* row, int k)
 {
     if (!boundary_.is_point_inside(row)) return false;
-    if (contains_row(row)) return false;
-
-    rows_.insert(row);
 
     if (left_ == NULL) {
+        rows_.push_back(row);
         rebuild();
         return true;
     }
@@ -68,9 +61,15 @@ bool KDVertex::insert_row(const Row* row, int k)
 bool KDVertex::delete_row(const Row* row)
 {
     if (!boundary_.is_point_inside(row)) return false;
-    if (!contains_row(row)) return false;
 
-    rows_.erase(rows_.find(row));
+    if (left_ == NULL) {
+        for(size_t i=0; i<rows_.size(); i++) {
+            if (rows_[i] == row) {
+                rows_.erase(rows_.begin() + i);
+            }
+        }
+    }
+
     if (left_ != NULL) left_->delete_row(row);
     if (right_ != NULL) right_->delete_row(row);
     return true;
@@ -80,16 +79,6 @@ std::vector<SearchTask*>  KDVertex::search(const QueryBoundary& query_boundary) 
 {
     if (query_boundary.disjoint(boundary_)) {
         return std::vector<SearchTask*>();
-    }
-
-    if (query_boundary.contains(boundary_)) {
-        std::vector<const Row*> rows;
-        if (!query_boundary.are_there_extra_requiremens()) rows = std::vector<const Row*>(rows_.begin(), rows_.end());
-        else rows = filter_non_index_conditions(query_boundary);
-
-        std::vector<SearchTask*> res;
-        for(std::size_t i=0; i<rows.size(); i++) res.push_back(new SearchTaskFoundRow(rows[i]));
-        return res;
     }
 
     if (left_ == NULL) {
@@ -109,11 +98,7 @@ std::vector<SearchTask*>  KDVertex::search(const QueryBoundary& query_boundary) 
 
 void KDVertex::rebuild()
 {
-    for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
-        assert(boundary_.is_point_inside(*it));
-    }
-
-    if (rows_.size() > 33 && left_ == NULL) {
+    if (rows_.size() > 82 && left_ == NULL) {
         Limiter limit = find_good_limiter();
 
         Boundary left_boundary(boundary_);
@@ -126,7 +111,7 @@ void KDVertex::rebuild()
         std::vector<const Row*> left_collection, right_collection;
 
         int property_index = limit.get_property_index();
-        for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
+        for(auto it = rows_.begin(); it !=rows_.end(); it++) {
             if (limit.is_value_matching((*it)->get_value(property_index))) {
                 left_collection.push_back(*it);
             } else {
@@ -136,7 +121,10 @@ void KDVertex::rebuild()
 
         left_->add_collection(left_collection);
         right_->add_collection(right_collection);
+
+        rows_.clear();
     }
+
 }
 
 Limiter KDVertex::find_good_limiter() const
@@ -146,7 +134,7 @@ Limiter KDVertex::find_good_limiter() const
     std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
     std::vector<Limiter> limiters;
 
-    for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
+    for(auto it = rows_.begin(); it !=rows_.end(); it++) {
         for(int mask = 0; mask < 4; mask++) {
             if (rand() % (rows_.size() / 5 + 1) == 0) {
                 std::string property = props[rand() % props.size()];
@@ -183,7 +171,7 @@ int KDVertex::calculate_limiter_efficiency(const Limiter& limit) const
     int res = 0;
     int property_index = limit.get_property_index();
 
-    for(std::multiset<const Row*>::iterator it = rows_.begin(); it !=rows_.end(); it++) {
+    for(auto it = rows_.begin(); it !=rows_.end(); it++) {
         if (limit.is_value_matching((*it)->get_value(property_index))) {
             res++;
         } else {
@@ -198,7 +186,7 @@ std::vector<const Row*>  KDVertex::linear_filter(const QueryBoundary& query_boun
 {
     std::vector<const Row*> rows;
 
-    for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+    for(auto it = rows_.begin(); it!=rows_.end(); it++) {
         if (query_boundary.get_query_params()->is_matching(*it)) {
             rows.push_back(*it);
         }
@@ -212,7 +200,7 @@ std::vector<const Row*>  KDVertex::filter_non_index_conditions(const QueryBounda
     //TODO I am filtering ALL conditions
     std::vector<const Row*> rows;
 
-    for(std::multiset<const Row*>::iterator it = rows_.begin(); it!=rows_.end(); it++) {
+    for(auto it = rows_.begin(); it!=rows_.end(); it++) {
         if (query_boundary.get_query_params()->is_matching(*it)) {
             rows.push_back(*it);
         }

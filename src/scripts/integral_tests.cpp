@@ -10,7 +10,7 @@
 
 const int MAX_BUFFOR_LENGTH = 50000;
 const int LIMIT_FOR_INT = 100;
-const int NUMBER_OF_ITERATIONS = 18000;
+const int NUMBER_OF_ITERATIONS = 918000;
 const int DELETES_MODULO = 1000;
 
 char buffor[MAX_BUFFOR_LENGTH];
@@ -168,6 +168,7 @@ struct Command {
 
 void send(std::string url)
 {
+    //fprintf(stderr, "%s", url.c_str());
     CURL *curl;
 
     curl = curl_easy_init();
@@ -191,8 +192,6 @@ int main(int argc, char* argv[])
     std::string port(argv[2]);
 
     std::string prefix = host + ":" + port;
-
-
 
     boost::posix_time::ptime t2 = boost::posix_time::second_clock::local_time();
     boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::local_time();
