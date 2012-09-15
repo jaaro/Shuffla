@@ -555,13 +555,10 @@ Schema used in testing is: \todo {sprawdź czy dobrze to napisałeś}
 
 \begin{verbatim}
 CREATE TABLE users (
-  id SERIAL,
   first_name TEXT not null,
   last_name TEXT not null,
   age INT not null,
   city TEXT not null
-
-  PRIMARY KEY(id),
 );
 
 CREATE INDEX index1 ON users (first_name, last_name, age, city);
