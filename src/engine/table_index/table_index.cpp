@@ -40,8 +40,8 @@ std::vector<const Row*> TableIndex::search(boost::shared_ptr<QueryParameters> qu
 
     auto comp = [&](const SearchTask* lhs, const SearchTask* rhs ) -> bool {
         if (order_by_defined) {
-            const Type* left = lhs->get_comparision_value(order_by_index, order_by_boundary_index, is_desc);
-            const Type* right = rhs->get_comparision_value(order_by_index, order_by_boundary_index, is_desc);
+            const Type* left = lhs->get_comparison_value(order_by_index, order_by_boundary_index, is_desc);
+            const Type* right = rhs->get_comparison_value(order_by_index, order_by_boundary_index, is_desc);
 
             if (left == NULL) return false;
             if (right == NULL) return true;

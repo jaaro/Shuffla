@@ -9,7 +9,7 @@ SearchTaskFoundRow::~SearchTaskFoundRow()
 
 }
 
-const Type* SearchTaskFoundRow::get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const
+const Type* SearchTaskFoundRow::get_comparison_value(int property_index, int boundary_index, bool is_order_descending) const
 {
     return row_->get_value(property_index);
 }
@@ -31,7 +31,7 @@ SearchTaskSearchNode::~SearchTaskSearchNode()
 }
 
 
-const Type* SearchTaskSearchNode::get_comparision_value(int property_index, int boundary_index, bool is_order_descending) const
+const Type* SearchTaskSearchNode::get_comparison_value(int property_index, int boundary_index, bool is_order_descending) const
 {
     if (is_order_descending) return vertex_->get_boundary().get_upper_bound(boundary_index).get_bound_value();
     else return vertex_->get_boundary().get_lower_bound(boundary_index).get_bound_value();

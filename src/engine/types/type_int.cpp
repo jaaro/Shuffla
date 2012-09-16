@@ -42,7 +42,7 @@ bool TypeInt::is_smaller(const Type* type) const
 {
     const TypeInt* v = dynamic_cast<const TypeInt*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_int() > get_int();
 }
@@ -51,7 +51,7 @@ bool TypeInt::is_smaller_or_equal(const Type* type) const
 {
     const TypeInt* v = dynamic_cast<const TypeInt*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_int() >= get_int();
 }
@@ -60,7 +60,7 @@ bool TypeInt::is_greater(const Type* type) const
 {
     const TypeInt* v = dynamic_cast<const TypeInt*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_int() < get_int();
 }
@@ -69,7 +69,7 @@ bool TypeInt::is_greater_or_equal(const Type* type) const
 {
     const TypeInt* v = dynamic_cast<const TypeInt*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_int() <= get_int();
 }
@@ -78,7 +78,7 @@ bool TypeInt::equals(const Type* type) const
 {
     const TypeInt* v = dynamic_cast<const TypeInt*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_int() == get_int();
 }

@@ -47,7 +47,7 @@ private:
     std::vector<const Row*> rows_;
 
     // left and right subtree and divider
-    int divieder_property_number_;
+    int divider_property_number_;
     Type* divider_;
     KDVertex* left_;
     KDVertex* right_;

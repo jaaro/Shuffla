@@ -54,7 +54,7 @@ bool TypeString::is_smaller(const Type* type) const
 {
     const TypeString* v = dynamic_cast<const TypeString*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return strcmp(v->c_str(), value_) > 0;
 }
@@ -63,7 +63,7 @@ bool TypeString::is_smaller_or_equal(const Type* type) const
 {
     const TypeString* v = dynamic_cast<const TypeString*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return strcmp(v->c_str(), value_) >= 0;
 }
@@ -72,7 +72,7 @@ bool TypeString::is_greater(const Type* type) const
 {
     const TypeString* v = dynamic_cast<const TypeString*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return strcmp(v->c_str(), value_) < 0;
 }
@@ -81,7 +81,7 @@ bool TypeString::is_greater_or_equal(const Type* type) const
 {
     const TypeString* v = dynamic_cast<const TypeString*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return strcmp(v->c_str(), value_) <= 0;
 }
@@ -90,7 +90,7 @@ bool TypeString::equals(const Type* type) const
 {
     const TypeString* v = dynamic_cast<const TypeString*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return strcmp(v->c_str(), value_) == 0;
 }

@@ -122,7 +122,7 @@ void KDVertex::rebuild()
         left_->add_collection(left_collection);
         right_->add_collection(right_collection);
 
-        rows_.clear();
+        rows_ = std::vector<const Row*>();
     }
 
 }

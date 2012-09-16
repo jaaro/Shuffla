@@ -43,7 +43,7 @@ bool TypeDouble::is_smaller(const Type* type) const
 {
     const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_double() > get_double();
 }
@@ -52,7 +52,7 @@ bool TypeDouble::is_smaller_or_equal(const Type* type) const
 {
     const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_double() >= get_double();
 }
@@ -62,7 +62,7 @@ bool TypeDouble::is_greater(const Type* type) const
 
     const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_double() < get_double();
 }
@@ -71,7 +71,7 @@ bool TypeDouble::is_greater_or_equal(const Type* type) const
 {
     const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_double() <= get_double();
 }
@@ -80,7 +80,7 @@ bool TypeDouble::equals(const Type* type) const
 {
     const TypeDouble* v = dynamic_cast<const TypeDouble*>(type);
     if (v == NULL) {
-        assert(!"Comparision of different types");
+        assert(!"Comparison of different types");
     }
     return v->get_double() == get_double();
 }
