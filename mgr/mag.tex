@@ -655,13 +655,23 @@ Solr and PostgreSQL are using less than 1 GB of RAM. It's possible because both 
   \label{fig:request_count_tn}
 \end{figure}
 
-\todo{Opis!!}
+\begin{tabular}{|l|c|c|c|c|}
+\hline Engine & Req / sec & Memory consumption \\
+\hline Solr & 6.89 & 1GB \\
+\hline Shuffla & 3.86 & 6GB  \\
+\hline PostgreSQL & 2.55 & 1GB \\
+\hline 
+\end{tabular}
+
+Solr is superior over Shuffla in every way. Solr is faster. Solr consumem less memory. It is more configurable, for example we could increase Solr memory limit. Solr is just better choice, especially for big social website purposes. 
 
 \section{Summary}
 
-After this discussion you may think that Shuffla is useless. I don't think it's useless. Shuffla fits great for smaller problems like searching through internet forum or blog. Solr or sphinx are requiring not easy installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is very welcome. \todo{Inne zastosowania}
+After this discussion you may think that Shuffla is useless. I don't think it's useless. Shuffla fits great for smaller problems like searching through internet forum or blog. Solr or PostgreSQL are requiring not easy installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is very welcome. \todo{Inne zastosowania}
 
 \section{Few words about Solr in nk}
+
+\subsection{Search architecture in nk}
 
 \begin{figure}
 \centering
@@ -670,8 +680,13 @@ After this discussion you may think that Shuffla is useless. I don't think it's 
   \label{fig:architektura_wyszukiwania}
 \end{figure}
 
-\todo{Opis!!}
-\todo{Coś o konfiguracji, Xmx, Xms, jaki rodzaj indeksu}
+In nk we have 3 servers with Solr. There is master-slave replication between them. One server is a master another two are slaves. Only master processes modifying queries. When user does anything related to searching, PHP code handles it.
+
+When some action requires modifying data in Solr, PHP code is creating task for it. This task it inserted into a queue. There is a background job which processes all tasks one by one from queue. We need queue to avoid unexpected spikes. For example uncaught spammer attack may cause 1000 modifying requests per second(\todo{to powinno być jako gwiazdka na dole strony} *Actually this is highly unlikely, nk crashes spammers activity extremely well). Anyway if this happens master could easily crash or at least experience some kind of slowness due to big load. We want to avoid such situations. 
+
+In case of search request, we need to distribute requests between servers. For this purpose search requests are going through HAProxy \todo{reference}. This load balancer is distributing requests between our 3 servers.
+
+\subsection{Some statistics from munin}
 
 \begin{figure}
         \centering
