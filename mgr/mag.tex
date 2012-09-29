@@ -33,6 +33,7 @@
 \newcommand{\todo}[1]{\noindent\colorbox{myRed}{TODO: #1}}
 
 \newcommand{\Oh}{\mathcal{O}}
+\newcommand\bigforall{\mbox{\Large $\mathsurround0pt\forall$}} 
 
 \begin{document}
 
@@ -208,8 +209,8 @@ In these paper I'm only testing PostgreSQL which is in my opinion best RDBMs now
 
 \subsubsection{PostgreSQL}
 PostgreSQL has really cool features like: point in time recovery, tablespaces, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer, and write ahead logging for fault tolerance. It supports international character sets, multibyte character encodings, Unicode, and it is locale-aware for sorting, case-sensitivity, and formatting. It is highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate. There are active PostgreSQL systems in production environments that manage in excess of 4 terabytes of data \jarek{Kopiowane ze strony Postgresa, mam nadzieje, że to nie plagiat}.
-PostgreSQL keeps it data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication(source, pierwszy link po wpisaniu postgresql replication). There is a slow log, error log, PostgreSQL performance can be easily monitored by monitoring software like munin, new relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
-Example of processing query by B-tree: \verb|first name = John| $\wedge$ \verb|substring(last name) = qwertyabc| $\wedge$ \verb|limit 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
+PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication \cite{PSQLREPL}. There is a slow log, error log, PostgreSQL performance can be easily monitored by monitoring software like munin, new relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
+Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
 
 \subsection{Full-text search engine}
 Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx search and Lucene Solr. Almost all big players are choosing Sphinx and Solr over others such as Elastic Search, Xapian so I'm going to consider only these two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occuring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
@@ -217,7 +218,7 @@ Another solution is to use full-text search engine. The most popular full-text s
 \item Narrow words from inverted index which need to be process as much as possible. 
 \item Process remaining words. 
 \end{enumerate}
-For example if query is \verb|first name = John| $\wedge$ \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurence and returns it. If query is \verb|first name = John| $\wedge$ \verb|substring(last name) = qwertyabc| $\wedge$ \verb|limit 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such a case could be \verb|substring(last name)=a| $\wedge$ \verb|substring(last name) = b| $\wedge$ ... $\wedge$ \verb|substring(last name) = z| $\wedge$ \verb|limit 1|. Almost whole inverted index must be processed but still result set will be empty.
+For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurence and returns it. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such a case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed but still result set will be empty.
 
 \subsubsection{Solr}
 
@@ -229,7 +230,7 @@ There is a rumour that twitter was able to modify source of Solr so they could h
 
 \subsubsection{Sphinx search}
 
-\todo{Ficzery solra}
+Solr implements faceted searches and filtering, geospatial searches Solr has great admin interface with comprehensive statistics on cache utilization, updates, and queries. \jarek{Jedno zdanie zgapione od Solra}
 
 Solr doesn't have replication. It is unacceptable for big social website.
 There is a way to simulate replication. Inverted index is stored on disk. Directory containing index could be replicated by filesystem (for example NFS). But if index is big than syncing such directories would take too much time and would be inefficient and problematic.
@@ -247,7 +248,7 @@ Except of replication sphinx has another problem. There are two different kinds 
 Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries are not supported yet. Periodical rebuild of index with more than 40 million elements is problematic. Apache Solr and Sphinx search are using similar data structures. Since capabilities and number of features of Solr are much greater I decided to look only into Solr. 
 
 \bigskip
-It seems that none of existing solutions are processing search queries very fast. In worst case scenario it's always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average solutions working in RAM memory are more than welcomed. Although data stored on disk could be transfer to RAM by ramdisks, it shows that such solution isn't primary target to software creators. For me it seems that this area has room for improvement. That's why I decided to create my own search engine.  
+It seems that none of existing solutions are processing search queries very fast. In worst case scenario it's always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average solutions working in RAM memory are more than welcomed. Although data stored on disk could be transfer to RAM by ramdisks, it shows that such solution is not primary target to software creators. There is designated class solr.RAMDirectoryFactory which keeps all data in RAM memory but it does not support replication. For me it seems that this area has room for improvement. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
 We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as half-plane (or half-planes) which narrows the search space. There are three data structures for performing efficient searches in a multidimensional space:
@@ -304,7 +305,7 @@ Unfortunately adding linear structure to every node of K-D tree increases the sp
   \label{fig:httpservice}
 \end{figure}
 
-I decided that it would be best if search engine could mimic RESTful service. Every search/insert/delete request should be sent as a HTTP request. Server works in the multi-threaded environment. As a base I used \verb|example2| \cite{ASIOHTTP} from \verb|boost::asio| documentation which fulfills my requirements. Threads are managed by \verb|boost::io_service| \todo{reference do dokumentacji boosta}. There is another thread for periodical functions. Currently its invoking only saving snapshots.
+I decided that it would be best if search engine could mimic RESTful service. Every search/insert/delete request should be sent as a HTTP request. Server works in the multi-threaded environment. As a base I used \verb|example2| \cite{ASIOHTTP} from \verb|boost::asio| documentation which fulfills my requirements. Threads are managed by \verb|boost::io_service| \cite{IOSERVICE}. There is another thread for periodical functions. Currently its invoking only saving snapshots.
 
  (Figure~\ref{fig:passing}).
 
@@ -361,7 +362,7 @@ When request data is validated, control is passed to \verb|TableIndex| class. Ac
 \item write query can be performed if no other query is being performed at the moment.
 \end{enumerate}
 
-This locking schema has the advantage that it can be implemented using only mutexes and locks from boost. A mutex object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. Boost.Thread supplies recursive and non-recursive mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex. \todo{3 ostatnie zdania są przeklejone z dokumentacji boosta, nie wiem czy tak może być}
+This locking schema has the advantage that it can be implemented using only mutexes and locks from boost. A mutex object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. Boost.Thread supplies recursive and non-recursive mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex. \jarek{3 ostatnie zdania są przeklejone z dokumentacji boosta, nie wiem czy tak może być}
 There are three most common kinds of locks. All locks are working in similar fashion. Mutex is passed as constructor parameter to lock. Ownership of mutex is acquired in constructor. Ownership of mutex is released when lock object is destroyed.  
 
 \begin{enumerate}
@@ -373,8 +374,6 @@ There are three most common kinds of locks. All locks are working in similar fas
 My solution requires every table to have is own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|.
 
 \subsection{How data is stored}
-
-\todo{Tutaj super by diagramik UML pasował}
 
 Requirements:
 \begin{enumerate}
@@ -390,7 +389,7 @@ Values can be strings or numbers, therefore I created 3 classes:
 \item class TypeNumber which extends Type.
 \end{enumerate}
 
-Both TypeString and TypeNumber are implementing all supported functions. TypeNumber implements comparisons and inequalities. TypeString implements comparisons, inequalities, substring and prefix function. Pattern matching is done by function strstr from cstring \todo{source needed}.
+Both TypeString and TypeNumber are implementing all supported functions. TypeNumber implements comparisons and inequalities. TypeString implements comparisons, inequalities, substring and prefix function. Pattern matching is done by function strstr from cstring \cite{STRSTR}.
 \bigskip
 
 Single row stores:
@@ -474,7 +473,7 @@ Nomenklatura:
 \item right($\theta$) - right subtree of vertex $\theta$
 \end{enumerate}
 
-Let $n$ be number of points in the tree. Tree is X-balanced if and only if \todo{for every vertex X w texu} X * |left($\theta$)| >= |right($\theta$)| $\wedge$ X * |left($\theta$)| >= |right($\theta$)|. Tree is well-balanced if it's 2-balanced. Tree is barely-balanced if it's 5-balanced. Height of both well and barely balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
+Let $n$ be number of points in the tree. Tree is X-balanced if and only if $\bigforall$ $\theta$: X * |left($\theta$)| >= |right($\theta$)| $\wedge$ X * |left($\theta$)| >= |right($\theta$)|. Tree is well-balanced if it is 2-balanced. Tree is barely-balanced if it is 5-balanced. Height of both well and barely balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
 Assumptions:
 \begin{enumerate}
@@ -484,9 +483,6 @@ Assumptions:
 
 \subsection{Inserting/deleting point $X$}
 
-\pawel{Zwróć uwagę na to, że dowody są oznaczone jako dowody...}
-
-\pawel{Tutaj używałeś S jako liczby, a potem pisałeś |S|?!}
 \begin{lemma}\label{lem:1}
 Rebuilding tree of size $n$ takes $\Oh(n \log n)$.
 \end{lemma}
@@ -512,9 +508,12 @@ We will give $3\log n$ credits to each node visited during insert/delete. As the
 
 \end{enumerate}
 
-There is one additional details. The value of $\log n$ can (and will) actually change during the execution of the algorithm. We actually care about its integer part, tough. In order for it to increase, we need to perform $n$ insert/delete operations. Hence if we charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, we will have $cn\log^{2} n$ credits available. Now, for each node of the tree we need to add $n\log n$ credits, hence the total required number of credits is described by the recurrence $T(n)=n\log n+T(\alpha n)+T((1-\alpha)n)$, where $\frac{1}{3}\leq \alpha \leq \frac{2}{3}$. The recurrence solves to $T(n)=\Theta(n\log^{2}n)$ \pawel{proof?} \jarek{Teraz bym to indukcyjnie udowadniał, we Wrocławiu otworze konkretną i przypomne sobie jak się takie rzeczy robi} so we have enough credits to pay for the increase.
-\end{proof}
+There is one additional details. The value of $\log n$ can (and will) actually change during the execution of the algorithm. We actually care about its integer part, tough. In order for it to increase, we need to perform $n$ insert/delete operations. Hence if we charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, we will have $cn\log^{2} n$ credits available. 
 
+Now, for each node of the tree we need to add $n\log n$ credits, hence the total required number of credits is described by the recurrence $T(n)=n\log n+T(\alpha n)+T((1-\alpha)n)$, where $\frac{1}{3}\leq \alpha \leq \frac{2}{3}$. The recurrence solves to $T(n)=\Theta(n\log^{2}n)$. This can be proved by drawing recurrence call tree. At each level work done sums to $\Oh(n \log n)$. There are $\Oh(\log n)$ levels therefore the complexity is $\Oh(n \log^2 n)$.
+
+We have enough credits to pay for the increase.
+\end{proof}
 
 \pawel{Tutaj fajnie byłoby skonstruować przykład, że ta złożoność to faktycznie $\log^{2}n$, tzn ciąg $n$ insertów, które w sumie wymagają czasu $n\log^{2}n$...}
 
@@ -523,13 +522,29 @@ There is one additional details. The value of $\log n$ can (and will) actually c
 
 Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x>=c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
 
-Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself. Then the recurrence describing the worst-case behavior is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ \pawel{uzasadnić!}, which (again by the master theorem) solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 3*2^{d-2}}})=\Oh(n^{\frac{d-1}{d-0.42}})=\Oh(n^{1-0.58/(d-0.42)})$. \pawel{brzydki wynik}
+Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
 
-\jarek{Uważasz, że pisanie o average casie ma sens? Taki fragment jest przydany, ale bez względu na to jak go napiszę, brzmi jak wyciąganie królika z kapelusza;/}
-\pawel{Może i przydatny, tylko to explanation bym zmienił.  I dodał, że chodzi Ci o losowe punkty?}
-\bigskip
+\jarek{Troche nie jestem pewien czy konstrukcja lemma proof tu pasuje}
+\begin{lemma}\label{lem:3}
+The recurrence describing the worst-case behaviour is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$
+\end{lemma}
 
-While the worst case bound might seem somehow disappointing when $d$ is large, one should remember that in practice we will observe a much better performance. For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit. Explanation: when algorithm recursively enters node of K-D tree, then it usually finds some results. It means that finding single row, usually takes $\Oh(\log n)$.
+\begin{proof}
+
+K-d tree is a binary tree. Root has height 0, root sons have height 1 and so on. Lets count maximal possible number of visited nodes on level d by recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension e. Such line intersects either the region represented by left son or right son, not both. Therefore only one of it's sons will be recursively called. Then upper bound for processed nodes is $d^{n-1}$. It can be generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level d is $d^{n-1}$. 
+
+\jarek{Kurcze, to average tutaj wygląda bardzo miękko. Chyba trzeba pokazać, że najwięcej będzie kosztować przypadek gdy pozostałe wierzchołki dzielą się wierszami po równo. Co na oko nie jest prawdą. Musze to przemyśleć}
+Average number of points inside node on level d is $\frac{\frac{2}{3}n}{2^{d-1}}$. 
+
+\end{proof}
+
+$T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ solves to (again by the master theorem) $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 3*2^{d-2}}})=\Oh(n^{\frac{d-1}{d-0.42}})=\Oh(n^{1-0.58/(d-0.42)})$. 
+
+\todo{Warto skomentować ten wynik}
+
+While the worst case bound might seem somehow disappointing when $d$ is large, one should remember that in practice we will observe a much better performance. For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit.
+
+Let me explain. Lets take for example data with random distribution. When algorithm recursively enters node of K-D tree then with some probability there are some rows fitting query. If we define this probability as a constant then finding single row takes $\Oh(\log n)$.
 
 \section{Tested engines}
 \subsection{Solr}
@@ -618,7 +633,7 @@ In nk we've got several millions registered users. This number doesn't grow in s
 
 At the beginning I'm inserting $8 * 10^6$ random users. Then I'm running a script which creates random insert/search queries. It sends created queries for few hours and calculates statistics (avg running time, maximal running time).
 
-Inserted data is generated in a very simple way. I've gather lists of most popular first names and last names in Poland (with counts). Probability of selecting name is proportional to it's count. Age is selected with linear distribution from set $[5, 100]$.
+Inserted data is generated in a very simple way. I've gather lists of most popular first names and last names in Poland (with counts). Probability of selecting name is proportional to it is count. Age is selected with linear distribution from set $[5, 100]$.
 
 Search queries are generated by this procedure:
 \begin{enumerate}
@@ -639,7 +654,7 @@ Inserting 8 million rows isn't most important part of testing. It is performed b
 Shuffla inserts data with 1000 request per second. Using single inserts with other engines isn't so efficient. All considered engines are able to read csv file and import data from such file. This is the only way to import data within few hours.
 
 \todo{Być może trzeba ten akapit wywalić, inserty są raczej nieciekawe}
-Shuffla is superior in inserts. It is caused by very low time complexity of insert and small number of reads/writes to disk. Shuffla actually requires writes to append log and slow log file but these writes can be disabled. Other engines are running with similar speed of 150 request per second. Lets remember that Solr, PostgreSQL are based on index which is stored on disk. This results were expected. Lets remember that Apache Solr doesn't cause changes to appear in results right away, so it's score is overrated. 
+Shuffla is superior in inserts. It is caused by very low time complexity of insert and small number of reads/writes to disk. Shuffla actually requires writes to append log and slow log file but these writes can be disabled. Other engines are running with similar speed of 150 request per second. Lets remember that Solr, PostgreSQL are based on index which is stored on disk. This results were expected. Lets remember that Apache Solr doesn't cause changes to appear in results right away, so it is score is overrated. 
 
 \subsection{Statistics}
 
@@ -647,7 +662,7 @@ For purpose of testing in true multi-threaded environment I used tsung. Tsung is
 
 I'm using 4 core processor for testing so I decided to test all engines using 4 threads. Each thread is sending 10.000 randomly created queries. 
 
-Solr and PostgreSQL are using less than 1 GB of RAM. It's possible because both these engines are keeping data on a hard drive. Shuffla stores everything in RAM and it is consuming 6GB of RAM. 
+Solr and PostgreSQL are using less than 1 GB of RAM. it is possible because both these engines are keeping data on a hard drive. Shuffla stores everything in RAM and it is consuming 6GB of RAM. 
 
 \begin{figure}
 \centering
@@ -668,7 +683,7 @@ Solr is superior over Shuffla in every way. Solr is faster. Solr consumem less m
 
 \section{Summary}
 
-After this discussion you may think that Shuffla is useless. I don't think it's useless. Shuffla fits great for smaller problems like searching through internet forum or blog. Solr or PostgreSQL are requiring not easy installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is very welcome. \todo{Inne zastosowania}
+After this discussion you may think that Shuffla is useless. I don't think it is useless. Shuffla fits great for smaller problems like searching through internet forum or blog. Solr or PostgreSQL are requiring not easy installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is more than welcome. \todo{Inne zastosowania}
 
 \section{Few words about Solr in nk}
 
