@@ -524,21 +524,39 @@ Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} +
 
 Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
 
-\jarek{Troche nie jestem pewien czy konstrukcja lemma proof tu pasuje}
+\jarek{Troche to bedę musiał porozbijać, bo za dużo rzeczy na raz tu się dzieje}
 \begin{lemma}\label{lem:3}
-The recurrence describing the worst-case behaviour is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$
+The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^d})$ which solves to $\Oh(n^{1-0.58/(d-0.42)})$
 \end{lemma}
 
 \begin{proof}
 
-K-d tree is a binary tree. Root has height 0, root sons have height 1 and so on. Lets count maximal possible number of visited nodes on level d by recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension e. Such line intersects either the region represented by left son or right son, not both. Therefore only one of it's sons will be recursively called. Then upper bound for processed nodes is $d^{n-1}$. It can be generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level d is $d^{n-1}$. 
+K-d tree is a binary tree. Root has height 0, root sons have height 1 and so on. Lets count maximal possible number of visited nodes on level d by recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension e. Such line intersects either the region represented by left son or right son, not both. Therefore only one of it's sons will be recursively called. Then upper bound for processed nodes is $d^{n-1}$. It can be easily generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level d is $d^{n-1}$. 
 
-\jarek{Kurcze, to average tutaj wygląda bardzo miękko. Chyba trzeba pokazać, że najwięcej będzie kosztować przypadek gdy pozostałe wierzchołki dzielą się wierszami po równo. Co na oko nie jest prawdą. Musze to przemyśleć}
-Average number of points inside node on level d is $\frac{\frac{2}{3}n}{2^{d-1}}$. 
+Average number of points inside node on level d is $\frac{\frac{2}{3}n}{2^d}$. I will prove that worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^d})$.
+
+At first, we must prove that $T(n) < c n^a$ for some a < 1. For small values it is true because we can choose constant c. Now lets prove inductive step $T(n) < c n^a$ with assumption that $\bigforall n' < n: T(n') < c n'^a$. $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)$  where $ \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$. Lets calculate derivative of $T(n)$ for the purpose of finding values that could maximize $T(n)$.  $T(n)^\prime = ( \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i))^\prime = (T(x_1) + T(x_2) + ... + T(x_{2^{d-1}}))^\prime > c (x_1^a + x_2^a + ... + x_{2^{d-1}}^a)^\prime$. Because $a<1$, sum is maximized when all $x_1, x_2, ..., x_{2^{d-1}}$ are equal. Hence $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} * T(\frac{\frac{2}{3}n}{2^d}) < 2^{d-1} c (\frac{\frac{2}{3}n}{2^d}) ^ a = c 2^{d-1} (\frac{2}{3})^a 2^{-ad} n^a = 2^{-ad+d-1} (\frac{2}{3})^a c * n^a$. It will be not greater than $c * n^a$ iff $\bigforall d\geq1: 2^{-ad+d-1} (\frac{2}{3})^a \leq 1$.
+\bigskip
+
+$2^{-ad+d-1} (\frac{2}{3})^a \leq 1$
+
+$2^{-ad+d-1} 2^a \leq 3^a$
+
+$2^{a(1-d)+d-1} \leq 2^{a \log_2{3}}$
+
+$a(1-d)+d-1 \leq a \log_2{3}$
+
+$d-1 \leq a (\log_2{3} + d -1)$
+
+$a \geq \frac{d-1}{\log_2{3} + d -1} $
+
+$\frac{d-1}{\log_2{3} + d -1} < 1$ so for all d exists a < 1.
 
 \end{proof}
 
-$T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ solves to (again by the master theorem) $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 3*2^{d-2}}})=\Oh(n^{\frac{d-1}{d-0.42}})=\Oh(n^{1-0.58/(d-0.42)})$. 
+$T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ solves to (by the master theorem) $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 3*2^{d-2}}})$.
+
+$\frac{\log 2^{d-1}}{\log 3*2^{d-2}} = \log_{3*2^{d-2}}{2^{d-1}} = \log_{3*2^{d-2}}{2^{d-1}} + \log_{3*2^{d-2}}{\frac{3}{2}} - \log_{3*2^{d-2}}{\frac{3}{2}} = \log_{3*2^{d-2}}{3*2^{d-2}} - \log_{3*2^{d-2}}{\frac{3}{2}} = 1 - \log_{3*2^{d-2}}{\frac{3}{2}}$. Therefore $T(n) = \Oh(n^{1 - \log_{3*2^{d-2}}{\frac{3}{2}}})$.
 
 \todo{Warto skomentować ten wynik}
 
