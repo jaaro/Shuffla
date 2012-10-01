@@ -526,31 +526,31 @@ Unfortunately, such worst case bound seems difficult to achieve in our dynamic s
 
 \jarek{Troche to bedę musiał porozbijać, bo za dużo rzeczy na raz tu się dzieje}
 \begin{lemma}\label{lem:3}
-The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^d})$ which solves to $\Oh(n^{1-0.58/(d-0.42)})$
+The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ which solves to $\Oh(n^{1-0.58/(d-0.42)})$
 \end{lemma}
 
 \begin{proof}
 
 K-d tree is a binary tree. Root has height 0, root sons have height 1 and so on. Lets count maximal possible number of visited nodes on level d by recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension e. Such line intersects either the region represented by left son or right son, not both. Therefore only one of it's sons will be recursively called. Then upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level d is $2^{d-1}$. 
 
-Average number of points inside node on level d is $\frac{\frac{2}{3}n}{2^d}$. I will prove that worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^d})$.
+Average number of points inside node on level d is $\frac{\frac{2}{3}n}{2^{d-1}}$. I will prove that worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$.
 
-At first, we must prove that $T(n) < c n^a$ for some a < 1. For small values it is true because we can choose constant c. Now lets prove inductive step $T(n) < c n^a$ with assumption that $\bigforall n' < n: T(n') < c n'^a$. $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)$  where $ \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$. Lets calculate derivative of $T(n)$ for the purpose of finding values that could maximize $T(n)$.  $T(n)^\prime = ( \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i))^\prime = (T(x_1) + T(x_2) + ... + T(x_{2^{d-1}}))^\prime > c (x_1^a + x_2^a + ... + x_{2^{d-1}}^a)^\prime$. Because $a<1$, sum is maximized when all $x_1, x_2, ..., x_{2^{d-1}}$ are equal. Hence $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} * T(\frac{\frac{2}{3}n}{2^d}) < 2^{d-1} c (\frac{\frac{2}{3}n}{2^d}) ^ a = c 2^{d-1} (\frac{2}{3})^a 2^{-ad} n^a = 2^{-ad+d-1} (\frac{2}{3})^a c * n^a$. It will be not greater than $c * n^a$ iff $\bigforall d\geq1: 2^{-ad+d-1} (\frac{2}{3})^a \leq 1$.
+At first, we must prove that $T(n) < c n^a$ for some a < 1. For small values it is true because we can choose constant c. Now lets prove inductive step $T(n) < c n^a$ with assumption that $\bigforall n' < n: T(n') < c n'^a$. $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)$  where $ \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$. Lets calculate derivative of $T(n)$ for the purpose of finding values that could maximize $T(n)$.  $T(n)^\prime = ( \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i))^\prime = (T(x_1) + T(x_2) + ... + T(x_{2^{d-1}}))^\prime > c (x_1^a + x_2^a + ... + x_{2^{d-1}}^a)^\prime$. Because $a<1$, sum is maximized when all $x_1, x_2, ..., x_{2^{d-1}}$ are equal. Hence $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} * T(\frac{\frac{2}{3}n}{2^{d-1}}) < 2^{d-1} c (\frac{\frac{2}{3}n}{2^{d-1}}) ^ a = c 2^{d-1} (\frac{2}{3})^a 2^{-a(d-1)} n^a = 2^{(1-a)(d-1)} (\frac{2}{3})^a c * n^a$. It will be not greater than $c * n^a$ iff $\bigforall d\geq1: 2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$.
 \bigskip
 
-$2^{-ad+d-1} (\frac{2}{3})^a \leq 1$
+$2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$
 
-$2^{-ad+d-1} 2^a \leq 3^a$
+$2^{(1-a)(d-1)} 2^a \leq 3^a$
 
-$2^{a(1-d)+d-1} \leq 2^{a \log_2{3}}$
+$2^{d-1-ad+2a} \leq 2^{a \log_2{3}}$
 
-$a(1-d)+d-1 \leq a \log_2{3}$
+$d-1-ad+2a \leq a \log_2{3}$
 
-$d-1 \leq a (\log_2{3} + d -1)$
+$d-1 \leq a (\log_2{3} + d - 2)$
 
-$a \geq \frac{d-1}{\log_2{3} + d -1} $
+$a \geq \frac{d-1}{\log_2{3} + d - 2} $
 
-$\frac{d-1}{\log_2{3} + d -1} < 1$ so for all d exists a < 1.
+$\frac{d-1}{\log_2{3} + d - 2} < 1$ so for all d exists a < 1.
 
 \end{proof}
 
@@ -720,7 +720,9 @@ When some action requires modifying data in Solr, PHP code is creating task for 
 
 In case of search request, we need to distribute requests between servers. For this purpose search requests are going through HAProxy \todo{reference}. This load balancer is distributing requests between our 3 servers.
 
-\subsection{Some statistics from munin}
+\subsection{Master server statistics from munin}
+
+\todo{Jak munin generuje wykresy}
 
 \begin{figure}
         \centering
@@ -740,6 +742,8 @@ In case of search request, we need to distribute requests between servers. For t
         \label{fig:animals}
 \end{figure}
 
+\todo{To chyba wykres z slave'a, gdzie inserty?!}
+At night Solr does not do much. Load grows as the day progress. At the peek our master server handles 18 search requests per second (about 8 PM). Do not forget that we have three Solr servers on production and this chart is only from one of them. Apache Solr has advanced cache system. Usually 60-70 percent of requests are rendered based on values from cache.
 
 \todo{Opis!!}
 
@@ -761,8 +765,8 @@ In case of search request, we need to distribute requests between servers. For t
         \label{fig:animals}
 \end{figure}
 
-
-\todo{Opis!!}
+\todo{Definicja load} 
+\todo{Dlaczego używamy tylko 1/3 ramu}
 
 \begin{figure}
         \centering
@@ -782,8 +786,8 @@ In case of search request, we need to distribute requests between servers. For t
         \label{fig:animals}
 \end{figure}
 
-
-\todo{Opis!!}
+\todo{Coś o dyskach na produkcji i ile to jest odczytów na sekunde}
+When we are closer to the peek we have more connections to Solr. It is close to 100 at the peek. 
 
 \begin{figure}
         \centering
@@ -803,7 +807,7 @@ In case of search request, we need to distribute requests between servers. For t
         \label{fig:animals}
 \end{figure}
 
-\todo{Opis!!}
+Thread pool contains more than 300 threads. Usually only small amount of this number is used. Java on our production environment is executed with \verb|-Xms24G -Xmx24G| which gives 24GB of RAM for heap and stack (memory used by head + memory used by stack <= 24GB). You may find our heap usage very strange. Most of heap memory is used by caches. We are committing changes every 15 minutes which causes all caches to be flushed by every 15 minutes. For another 15 minutes cache is filled and then flushed again.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
