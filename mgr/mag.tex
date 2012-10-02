@@ -526,16 +526,27 @@ Unfortunately, such worst case bound seems difficult to achieve in our dynamic s
 
 \jarek{Troche to bedę musiał porozbijać, bo za dużo rzeczy na raz tu się dzieje}
 \begin{lemma}\label{lem:3}
-The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ which solves to $\Oh(n^{1-0.58/(d-0.42)})$
+The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ which solves to $\Oh(n^{1-0.58/(d-0.42)})$.
 \end{lemma}
 
 \begin{proof}
 
-K-d tree is a binary tree. Root has height 0, root sons have height 1 and so on. Lets count maximal possible number of visited nodes on level d by recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension e. Such line intersects either the region represented by left son or right son, not both. Therefore only one of it's sons will be recursively called. Then upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level d is $2^{d-1}$. 
+K-d tree is a binary tree. Root has height 0, its children have height 1, and so on. Lets count maximal possible number of visited nodes on level $d$ by a recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension $e$. Such line intersects either the region represented by left son or right son, not both. Therefore only one of its sons will be recursively called. Then the upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level $d$ is $2^{d-1}$. 
 
-Average number of points inside node on level d is $\frac{\frac{2}{3}n}{2^{d-1}}$. I will prove that worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$.
+The total number of points on all nodes on level $d$ is $n$. Moreover, because the tree is well-balanced, the total number of points on the processed nodes on level $d$ is at most $\frac{2}{3}n$ \pawel{why?}. Hence the average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$. I will prove that the worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$.
 
-At first, we must prove that $T(n) < c n^a$ for some a < 1. For small values it is true because we can choose constant c. Now lets prove inductive step $T(n) < c n^a$ with assumption that $\bigforall n' < n: T(n') < c n'^a$. $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)$  where $ \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$. Lets calculate derivative of $T(n)$ for the purpose of finding values that could maximize $T(n)$.  $T(n)^\prime = ( \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i))^\prime = (T(x_1) + T(x_2) + ... + T(x_{2^{d-1}}))^\prime > c (x_1^a + x_2^a + ... + x_{2^{d-1}}^a)^\prime$. Because $a<1$, sum is maximized when all $x_1, x_2, ..., x_{2^{d-1}}$ are equal. Hence $T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} * T(\frac{\frac{2}{3}n}{2^{d-1}}) < 2^{d-1} c (\frac{\frac{2}{3}n}{2^{d-1}}) ^ a = c 2^{d-1} (\frac{2}{3})^a 2^{-a(d-1)} n^a = 2^{(1-a)(d-1)} (\frac{2}{3})^a c * n^a$. It will be not greater than $c * n^a$ iff $\bigforall d\geq1: 2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$.
+Our goal will be to prove that $T(n) \leq c n^a$ for some constant $a < 1$ using induction on $n$. For small values of $n$ it is true because we can choose constant $c$. Now lets prove that $T(n) \leq c n^a$ assuming that $T(n') \leq c n'^a$ for all $n'<n$. We have:
+
+$$T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)\leq\displaystyle\sum\limits_{i=1}^{2^{d-1}} c(x_i)^{a}  \quad\text{where}\quad  \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$$ 
+
+As we are interested in upperbounding $T(n)$, we are interested in the maximum possible value of the sum of all $(x_i)^{a}$ under the condition that all $x_{i}$ sum up to $\frac{2}{3}n$. Because the function $f(x)=x^{a}$ is convex for $a<1$, from Jensen's inequality we get that the sum is maximized when all $x_{i}$ are equal. Hence:
+
+\begin{eqnarray*}
+T(n) &=& \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} T\left(\frac{\frac{2}{3}n}{2^{d-1}}\right) \leq 2^{d-1} c \left(\frac{\frac{2}{3}n}{2^{d-1}}\right) ^ a  \\
+& = & c 2^{d-1} \left(\frac{2}{3}\right)^a 2^{-a(d-1)} n^a = 2^{(1-a)(d-1)} \left(\frac{2}{3}\right)^a c n^a
+\end{eqnarray*}
+
+Hence $T(n)\leq c n^{a}$ as long as $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$.
 \bigskip
 
 $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$
