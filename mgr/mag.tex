@@ -177,9 +177,9 @@ I am working on nk.pl (which is biggest polish social networking website) since 
 
 \section{Problem definition}
 
-\pawel{Zaczynasz od definicja, ale właściwie nie wiadomo po co ta definicja. Może najpierw napisz, że chcesz mieć wiele tabel, na których będziesz wykonywał inserty/search, a pojedyncza tabela to...}
+\jarek{Fix: Zaczynasz od definicja, ale właściwie nie wiadomo po co ta definicja. Może najpierw napisz, że chcesz mieć wiele tabel, na których będziesz wykonywał inserty/search, a pojedyncza tabela to...}
 
-Lets define table definition by combination of
+Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of:
 \begin{enumerate}
 \item table name
 \item list of pairs <column name, type of column>
@@ -187,24 +187,25 @@ Lets define table definition by combination of
 Type of column can be either a string or a number.
 
 \subsection{Selecting data}
-There are different possible conditions for different types. Possible conditions for numbers are comparisons, inequalities and strict inequalities \pawel{jak dla mnie to compare to sprawdzenie czy coś jest mniejsze/większe}. Strings are compared using lexicographic order so comparisons, inequalities and strict inequalities should be supported. There are two additional conditions
+Shuffla like every other database provides possibility for searching data. 
+There are different possible conditions for different types. Possible conditions for numbers are equality check, inequalities and strict inequalities. Strings are compared using lexicographic order so equality check, inequalities and strict inequalities should be supported. There are two additional conditions
 \begin{enumerate}
 \item Checking if given string is prefix of selected column value.
 \item Checking if given string is substring of selected column value. 
 \end{enumerate}
-Presenting results:\pawel{a może napisz to pełnym zdaniem, użytkownik ma możliwość wyboru kolejności blablabla}
-\begin{enumerate}
-\item User can define order in which results will be returned.
-\item User can narrow number of results by defining offset and limit.
-\end{enumerate}
 
-Narrowing result described in abstract is possible with defined model. Personalizing results can be done by mapping cities to GPS coordinates. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
+\jarek{fix: a może napisz to pełnym zdaniem, użytkownik ma możliwość wyboru kolejności blablabla}
+User can define order in which results will be returned. Size of the results may be narrowed by defining offset and limit. These search parameters must work exactly the same as their equivalents in SQL.
+
+Narrowing result described in abstract is possible with defined model. GPS coordinates may be fetched by the modern web browsers \cite{FETCHGPS}. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
 \begin{enumerate}
 \item{someLatitiude - radius $\leq$ latitude $\wedge$ latitude $\geq$ someLatitude + radius}
 \item{someLongitude - radius $\leq$ longitude $\wedge$ longitude $\geq$ someLongitude + radius}
 \end{enumerate}
-\pawel{to jest troszeczkę naciągane moim zdaniem}
 
+\jarek{Fix: to jest troszeczkę naciągane moim zdaniem.}
+
+\jarek{Napisałem to, bo to chyba najrozsądniejsza metoda na sortowanie userów. Próbowaliśmy coś takiego w nk robić. Niestety wydajnościowo to było na styk dla Solarów i musieliśmy to cofnąć. Wydawało mi się, że wyniki są zdecydowanie trafniejsze przy takim rozwiązaniu. }
 
 \section{Shuffla's competition}
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
@@ -215,18 +216,18 @@ In this paper I am only testing PostgreSQL which is in my opinion best RDBMs now
 
 \subsubsection{PostgreSQL}
 PostgreSQL has really cool features like: point in time recovery, tablespaces, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer, and write ahead logging for fault tolerance. It supports international character sets, multibyte character encodings, Unicode, and it is locale-aware for sorting, case-sensitivity, and formatting. It is highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate. There are active PostgreSQL systems in production environments that manage in excess of 4 terabytes of data \jarek{Kopiowane ze strony Postgresa, mam nadzieje, że to nie plagiat}.
-PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication \cite{PSQLREPL}. There is a slow log, error log, PostgreSQL performance can be easily monitored by monitoring software like munin, new relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (\verb|gist|, \verb|gin| \pawel{nie wiem cxy gist i gin powinny być w verb, skoro PostgresSQL nie jest}) which could outperform classical index based on B-tree.
-Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time \pawel{co to jest $n$?}. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
+PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication \cite{PSQLREPL}. There is a slow log, error log, PostgreSQL performance can be easily monitored by monitoring software like munin, new relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
+Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time \jarek{fix: co to jest $n$?} where $n$ is number of rows in the table. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
 
 \subsection{Full-text search engine}
 \pawel{napisz co to jest full-text search engine}
-Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx search \pawe{wcześniej nazywałeś to Sphinx Search} and Lucene Solr \pawel{Apache Solr?}. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
+Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
 \begin{enumerate}
 \item Narrow as much as possible words from inverted index which needs to be processed. 
 \item Process remaining words. 
 \end{enumerate}
-For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name \pawel{could? to znaczy używa? czy nie używa?}. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
-\pawel{szczerze mówiąc ten kawałek niezbyt wyjaśnił mi inverted index przydaje się do zapytań typu substring}
+For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name \pawel{could? to znaczy używa? czy nie używa?} \jarek{Kurcze nie pamiętam skąd to wziąłem a teraz nie moge znaleźć źródła które to potwierdza. W poniedziałek włącze solra z 8 milionami wierszy i sprawdze jak szybko dostane odpowiedź na tego typu request}. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
+\pawel{szczerze mówiąc ten kawałek niezbyt wyjaśnił mi inverted index przydaje się do zapytań typu substring}
 
 \subsubsection{Solr}
 
@@ -234,11 +235,11 @@ Solr is a popular open source search platform from the Apache Lucene project. It
 
 Solr does not modify database in real-time. Data is not added immediately to database after insert/update commands. Data is actually inserted after calling commit command. Commit is very costly operation because it requires all caches to be invalidated. Even for table with few entries, commit takes more than 0.1 sec. Time for commit grows with growing size of data. Instance of Solr in nk contains 40 million entries and commit takes about 20 seconds. Commit does not block database which is very important. After commit, search engine is in warming stage. It means that all caches are flushed. First queries after commit can run slowly. After number of processed queries, engine is past warming stage and queries are handled much faster.
 
-\subsubsection{Sphinx search}
+\subsubsection{Sphinx Search}
 
-\pawel{Może zacznij ten kawałek od stwierdzenia, że Sphinx ma dużo minusów, i teraz je wymienisz?}
-
-Sphinx search does not have replication. It is unacceptable for big social website. There is a way to simulate replication. Inverted index is stored on disk. Directory containing index could be replicated by file system (for example network file system). But if index is big than syncing such directories would take too much time and would be inefficient and problematic.
+\jarek{fix: Może zacznij ten kawałek od stwierdzenia, że Sphinx ma dużo minusów, i teraz je wymienisz?}
+Sphinx Search is very good and fast search engine. Sphinx provides good relevance ranking through combination of phrase proximity ranking and statistical ranking \jarek{To zdanie skopiowane ze strony Sphinxa}. It is possible to install Sphinx as MySQL or PostgreSQL plugin. Unfortunately our specification emphasizes Sphinx disadvantages.
+Sphinx does not have replication. It is unacceptable for big social website. There is a way to simulate replication. Inverted index is stored on disk. Directory containing index could be replicated by file system (for example network file system). But if index is big than syncing such directories would take too much time and would be inefficient and problematic.
 
 There are several high-traffic websites with Sphinx search. They horizontally partition searched data across search nodes and then process it in parallel \cite{SPHINXPARAL}.
 
@@ -253,12 +254,13 @@ Except of replication sphinx has another problem. There are two different kinds 
 Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries are not supported yet. Periodical rebuild of index with more than 40 million elements is problematic. Apache Solr and Sphinx search are using similar data structures. Since number of features implemented by Solr is much greater than in Sphinx search I decided to look into only Solr. 
 
 \bigskip
-\pawel{ten kawałek kończy section? czy subsection? może powinien być jakoś wydzielony, lub znajdować się na początku section?}
+\jarek{fix: ten kawałek kończy section? czy subsection? może powinien być jakoś wydzielony, lub znajdować się na początku section?}
+\subsection{Why am I creating new search engine?}
 It seems that none of existing solutions are processing search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on disk could be stored in RAM by ramdisks, it is not primary target to software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that this area has a room for improvement. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
 We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as half-plane (or half-planes) which narrows the search space. There are three data structures for performing efficient searches in a multidimensional space:
-\pawel{te half-planes to są takie specjalne, nie? może lepiej byłoby napisać orthogonal range query...}
+\pawel{te half-planes to są takie specjalne, nie? może lepiej byłoby napisać orthogonal range query...}
 
 \begin{enumerate}
 \item Range Tree \cite{CGAAA}
@@ -276,7 +278,7 @@ Complexities (where $d \geq2$) \pawel{mógłbyś napisać tutaj pełne zdanie? I
 \hline 
 \end{tabular}
 
-\pawel{mi się wydaje, że Range trees potrzebują tylko $n\log n$ pamięci, niezależnie od $d$}
+\pawel{mi się wydaje, że Range trees potrzebują tylko $n\log n$ pamięci, niezależnie od $d$}
 
 \bigskip
 
@@ -303,15 +305,13 @@ Complexities:
 
 Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$
 
-\pawel{w zasadzie nie napisałeś jaki wygląda algorytm. Więc może fajnie byłoby zdefiniować K-D tree i napisać jak są wykonywane poszczególne operacje? Oraz narysować przykład, tj zbiór punktów, który masz na późniejszych obrazkach, i odpowiadające mu drzewko?}
+\pawel{w zasadzie nie napisałeś jaki wygląda algorytm. Więc może fajnie byłoby zdefiniować K-D tree i napisać jak są wykonywane poszczególne operacje? Oraz narysować przykład, tj zbiór punktów, który masz na późniejszych obrazkach, i odpowiadające mu drzewko?}
 
 \section{Implementation}
 
 \subsection{HTTP Service}
 
-\pawel{Odnośniki do rysunków powinny być choć minimalnie zintegrowane z tekstem}
-
- (Figure~\ref{fig:httpservice}).
+\jarek{fix:Odnośniki do rysunków powinny być choć minimalnie zintegrowane z tekstem}
 
 \begin{figure}
 \centering
@@ -320,25 +320,16 @@ Unfortunately adding linear structure to every node of K-D tree increases the sp
   \label{fig:httpservice}
 \end{figure}
 
-I decided that it would be best if search engine could mimic RESTful service \pawel{a mógłbyś tutaj wyjaśnić co to znaczy?}. Every search/insert/delete request should be sent as a HTTP request. Server works in the multi-threaded environment \pawel{trochę się pogubiłem, każdy request jest w nowym wątku? czy jak?}. As a base I used \verb|example2| \cite{ASIOHTTP} from \verb|boost::asio| documentation which fulfills my requirements. Threads are managed by \verb|boost::io_service| \cite{IOSERVICE}. There is another thread for periodical functions. Currently its invoking only saving snapshots.
-
- (Figure~\ref{fig:passing}).
+I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedures is creating all this threads. HTTP request are assign to one of these thread by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start are presented on Figure~\ref{fig:httpservice}.
 
 \subsection{Validation and passing queries to SearchEngine class}
 
-\begin{figure}
-\centering
-  \includegraphics[width=16cm]{passingtosearchengine}
-  \caption{Passing control to SearchEngine class}
-  \label{fig:passing}
-\end{figure}
-
-\verb|http::server2::request_handler::handle_request| passes requesting url to \verb|QueryDispatcher|. QueryDispatcher converts every request to corresponding class by using \verb|QueryCreate|. For example, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
+\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For example, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
 
 Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
 \item data validation (types, correspondence to table definition),
-\item measuring running time (slow log purpose \pawel{napisz co to jest slow log}),
+\item measuring running time (engine should report queries which executing is taking too much time),
 \item locking tables in case of modifying query,
 \item passing valid requests to K-D Trees.
 \end{enumerate}
@@ -358,7 +349,7 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
 
 Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am selecting randomly about 30 rows belonging to node and I am iterating over them. Based on coordinate value in this row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{3}$ of rows are creating good pivots.
 
-\pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_limiter i prosiłbym Cię o poświęcenie jej chwili uwagi.}
+\pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_limiter i prosiłbym Cię o poświęcenie jej chwili uwagi.}
 
 \subsection{Processing search requests}
 
@@ -375,12 +366,11 @@ When request data is validated, control is passed to \verb|TableIndex| class. Ac
 
 \subsection{Locking tables}
 
-\pawel{mógłbyś napisać to pełnym zdaniem? I zdefiniować co to znaczy locking?}
+\jarek{fix: mógłbyś napisać to pełnym zdaniem? I zdefiniować co to znaczy locking?}
 
-\begin{enumerate}
-\item any number of read-only queries can be run concurrently as long as no write query is being performed at the moment,
-\item write query can be performed if no other query is being performed at the moment.
-\end{enumerate}
+To correct work in multi-threaded environment we must ensure thread safety. It requires us to eliminate all data races, especially simultaneous writes which can make database inconsistent. That is why I introduced locking. Basically by acquiring lock we are restricting access to some part of code. 
+
+Our goal is to create following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the moment, write queries can be performed if no other query is being performed at the moment. 
 
 This locking schema has the advantage that it can be implemented using only \verb|mutexes| and \verb|locks| from \verb|boost|. A \verb|mutex| object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. \verb|Boost.Thread| supplies recursive and non-recursive mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex. \jarek{3 ostatnie zdania są przeklejone z dokumentacji boosta, nie wiem czy tak może być}
 There are three most common kinds of locks. All locks are working in similar fashion. Mutex is passed as constructor parameter to lock. Ownership of mutex is acquired in constructor. Ownership of mutex is released when lock object is destroyed.  
@@ -391,16 +381,15 @@ There are three most common kinds of locks. All locks are working in similar fas
 \item \verb|upgrade_lock| - Acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
 \end{enumerate}
 
-My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|.
-\pawel{dopisz tu jeszcze jakieś uzasadnienie, że taka implementacja jest ok}
+My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works as described in goal section at the beginning of this subsection.
+\jarek{fix: dopisz tu jeszcze jakieś uzasadnienie, że taka implementacja jest ok}
 
 \subsection{How data is stored}
 
-\pawel{znowu: mógłbyś zacząć sekcję od pełnego zdania?}
-Requirements:
+Architecture of data storage in databases is very important. It influences application performance and architecture of all other components. I defined requirement for data storage as: 
 \begin{enumerate}
-\item all data can be easily serializable,
-\item it should somehow force type safety, \pawel{jakoś mi to somehow nie leży, zresztą, faktycznie zapewniasz to type safety?}
+\item all data must be serializable,
+\item chosen architecture should force type safety,
 \item very good space efficiency,
 \item it must be fast!
 \end{enumerate}
@@ -411,16 +400,12 @@ Values can be strings or numbers, therefore I created 3 classes:
 \item class \verb|TypeNumber| which extends \verb|Type|.
 \end{enumerate}
 
-Both \verb|TypeString| and \verb|TypeNumber| are implementing all supported functions. \verb|TypeNumber| implements comparisons and inequalities. \verb|TypeString| implements comparisons, inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
+If we take a closer look at specification we may notice that we are never changing values of existing numbers and string. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Lets take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. Text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know text length.   
+
+Both \verb|TypeString| and \verb|TypeNumber| are implementing all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
 \bigskip
 
-Single row stores:
-\begin{enumerate}
-\item pointer to the table definition,
-\item for each column I store pointer to \verb|Type| which contains value of this column. \pawel{row stores, ale potem for each column I store? to kto, kogo, i za co w końcu trzyma? ;)}
-\end{enumerate}
-
-\pawel{TypeString to char*? czy string?}
+Single row stores pointer to the table definition. Besides that there is an \verb|std::vector<Type>| which stores values of a row's fields. \jarek{fix: row stores, ale potem for each column I store? to kto, kogo, i za co w końcu trzyma? ;)}
 
 \subsection{Database persistence}
 
@@ -433,30 +418,30 @@ Nowadays there are two most popular ways of having almost durable database in RA
 \item AOF - append only file, every modifying query is saved to disk (without forcing OS to actually do it),
 \item Snapshotting - in constant time intervals, snapshots of database are saved to disk.
 \end{enumerate}
-I implemented both possibilities. I tried to find a way to combine AOF method with snapshotting so in case of an crash, database could be automatically restored as best as possible. I think the best way is to have a basic bash script that loads a snapshot and executes queries in AOF that were executed after saving last snapshot. \pawel{to ostatecznie zrobiłeś taki skrypt? czy jakoś inaczej?}
+I implemented both possibilities. 
+
+\jarek{Tu była dygresja która była troche bez sensu }
 
 \subsection{Presenting results}
 
-\pawel{tutaj nie wiadomo czego dotyczą te formaty. Rozumiem, że wyników, ale.. jest to niejasne :( w szczególności o jakie feeding data chodzi?}
-
-Modern databases and search engines have to support most popular formats. Nowadays these are
-JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data without any assumptions of the selected output format. Chosen library should be providing interface for implementing new formats (so if a new format becomes popular, our software can support it right away). Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. 
-Unfortunately this library does not support unicode by default. It is possible to fix it, by following \cite{SOANS} .
+\jarek{fix: tutaj nie wiadomo czego dotyczą te formaty. Rozumiem, że wyników, ale.. jest to niejasne :( w szczególności o jakie feeding data chodzi?}
+Presenting results may sound like a trivial issue. Actually it's not and not many libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it, by following \cite{SOANS} .
 
 \section{Implemented optimizations}
 
-\pawel{tutaj widziałbym jakiś akapicik, w którym mówisz, że o ostatecznej efektywności decydują szczegóły, a niżej opiszesz kilka z nich}
+\jarek{fix: tutaj widziałbym jakiś akapicik, w którym mówisz, że o ostatecznej efektywności decydują szczegóły, a niżej opiszesz kilka z nich}
+What makes an algorithm really fast are crazy optimizations. Here is a description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster. \todo{Rozbuduj to}
 
 \subsection{Queue event}
 Web search-engines usually shows maximum of 10-20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 first (most relevant) results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
 
-In classical K-D tree implementations, search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. \pawel{nie napisałeś jak działają K-D tree, więc trochę ciężko się teraz do tego odwoływać}
+In classical K-D tree implementations, search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. \pawel{nie napisałeś jak działają K-D tree, więc trochę ciężko się teraz do tego odwoływać}
 
 Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
 Instead of running search events right away we could insert such events into a priority queue. Consider case when user requested data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficiently many results have been found, engine can stop processing search events from the queue. Hence we can hope to substantially restrict the number of actually visited nodes of the K-D tree.
 
-\pawel{czy 5.1 i 5.2 to osobne optymalizacje? chyba nie? to może powinno być między nimi jakieś przejście?}
+\pawel{czy 5.1 i 5.2 to osobne optymalizacje? chyba nie? to może powinno być między nimi jakieś przejście?}
 
 \subsection{Defined boundary and real boundary}
 
@@ -477,6 +462,7 @@ $T(n) \geq 2^{d-1} * T(n/2^{d})$
 
 \pawel{ta rekurencja zakłada, że drzewo jest w pełni zbalansowane, nie? Ale u Ciebie raczej nie jest?}
 
+\jarek{Ja tu chciałem zobrazować ile jest takich nodów. To że pisze T(n) $\geq$, a później $\Omega$ nie wystarczy?}
 \bigskip
 
 There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), we could calculate area covered by points inside each node. 
@@ -500,23 +486,33 @@ In modern C++ pointers should not be used, and shared pointers are recommended i
 Right now I think it was biggest mistake in the project. Source code became really messy, even small change in legacy code could create bugs.
 
 \subsection{Balancing K-D tree}
-K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 5 times larger that number of nodes in opposite subtree then I am rebuilding their parent subtree from the beginning. \pawel{5 times czy 2 times? te późniejsze rachunki zakładają 2...}
-This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity~\cite{AMOR} is actually rather good. \pawel{zdefiniuj amortized complexity}
+K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 5 times larger that number of nodes in opposite subtree then I am rebuilding their parent subtree from the beginning. \pawel{5 times czy 2 times? te późniejsze rachunki zakładają 2...}
+This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity~\cite{AMOR} is actually rather good.
+
+\pawel{zdefiniuj amortized complexity}
+
+\jarek{Ten reference nie wystarczy?}
 
 
 \section{Complexities}
 
-\pawel{vertex to zwykle $v$}
-
 Terminology:
 \begin{enumerate}
-\item left($\theta$) - left subtree of vertex $\theta$
-\item right($\theta$) - right subtree of vertex $\theta$
+\item $left(v)$ - left subtree of vertex $v$
+\item $right(v)$ - right subtree of vertex $v$
 \end{enumerate}
 
-\pawel{ja bym ten warunek napisał zdaniem, zamiast >= i <= powinny być specjalne znaczki}
+\jarek{fix: ja bym ten warunek napisał zdaniem, zamiast >= i <= powinny być specjalne znaczki}
 
-Let $n$ be number of points in the tree. Tree is X-balanced if and only if $\bigforall$ $\theta$: X * |left($\theta$)| >= |right($\theta$)| $\wedge$ X * |left($\theta$)| >= |right($\theta$)|. Tree is well-balanced if it is 2-balanced. Tree is barely-balanced if it is 5-balanced. Height of both well and barely balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
+\jarek{Zmienna X, porównywanie wielkości poddrzew, jak próbowałem to robić zdaniem to było nieczytelne;/}
+
+Let $n$ be number of points in the tree. Tree is X-balanced if and only if 
+
+\begin{eqnarray*}
+\bigforall v: X * |left(v)| \leq |right(v)| \wedge X * |left(v)| \geq |right(v)|
+\end{eqnarray*}
+
+Tree is well-balanced if it is 2-balanced. Tree is barely-balanced if it is 5-balanced. Height of both well and barely balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
 Assumptions:
 \begin{enumerate}
@@ -557,9 +553,6 @@ Now, for each node of the tree we need to add $n\log n$ credits, hence the total
 
 We have enough credits to pay for the increase.
 \end{proof}
-
-\pawel{Tutaj fajnie byłoby skonstruować przykład, że ta złożoność to faktycznie $\log^{2}n$, tzn ciąg $n$ insertów, które w sumie wymagają czasu $n\log^{2}n$...}
-\jarek{Ostatnio po raz drugi poświeciłem więcej czasu temu problemu, bez sukcesu;/}
 
 \subsection{Search}
 
@@ -637,11 +630,11 @@ Let me explain. Lets take for example data with random distribution. When algori
 
 \section{Tested engines}
 
-\pawel{na początku powinno być jakieś zdanie wstępu}
-
+\jarek{fix: na początku powinno być jakieś zdanie wstępu}
+All engines must be tested on the same schema and by the same queries. Yet presented engines have different syntax. In chapters below I'm describing table configurations and how queries were translated during their testing.
 \subsection{Solr}
 
-Schema used in testing is:
+During tests I was using Solr 3.6.1. Tables in Solr are defined via xml file called schema.xml. Below is part of this file responsible for creating table.
 
 \begin{verbatim}
 <fields>
@@ -659,9 +652,12 @@ Schema used in testing is:
 
 Solr requires unique key. Combining all properties is not enough. For example there are lots of guys named Jan Kowalski in Warsaw. Therefore I created another property named id.
 
+\bigskip
+Below I'm presenting syntax for all types of queries:
 \begin{enumerate}
-\item Comparisons: \verb|property:value|
-\item Inequalities are realized by range queries: \verb|property:[from TO to]|. \verb|From| and \verb|to| can be replaced by *. Number greater or equal to 2 can be searched by \verb|property:[2 TO *]|. \verb|property:[* TO *]| matches everything.
+\item Equality check: \verb|property:value|
+\item Inequalities are realized by range queries: \verb|property:[from TO to]|. \verb|From| and \verb|to| can be replaced by *. For example searching number greater or equal to 2 is performed by \verb|property:[2 TO *]|. \verb|property:[* TO *]| matches everything.
+\item Strict inequalities are realized by excluding some range \verb|-property:[from TO to]|. For example searching numbers smaller than 2 is performed by excluding range [2,$\infty$]: \verb|-property:[2 TO *]|.
 \item Prefix queries: \verb|property:value*|.
 \item Substring queries: \verb|property:*value*|.
  
@@ -669,7 +665,7 @@ Solr requires unique key. Combining all properties is not enough. For example th
 
 \subsection{PostgreSQL}
 
-Schema used in testing is:
+I am using PostgreSQL 9.1. Schema used in testing is:
 
 \begin{verbatim}
 CREATE TABLE users (
@@ -687,7 +683,7 @@ CREATE INDEX index4 ON users (age, first_name, last_name);
 
 Syntax:
 \begin{enumerate}
-\item Comparisons and inequalities are realized by \verb|=|, \verb|>=|, \verb|>|, \verb|<=|, \verb|<|
+\item Equality check, inequalities and strict inequalities are realized by \verb|=|, \verb|>=|, \verb|>|, \verb|<=|, \verb|<|
 \item Prefix queries are handled by \verb|property LIKE "text%"|
 \item Substring queries are handled by \verb|property LIKE "%text%"|
 \end{enumerate}
@@ -770,12 +766,6 @@ Solr and PostgreSQL are using less than 1 GB of RAM. It is possible because both
 
 Solr is superior over Shuffla in every way. Solr is faster. Solr consumes less memory. It is more configurable, for example we could increase Solr memory limit. Solr is just better choice, especially for big social website purposes. 
 
-\section{Summary}
-
-\pawel{to chyba powinno być na samym końcu...}
-
-After this discussion you may think that Shuffla is useless. I do not think it is useless. Shuffla fits great for smaller projects like searching through internet forum or blog. Both Solr and PostgreSQL are requiring not easy installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is more than welcome.
-
 \section{Few words about Solr in nk}
 
 \subsection{Search architecture in nk}
@@ -793,7 +783,7 @@ When some action requires modifying data in Solr, PHP code is creating task for 
 
 In case of search request, we need to distribute requests between servers. For this purpose search requests are going through HAProxy \cite{HAPROXY}. This load balancer is distributing requests between our 3 servers.
 
-\subsection{Master server statistics from munin}
+\subsection{Statistics from master server}
 
 \begin{figure}
         \centering
@@ -865,6 +855,10 @@ In case of search request, we need to distribute requests between servers. For t
 \end{figure}
 
 At night Solr does not do much. Load grows as the day progress. At the peek our master server handles 18 search requests per second (about 8 PM). Number of other requests like updates/replication/commit is negligible. Do not forget that we have three Solr servers on production and this chart is only from one of them. Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache. Load is a measure of the amount of computational work that a computer system performs. \jarek{Zdanie z wiki} Load X means that we need at least ceil(X) CPUs to run all processes without any of them waiting for a turn.  We are using half of available memory because the other half is reserved for unexpected events, for example crash of one server. It may require increasing memory limits on two other machines. When we are closer to the peek we have more connections to Solr. It is close to a 100 at the peek. Thread pool contains more than 300 threads. Usually only small amount of this number is used. Java on our production environment is executed with \verb|-Xms24G -Xmx24G| which means that memory used by heap plus memory used by stack cannot exceed 24GB. You may find our heap usage very strange. Most of heap memory is used by caches. We are committing changes every 15 minutes which causes all caches to be flushed. For another 15 minutes cache is filling by search queries and then flushed again. At night there is small number of request and Solr is unable to get passed warming stage before next commit. You can see it at "Solr caches - by day" chart. Hit ratio is slightly smaller, about 60 percent at night.
+
+\section{Summary}
+
+After this discussion you may think that Shuffla is useless. I do not think it is useless. Shuffla fits great for smaller projects like searching through internet forum or blog. Both Solr and PostgreSQL are requiring not easy installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is more than welcome.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
