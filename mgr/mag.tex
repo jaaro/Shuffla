@@ -150,6 +150,8 @@ Pracuję nad portalem nk.pl (który jest największym polskim portalem społeczn
 
 \pawel{to w zasadzie jest nie abstract, a introduction}
 
+\jarek{Troche tak wyszło, spróbuje część tego przenieść do rozdziału 1 a tu napisze kilka zdań o tym, że temat to wyszukiwarki, że pisze własną, że je porównuje, że mam statsy działania takiej wyszukiwarki w nk} 
+
 \begin{abstract}
 Given a list of people (their first name, last name, age, home town) we want to provide high-available, scalable and very fast solution that can search through such data.
 User can narrow search results by:
@@ -211,7 +213,7 @@ Narrowing result described in abstract is possible with defined model. GPS coord
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
 
 \subsection{Relational databases}
-\pawel{napisz co to jest relational database}
+A relational database management system (RDBMS) is a database management system (DBMS) that is based on the relational model as introduced by E. F. Codd, of IBM's San Jose Research Laboratory. Most popular databases currently in use are based on the relational database model. \jarek{Ściągniete z wiki}
 In this paper I am only testing PostgreSQL which is in my opinion best RDBMs nowadays.
 
 \subsubsection{PostgreSQL}
@@ -220,14 +222,15 @@ PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave 
 Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time \jarek{fix: co to jest $n$?} where $n$ is number of rows in the table. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
 
 \subsection{Full-text search engine}
-\pawel{napisz co to jest full-text search engine}
-Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
+In text retrieval, full text search refers to techniques for searching a single computer-stored document or a collection in a full text database. Full text search is distinguished from searches based on metadata or on parts of the original texts represented in databases (such as titles, abstracts, selected sections or bibliographical references) \jarek{Ściągniete z wiki}. Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
 \begin{enumerate}
 \item Narrow as much as possible words from inverted index which needs to be processed. 
 \item Process remaining words. 
 \end{enumerate}
 For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name \pawel{could? to znaczy używa? czy nie używa?} \jarek{Kurcze nie pamiętam skąd to wziąłem a teraz nie moge znaleźć źródła które to potwierdza. W poniedziałek włącze solra z 8 milionami wierszy i sprawdze jak szybko dostane odpowiedź na tego typu request}. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
 \pawel{szczerze mówiąc ten kawałek niezbyt wyjaśnił mi inverted index przydaje się do zapytań typu substring}
+
+\jarek{Dużo nie daje, conajmniej kilka mini optymalizacji. Plus przejechanie się po wszystkich słowach ze słownika jest szybsze niż po całej bazie. Opisze to jakoś}
 
 \subsubsection{Solr}
 
@@ -351,6 +354,8 @@ Balancing can be done using any linear algorithm for finding median in set. I ha
 
 \pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_limiter i prosiłbym Cię o poświęcenie jej chwili uwagi.}
 
+\jarek{Poprawie find\_good\_limiter. Co do wyjaśnienia to chwilowo lepszego nie mam;/}
+
 \subsection{Processing search requests}
 
  (Figure~\ref{fig:search}).
@@ -409,9 +414,9 @@ Single row stores pointer to the table definition. Besides that there is an \ver
 
 \subsection{Database persistence}
 
-\pawel{zdefiniuj persistence}
+\jarek{fix: zdefiniuj persistence}
 
-Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solution, preferred way is to have “almost durable” system.
+Shuffla holds all data in RAM. In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserved data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solution, preferred way is to have “almost durable” system.
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
 \begin{enumerate}
