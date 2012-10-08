@@ -290,9 +290,19 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-\todo{Opis K-D tree}
+At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as $row_{e} \leq C$ where $e$ is pointing to a dimension number. Most important parts of our K-D tree are insert and search functions. Both of them are recursive and preety simple. Handling insert call of Row \verb|row| to Node \verb|node| is handled by following pseudocode: 
 
-We also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process only one substring request in a query with suffix tree.
+\begin{enumerate}
+\item If \verb|node| is a leaf, then just add \verb|row| to the node. Choose a pivot and create \verb|node| sons if neccessery
+\item Otherwise if \verb|row| is matching condition defined by \verb|node->pivot| then insert \verb|row| to left son of \verb|node|
+\item Otherwise insert \verb|row| to right son of \verb|node|
+\end{enumerate}
+
+At this point we don't know nothing about how pivots are created and how/when rebuilding of a tree is processed. I will get back to this topic later.
+
+Parameters for search functions are Node \verb|node| and SearchRegion \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is emtpy then we are stoping processing this subtree. If region represented by \verb|node| is fully contained by \verb|searchRegion| then we don't have to process all it's sons, we already know that all rows will be inside \verb|searchRegion|.
+
+As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process only one substring request in a query with suffix tree.
 
 There is another possibility. Engine may process search query without substring parts. In the end, if row is matching query without it substring parts then pattern matching is performed. In this solution rows should be provided to pattern matching in order defined within query.
 
@@ -338,7 +348,7 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
   \label{fig:rebuild}
 \end{figure}
 
-Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am selecting randomly about 30 rows belonging to node and I am iterating over them. Based on coordinate value in this row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{3}$ of rows are creating good pivots.
+Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am selecting randomly about 30 rows belonging to node and I am iterating over them. Based on coordinate value in this row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows are creating good pivots.
 
 \pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_limiter i prosiłbym Cię o poświęcenie jej chwili uwagi.}
 
@@ -374,7 +384,7 @@ There are three most common kinds of locks. All locks are working in similar fas
 \item \verb|upgrade_lock| - Acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
 \end{enumerate}
 
-My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works as described in goal section at the beginning of this subsection.
+My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works as exactly as it suppose to.
 \jarek{fix: dopisz tu jeszcze jakieś uzasadnienie, że taka implementacja jest ok}
 
 \subsection{How data is stored}
@@ -396,7 +406,6 @@ Values can be strings or numbers, therefore I created 3 classes:
 If we take a closer look at specification we may notice that we are never changing values of existing numbers and string. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Lets take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. Text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know text length.   
 
 Both \verb|TypeString| and \verb|TypeNumber| are implementing all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
-\bigskip
 
 Single row stores pointer to the table definition. Besides that there is an \verb|std::vector<Type>| which stores values of a row's fields. \jarek{fix: row stores, ale potem for each column I store? to kto, kogo, i za co w końcu trzyma? ;)}
 
@@ -404,7 +413,7 @@ Single row stores pointer to the table definition. Besides that there is an \ver
 
 \jarek{fix: zdefiniuj persistence}
 
-In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserved data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solution, preferred way is to have “almost durable” system.
+In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserves data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which drastically decreases application speed. Instead of such solution, preferred way is to have “almost durable” system.
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
 \begin{enumerate}
@@ -412,8 +421,6 @@ Nowadays there are two most popular ways of having almost durable database in RA
 \item Snapshotting - in constant time intervals, snapshots of database are saved to disk.
 \end{enumerate}
 I implemented both possibilities. 
-
-\jarek{Tu była dygresja która była troche bez sensu }
 
 \subsection{Presenting results}
 
@@ -423,7 +430,7 @@ Presenting results may sound like a trivial issue. Actually it's not and not man
 \section{Implemented optimizations}
 
 \jarek{fix: tutaj widziałbym jakiś akapicik, w którym mówisz, że o ostatecznej efektywności decydują szczegóły, a niżej opiszesz kilka z nich}
-What makes an algorithm really fast are crazy optimizations. Here is a description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster. \todo{Rozbuduj to}
+If you take two competetive products and you want to choose better then you have to look into small details. The same law applies to databases. What makes an algorithm really fast are crazy optimizations. Here is a description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster. \todo{Rozbuduj to}
 
 \subsection{Queue event}
 Web search-engines usually shows maximum of 10-20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 first (most relevant) results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
