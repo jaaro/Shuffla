@@ -276,9 +276,7 @@ Complexities of these algorithms are depending on number of elements ($n$) and n
 \hline 
 \end{tabular}
 
-\pawel{mi się wydaje, że Range trees potrzebują tylko $n\log n$ pamięci, niezależnie od $d$}
-
-\jarek{W źródle do którego się odwołuje (\cite{CGAAA}) złożonosci są takie jakie podałem (strona 110, końcówka kartki)}
+\jarek{fix: W źródle do którego się odwołuje (\cite{CGAAA}) złożonosci są takie jakie podałem (strona 110, końcówka kartki)}
 
 \bigskip
 
@@ -290,23 +288,23 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as $row_{e} \leq C$ where $e$ is pointing to a dimension number. Most important parts of our K-D tree are insert and search functions. Both of them are recursive and preety simple. Handling insert call of Row \verb|row| to Node \verb|node| is handled by following pseudocode: 
+At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. Most important functions of our K-D tree are insert and search functions. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
 
 \begin{enumerate}
-\item If \verb|node| is a leaf, then just add \verb|row| to the node. Choose a pivot and create \verb|node| sons if neccessery
-\item Otherwise if \verb|row| is matching condition defined by \verb|node->pivot| then insert \verb|row| to left son of \verb|node|
-\item Otherwise insert \verb|row| to right son of \verb|node|
+\item If \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create \verb|node| sons if necessary
+\item Otherwise if \verb|row| is matching condition defined by \verb|node->pivot| then recursively insert \verb|row| to left son of \verb|node|
+\item Otherwise recursively insert \verb|row| to right son of \verb|node|
 \end{enumerate}
 
 At this point we don't know nothing about how pivots are created and how/when rebuilding of a tree is processed. I will get back to this topic later.
 
-Parameters for search functions are Node \verb|node| and SearchRegion \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is emtpy then we are stoping processing this subtree. If region represented by \verb|node| is fully contained by \verb|searchRegion| then we don't have to process all it's sons, we already know that all rows will be inside \verb|searchRegion|.
+In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we are stopping processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we don't have to process all it's sons, we already know that all rows will be inside \verb|searchRegion|.
 
 As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process only one substring request in a query with suffix tree.
 
 There is another possibility. Engine may process search query without substring parts. In the end, if row is matching query without it substring parts then pattern matching is performed. In this solution rows should be provided to pattern matching in order defined within query.
 
-Solution with suffix tree is faster when there aren't many rows with given substring. If situation is opposite then pattern matching will work faster. I decided to implemented solution with pattern matching because of its simplicity and superiority in space complexity.
+Solution with suffix tree is faster when there aren't many rows with given substring. If situation is opposite then pattern matching will work faster. I decided to implemented solution with pattern matching because of its simplicity and superiority in space complexity. As you may see in tests results at the end of this paper, even without suffix trees memory usage is high. 
 
 \section{Implementation}
 
@@ -384,7 +382,7 @@ There are three most common kinds of locks. All locks are working in similar fas
 \item \verb|upgrade_lock| - Acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
 \end{enumerate}
 
-My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works as exactly as it suppose to.
+My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works exactly as it suppose to.
 \jarek{fix: dopisz tu jeszcze jakieś uzasadnienie, że taka implementacja jest ok}
 
 \subsection{How data is stored}
@@ -430,27 +428,14 @@ Presenting results may sound like a trivial issue. Actually it's not and not man
 \section{Implemented optimizations}
 
 \jarek{fix: tutaj widziałbym jakiś akapicik, w którym mówisz, że o ostatecznej efektywności decydują szczegóły, a niżej opiszesz kilka z nich}
-If you take two competetive products and you want to choose better then you have to look into small details. The same law applies to databases. What makes an algorithm really fast are crazy optimizations. Here is a description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster. \todo{Rozbuduj to}
+What makes an algorithm really fast are optimizations. Here is a description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
 
 \subsection{Queue event}
 Web search-engines usually shows maximum of 10-20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 first (most relevant) results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
 
-In classical K-D tree implementations, search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. \pawel{nie napisałeś jak działają K-D tree, więc trochę ciężko się teraz do tego odwoływać}
+In classical K-D tree implementations, search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
-Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
-
-Instead of running search events right away we could insert such events into a priority queue. Consider case when user requested data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficiently many results have been found, engine can stop processing search events from the queue. Hence we can hope to substantially restrict the number of actually visited nodes of the K-D tree.
-
-\pawel{czy 5.1 i 5.2 to osobne optymalizacje? chyba nie? to może powinno być między nimi jakieś przejście?}
-
-\subsection{Defined boundary and real boundary}
-
-\begin{figure}
-\centering
-  \includegraphics[width=8cm]{Figure1}
-  \caption{Storing whole area covered by nodes}
-  \label{fig:covered}
-\end{figure}
+Instead of running search events right away we could insert such events into a priority queue. Consider case when user requested data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficiently many results have been found, engine can stop processing search events from the queue. Hence we can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like big improvement. It actually isn't. Number of nodes added to the queue may be large.
 
 Imagine that we want to find point with smallest value of the $x$ coordinate. We need to process all nodes
 that do not have a lower bound on $x$. Lets count them:
@@ -465,9 +450,18 @@ $T(n) \geq 2^{d-1} * T(n/2^{d})$
 \jarek{Ja tu chciałem zobrazować ile jest takich nodów. To że pisze T(n) $\geq$, a później $\Omega$ nie wystarczy?}
 \bigskip
 
-There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), we could calculate area covered by points inside each node. 
+There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optimization described in next chapter.
 
- (Figure~\ref{fig:inside}).
+\subsection{Defined boundary and real boundary}
+
+\begin{figure}
+\centering
+  \includegraphics[width=8cm]{Figure1}
+  \caption{Storing whole area covered by nodes}
+  \label{fig:covered}
+\end{figure}
+
+Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), we could calculate area covered by points inside each node (Figure~\ref{fig:inside}).
 
 \begin{figure}
 \centering
@@ -476,9 +470,11 @@ There are $\Omega (n^{1-1/d})$ such nodes. Instead of storing whole area covered
   \label{fig:inside}
 \end{figure}
 
-Lets revised this idea on example where point with minimal value of coordinate x is requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ are processed. Finding minimum value of coordinate x of node takes $\Oh(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$.
+Lets revised this idea on example where point with minimal value of coordinate x is requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ nodes are processed. Finding minimum value of coordinate x of node takes $\Oh(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$.
 
 \pawel{sorry, ale ten kawałek jest dla mnie średnio czytelny}
+
+\jarek{Dużo tu nie poprawiłem, mógłbyś mi powiedzieć którą część poprawić}
 
 \subsection{Raw pointers instead of shared pointers}
 
@@ -633,7 +629,7 @@ Let me explain. Lets take for example data with random distribution. When algori
 All engines must be tested on the same schema and by the same queries. Yet presented engines have different syntax. In chapters below I'm describing table configurations and how queries were translated during their testing.
 \subsection{Solr}
 
-During tests I was using Solr 3.6.1. Tables in Solr are defined via xml file called schema.xml. Below is part of this file responsible for creating table.
+During tests I was using Solr 3.6.1. Tables in Solr are defined via xml file called schema.xml. Below is part of this file which is responsible for creating table.
 
 \begin{verbatim}
 <fields>
@@ -708,7 +704,6 @@ Where subquery can be:
 \item \verb|PREFIX|(\verb|field|)=\verb|value| requires \verb|field| to have prefix \verb|value|
 \item \verb|CONTAINS|(\verb|field|)=\verb|value| requires \verb|field| to contain \verb|value| as a substring
 \end{enumerate}
-
 
 \section{Tested results}
 
