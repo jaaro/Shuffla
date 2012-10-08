@@ -181,12 +181,7 @@ I am working on nk.pl (which is biggest polish social networking website) since 
 
 \jarek{Fix: Zaczynasz od definicja, ale właściwie nie wiadomo po co ta definicja. Może najpierw napisz, że chcesz mieć wiele tabel, na których będziesz wykonywał inserty/search, a pojedyncza tabela to...}
 
-Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of:
-\begin{enumerate}
-\item table name
-\item list of pairs <column name, type of column>
-\end{enumerate}
-Type of column can be either a string or a number.
+Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of table name and list of pairs <column name, type of column>. Type of column can be either a string or a number.
 
 \subsection{Selecting data}
 Shuffla like every other database provides possibility for searching data. 
@@ -258,12 +253,11 @@ Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries 
 
 \bigskip
 \jarek{fix: ten kawałek kończy section? czy subsection? może powinien być jakoś wydzielony, lub znajdować się na początku section?}
-\subsection{Why am I creating new search engine?}
+\subsection{Why am I creating new search engine?!}
 It seems that none of existing solutions are processing search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on disk could be stored in RAM by ramdisks, it is not primary target to software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that this area has a room for improvement. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
-We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as half-plane (or half-planes) which narrows the search space. There are three data structures for performing efficient searches in a multidimensional space:
-\pawel{te half-planes to są takie specjalne, nie? może lepiej byłoby napisać orthogonal range query...}
+We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range query. There are three data structures for performing efficient searches in a multidimensional space:
 
 \begin{enumerate}
 \item Range Tree \cite{CGAAA}
@@ -271,8 +265,9 @@ We can clearly see analogy to multidimensional range searches. All conditions (e
 \item K-D tree \cite{CGAAA}
 \end{enumerate}
 
-Complexities (where $d \geq2$) \pawel{mógłbyś napisać tutaj pełne zdanie? I zdefiniować $d$?}
+Complexities of these algorithms are depending on number of elements ($n$) and number of dimensions ($d$). In our case number of dimensions corresponds to number of columns in a table. Here is a table of complexities for listed algorithms. 
 
+\bigskip
 \begin{tabular}{|l|c|c|c|c|}
 \hline Algorithm & Insert (without balancing) & Delete (without balancing) & Search & Space \\
 \hline K-D tree & $\Oh(\log{n})$ & $\Oh(\log{n})$ & $\Oh(n^{1-1/d} + k)$ & $\Oh(n)$ \\
@@ -282,6 +277,8 @@ Complexities (where $d \geq2$) \pawel{mógłbyś napisać tutaj pełne zdanie? I
 \end{tabular}
 
 \pawel{mi się wydaje, że Range trees potrzebują tylko $n\log n$ pamięci, niezależnie od $d$}
+
+\jarek{W źródle do którego się odwołuje (\cite{CGAAA}) złożonosci są takie jakie podałem (strona 110, końcówka kartki)}
 
 \bigskip
 
@@ -293,22 +290,13 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-\bigskip
+\todo{Opis K-D tree}
 
-\pawel{Ostatecznie tak nie robisz, więc... hm}
+We also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process only one substring request in a query with suffix tree.
 
-We also have queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK} .
+There is another possibility. Engine may process search query without substring parts. In the end, if row is matching query without it substring parts then pattern matching is performed. In this solution rows should be provided to pattern matching in order defined within query.
 
-Complexities:
-\begin{enumerate}
-\item Adding text to tree: $\Oh(|text|)$
-\item Removing text from tree $\Oh(|text|)$
-\item Searching text in tree $\Oh(|text|)$
-\end{enumerate}
-
-Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$
-
-\pawel{w zasadzie nie napisałeś jaki wygląda algorytm. Więc może fajnie byłoby zdefiniować K-D tree i napisać jak są wykonywane poszczególne operacje? Oraz narysować przykład, tj zbiór punktów, który masz na późniejszych obrazkach, i odpowiadające mu drzewko?}
+Solution with suffix tree is faster when there aren't many rows with given substring. If situation is opposite then pattern matching will work faster. I decided to implemented solution with pattern matching because of its simplicity and superiority in space complexity.
 
 \section{Implementation}
 
@@ -416,7 +404,7 @@ Single row stores pointer to the table definition. Besides that there is an \ver
 
 \jarek{fix: zdefiniuj persistence}
 
-Shuffla holds all data in RAM. In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserved data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solution, preferred way is to have “almost durable” system.
+In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserved data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which decrease speed of the application drastically. Instead of such solution, preferred way is to have “almost durable” system.
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
 \begin{enumerate}
@@ -491,11 +479,10 @@ In modern C++ pointers should not be used, and shared pointers are recommended i
 Right now I think it was biggest mistake in the project. Source code became really messy, even small change in legacy code could create bugs.
 
 \subsection{Balancing K-D tree}
-K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 5 times larger that number of nodes in opposite subtree then I am rebuilding their parent subtree from the beginning. \pawel{5 times czy 2 times? te późniejsze rachunki zakładają 2...}
+K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 2 times larger that number of nodes in opposite subtree then I am rebuilding their parent subtree from the beginning.
 This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity~\cite{AMOR} is actually rather good.
 
 \pawel{zdefiniuj amortized complexity}
-
 \jarek{Ten reference nie wystarczy?}
 
 
@@ -517,12 +504,12 @@ Let $n$ be number of points in the tree. Tree is X-balanced if and only if
 \bigforall v: X * |left(v)| \leq |right(v)| \wedge X * |left(v)| \geq |right(v)|
 \end{eqnarray*}
 
-Tree is well-balanced if it is 2-balanced. Tree is barely-balanced if it is 5-balanced. Height of both well and barely balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
+Tree is well-balanced if it is 2-balanced. Tree is super-balanced if it is  $\frac{3}{2}$-balanced. Height of both well and super balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
 Assumptions:
 \begin{enumerate}
 \item all values of all columns are unique
-\item rebuilding subtree with root $\theta$ causes subtree with root $\theta$ to be well-balanced.
+\item rebuilding subtree with root $\theta$ causes subtree with root $\theta$ to be super-balanced.
 \end{enumerate}
 
 \subsection{Inserting/deleting point $X$}
