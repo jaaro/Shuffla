@@ -29,7 +29,7 @@ public:
 
     virtual ~KDVertex();
 protected:
-    void rebuild();
+    void rebuild_if_necessary();
 
     Pivot find_good_pivot() const ;
     int calculate_pivot_efficiency(const Pivot& limit) const;

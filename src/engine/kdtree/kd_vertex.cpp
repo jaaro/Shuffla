@@ -41,7 +41,7 @@ void KDVertex::add_collection(std::vector<const Row*> rows)
 {
     count += rows.size();
     rows_.insert(rows_.end(), rows.begin(), rows.end());
-    rebuild();
+    rebuild_if_necessary();
 }
 
 int KDVertex::get_count() const {
@@ -55,13 +55,13 @@ bool KDVertex::insert_row(const Row* row, int k)
     count++;
     if (left_ == NULL) {
         rows_.push_back(row);
-        rebuild();
+        rebuild_if_necessary();
         return true;
     }
 
     if (left_ != NULL) left_->insert_row(row, k+1);
     if (right_ != NULL) right_->insert_row(row, k+1);
-
+    rebuild_if_necessary();
 
     return true;
 }
@@ -81,6 +81,8 @@ bool KDVertex::delete_row(const Row* row)
 
     if (left_ != NULL) left_->delete_row(row);
     if (right_ != NULL) right_->delete_row(row);
+
+    rebuild_if_necessary();
     return true;
 }
 
@@ -114,7 +116,7 @@ void KDVertex::collect_rows(std::vector<const Row*>& rows) {
     }
 }
 
-void KDVertex::rebuild()
+void KDVertex::rebuild_if_necessary()
 {
     bool should_rebuild = false;
     if (rows_.size() > 82 && left_ == NULL)  should_rebuild = true;
