@@ -555,18 +555,34 @@ Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} +
 
 Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
 
-\jarek{Troche to bedę musiał porozbijać, bo za dużo rzeczy na raz tu się dzieje}
 \begin{lemma}\label{lem:3}
-The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ which solves to $\Oh(n^{1 - \log_{3*2^{d-2}}{\frac{3}{2}}})$.
+Upper bound for number of processed nodes on level $d$ is $2^{d-1}$.
 \end{lemma}
 
 \begin{proof}
 
 K-d tree is a binary tree. Root has height 0, its children have height 1, and so on. Lets count maximal possible number of visited nodes on level $d$ by a recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension $e$. Such line intersects either the region represented by left son or right son, not both. Therefore only one of its sons will be recursively called. Then the upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level $d$ is $2^{d-1}$. 
 
-The total number of points on all nodes on level $d$ is $n$. The total number of points on the processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From previous paragraph we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1.
+\end{proof}
 
-Hence the average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$. I will prove that the worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$.
+
+\begin{lemma}\label{lem:4}
+Average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+\end{lemma}
+
+\begin{proof}
+
+The total number of points on all nodes on level $d$ is $n$. The total number of points on the processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From previous paragraph we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+
+\end{proof}
+
+I will prove that the worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$.
+
+\begin{lemma}\label{lem:5}
+The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ which solves to $\Oh(n^{1 - \log_{3*2^{d-2}}{\frac{3}{2}}})$.
+\end{lemma}
+
+\begin{proof}
 
 Our goal will be to prove that $T(n) \leq c n^a$ for some constant $a < 1$ using induction on $n$. For small values of $n$ it is true because we can choose constant $c$. Now lets prove that $T(n) \leq c n^a$ assuming that $T(n') \leq c n'^a$ for all $n'<n$. We have:
 
