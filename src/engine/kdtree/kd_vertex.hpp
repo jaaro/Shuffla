@@ -36,6 +36,9 @@ protected:
 
     std::vector<const Row*> linear_filter(const QueryBoundary& query_boundary) const;
     std::vector<const Row*> filter_non_index_conditions(const QueryBoundary& query_boundary) const ;
+
+    int get_count() const;
+    void collect_rows(std::vector<const Row*>& rows) ;
 private:
 
     const TableIndexInfo& table_index_info_;
@@ -48,6 +51,7 @@ private:
 
     // left and right subtree and divider
     int divider_property_number_;
+    int count;
     Type* divider_;
     KDVertex* left_;
     KDVertex* right_;

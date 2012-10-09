@@ -1,15 +1,18 @@
 #include "kd_vertex.hpp"
+#include "../../logger/logger.hpp"
 
 KDVertex::KDVertex(const TableIndexInfo& table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
 {
     left_ = NULL;
     right_ = NULL;
+    count = 0;
 }
 
 KDVertex::KDVertex(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info))
 {
     left_ = NULL;
     right_ = NULL;
+    count = 0;
 }
 
 KDVertex::~KDVertex()
@@ -36,15 +39,20 @@ void KDVertex::dump_all_rows(DumpSaver& dump_saver) const
 
 void KDVertex::add_collection(std::vector<const Row*> rows)
 {
+    count += rows.size();
     rows_.insert(rows_.end(), rows.begin(), rows.end());
     rebuild();
 }
 
+int KDVertex::get_count() const {
+    return count;
+}
 
 bool KDVertex::insert_row(const Row* row, int k)
 {
     if (!boundary_.is_point_inside(row)) return false;
 
+    count++;
     if (left_ == NULL) {
         rows_.push_back(row);
         rebuild();
@@ -62,6 +70,7 @@ bool KDVertex::delete_row(const Row* row)
 {
     if (!boundary_.is_point_inside(row)) return false;
 
+    count--;
     if (left_ == NULL) {
         for(size_t i=0; i<rows_.size(); i++) {
             if (rows_[i] == row) {
@@ -96,9 +105,33 @@ std::vector<SearchTask*>  KDVertex::search(const QueryBoundary& query_boundary) 
     return result;
 }
 
+void KDVertex::collect_rows(std::vector<const Row*>& rows) {
+    rows.insert(rows.end(), rows_.begin(), rows_.end());
+    rows_.clear();
+    if (left_ != NULL) {
+        left_->collect_rows(rows);
+        right_->collect_rows(rows);
+    }
+}
+
 void KDVertex::rebuild()
 {
-    if (rows_.size() > 82 && left_ == NULL) {
+    bool should_rebuild = false;
+    if (rows_.size() > 82 && left_ == NULL)  should_rebuild = true;
+    if (left_ != NULL) {
+        int l = left_->get_count();
+        int r = right_->get_count();
+        if (l > 2*r || r > 2*l) should_rebuild = true;
+    }
+
+    if (should_rebuild) {
+        if (left_ != NULL) {
+            left_->collect_rows(rows_);
+            right_->collect_rows(rows_);
+            delete left_;
+            delete right_;
+        }
+
         Limiter limit = find_good_limiter();
 
         Boundary left_boundary(boundary_);
@@ -129,41 +162,28 @@ void KDVertex::rebuild()
 
 Limiter KDVertex::find_good_limiter() const
 {
-    bool only_first = rand() % 2;
-
     std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
-    std::vector<Limiter> limiters;
+    
+    //TODO chyba tu będzie trzeba wkleić randomowe wybieranie 20 pivotów i dalsza część tylko jako last resort.
 
+    Limiter current;
+    
     for(auto it = rows_.begin(); it !=rows_.end(); it++) {
-        for(int mask = 0; mask < 4; mask++) {
-            if (rand() % (rows_.size() / 5 + 1) == 0) {
-                std::string property = props[rand() % props.size()];
-                if (only_first) property = props[0];
-                int property_index = table_index_info_.get_table_definition()->get_property_index(property);
+        for(int property_index = 0; property_index < props.size(); property_index++) {
+            std::string property = props[property_index];
 
-                limiters.push_back(Limiter(property_index, (*it)->get_value(property), mask/2, mask&1));
+            Limiter current(property_index, (*it)->get_value(property), rand()&1, rand()&1);
+            int local_res = calculate_limiter_efficiency(current);
+            if (local_res <= signed(rows_.size()) / 8) {
+                return current;
             }
         }
     }
 
-    assert(limiters.size() > 0);
+    Logger::getInstance().log_error("Unable to find good pivot");
+    assert(!current.is_unbounded());
 
-    int best_index = -1;
-    int res = INT_MAX;
-    for(std::size_t i=0; i<limiters.size(); i++) {
-        int local_res = calculate_limiter_efficiency(limiters[i]);
-        if (local_res < res) {
-            best_index = i;
-            res = local_res;
-        }
-        if (res <= signed(rows_.size()) / 8) {
-            break;
-        }
-    }
-
-    assert(best_index >= 0);
-
-    return limiters[best_index];
+    return current;
 }
 
 int KDVertex::calculate_limiter_efficiency(const Limiter& limit) const
