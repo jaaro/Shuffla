@@ -31,8 +31,8 @@ public:
 protected:
     void rebuild();
 
-    Limiter find_good_limiter() const ;
-    int calculate_limiter_efficiency(const Limiter& limit) const;
+    Pivot find_good_pivot() const ;
+    int calculate_pivot_efficiency(const Pivot& limit) const;
 
     std::vector<const Row*> linear_filter(const QueryBoundary& query_boundary) const;
     std::vector<const Row*> filter_non_index_conditions(const QueryBoundary& query_boundary) const ;

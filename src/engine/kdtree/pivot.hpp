@@ -4,26 +4,26 @@
 #include "../table_index/table_index_info.hpp"
 #include "../storage/row.hpp"
 
-class Limiter
+class Pivot
 {
 public:
-    Limiter(int property_index, const Type* value, bool is_max, bool is_inclusive);
-    Limiter& operator=(const Limiter& limiter);
-    Limiter(const Limiter& limiter);
-    Limiter();
+    Pivot(int property_index, const Type* value, bool is_max, bool is_inclusive);
+    Pivot& operator=(const Pivot& pivot);
+    Pivot(const Pivot& pivot);
+    Pivot();
 
-    virtual ~Limiter();
+    virtual ~Pivot();
 
-    bool is_more_strict(const Limiter& rhs) const ;
+    bool is_more_strict(const Pivot& rhs) const ;
     bool is_value_matching(const Type* value) const ;
-    bool is_disjoint(const Limiter& rhs) const ;
+    bool is_disjoint(const Pivot& rhs) const ;
 
     bool is_upper_bound() const ;
     bool is_inclusive() const ;
     const Type* get_bound_value() const ;
     int get_property_index() const ;
 
-    Limiter createReverseLimiter() const ;
+    Pivot createReversePivot() const ;
     void debug() const;
 
     bool is_unbounded() const ;

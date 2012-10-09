@@ -348,9 +348,9 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
 
 Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am selecting randomly about 30 rows belonging to node and I am iterating over them. Based on coordinate value in this row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows are creating good pivots.
 
-\pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_limiter i prosiłbym Cię o poświęcenie jej chwili uwagi.}
+\pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_pivot i prosiłbym Cię o poświęcenie jej chwili uwagi.}
 
-\jarek{Poprawie find\_good\_limiter. Co do wyjaśnienia to chwilowo lepszego nie mam;/}
+\jarek{Poprawie find\_good\_pivot. Co do wyjaśnienia to chwilowo lepszego nie mam;/}
 
 \subsection{Processing search requests}
 

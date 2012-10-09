@@ -49,10 +49,10 @@
 	<File name="src/engine/kdtree/kd_vertex.hpp" open="0" top="0" tabpos="15">
 		<Cursor position="599" topLine="0" />
 	</File>
-	<File name="src/engine/kdtree/limiter.cpp" open="1" top="0" tabpos="5">
+	<File name="src/engine/kdtree/pivot.cpp" open="1" top="0" tabpos="5">
 		<Cursor position="2402" topLine="23" />
 	</File>
-	<File name="src/engine/kdtree/limiter.hpp" open="1" top="0" tabpos="4">
+	<File name="src/engine/kdtree/pivot.hpp" open="1" top="0" tabpos="4">
 		<Cursor position="674" topLine="0" />
 	</File>
 	<File name="src/engine/kdtree/query_boundary.cpp" open="0" top="0" tabpos="2">

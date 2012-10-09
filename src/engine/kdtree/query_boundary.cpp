@@ -21,24 +21,24 @@ QueryBoundary::QueryBoundary(const TableIndexInfo& table_index_info, boost::shar
         int property_index = table_index_info.get_table_definition()->get_property_index(property_name);
 
         if (dynamic_cast<SearchFunctionGreater*>(params[i]) != NULL) {
-            add_limiter(Limiter(property_index, value, false, false));
+            add_pivot(Pivot(property_index, value, false, false));
         }
 
         else if (dynamic_cast<SearchFunctionGreaterOrEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(property_index, value, false, true));
+            add_pivot(Pivot(property_index, value, false, true));
         } else if (dynamic_cast<SearchFunctionSmaller*>(params[i]) != NULL) {
-            add_limiter(Limiter(property_index, value, true, false));
+            add_pivot(Pivot(property_index, value, true, false));
         } else if (dynamic_cast<SearchFunctionSmallerOrEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(property_index, value, true, true));
+            add_pivot(Pivot(property_index, value, true, true));
         } else if (dynamic_cast<SearchFunctionEqual*>(params[i]) != NULL) {
-            add_limiter(Limiter(property_index, value, true, true));
-            add_limiter(Limiter(property_index, value, false, true));
+            add_pivot(Pivot(property_index, value, true, true));
+            add_pivot(Pivot(property_index, value, false, true));
         } else if (dynamic_cast<SearchFunctionPrefix*>(params[i]) != NULL) {
-            add_limiter(Limiter(property_index, value, false, true));
+            add_pivot(Pivot(property_index, value, false, true));
             std::string text = value->to_string();
             text[text.size() - 1]++;
             TypeString* text_obj = new TypeString(text);
-            add_limiter(Limiter(property_index, text_obj, true, false));
+            add_pivot(Pivot(property_index, text_obj, true, false));
             delete text_obj;
         }
     }

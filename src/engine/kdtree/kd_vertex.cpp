@@ -132,12 +132,12 @@ void KDVertex::rebuild()
             delete right_;
         }
 
-        Limiter limit = find_good_limiter();
+        Pivot limit = find_good_pivot();
 
         Boundary left_boundary(boundary_);
-        left_boundary.add_limiter(limit);
+        left_boundary.add_pivot(limit);
         Boundary right_boundary(boundary_);
-        right_boundary.add_limiter(limit.createReverseLimiter());
+        right_boundary.add_pivot(limit.createReversePivot());
 
         left_ = new KDVertex(table_index_info_, left_boundary);
         right_ = new KDVertex(table_index_info_, right_boundary);
@@ -160,20 +160,20 @@ void KDVertex::rebuild()
 
 }
 
-Limiter KDVertex::find_good_limiter() const
+Pivot KDVertex::find_good_pivot() const
 {
     std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
     
     //TODO chyba tu będzie trzeba wkleić randomowe wybieranie 20 pivotów i dalsza część tylko jako last resort.
 
-    Limiter current;
+    Pivot current;
     
     for(auto it = rows_.begin(); it !=rows_.end(); it++) {
         for(int property_index = 0; property_index < props.size(); property_index++) {
             std::string property = props[property_index];
 
-            Limiter current(property_index, (*it)->get_value(property), rand()&1, rand()&1);
-            int local_res = calculate_limiter_efficiency(current);
+            Pivot current(property_index, (*it)->get_value(property), rand()&1, rand()&1);
+            int local_res = calculate_pivot_efficiency(current);
             if (local_res <= signed(rows_.size()) / 8) {
                 return current;
             }
@@ -186,7 +186,7 @@ Limiter KDVertex::find_good_limiter() const
     return current;
 }
 
-int KDVertex::calculate_limiter_efficiency(const Limiter& limit) const
+int KDVertex::calculate_pivot_efficiency(const Pivot& limit) const
 {
     int res = 0;
     int property_index = limit.get_property_index();

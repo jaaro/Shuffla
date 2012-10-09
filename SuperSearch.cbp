@@ -59,8 +59,8 @@
 		<Unit filename="src/engine/kdtree/boundary.hpp" />
 		<Unit filename="src/engine/kdtree/kd_vertex.cpp" />
 		<Unit filename="src/engine/kdtree/kd_vertex.hpp" />
-		<Unit filename="src/engine/kdtree/limiter.cpp" />
-		<Unit filename="src/engine/kdtree/limiter.hpp" />
+		<Unit filename="src/engine/kdtree/pivot.cpp" />
+		<Unit filename="src/engine/kdtree/pivot.hpp" />
 		<Unit filename="src/engine/kdtree/query_boundary.cpp" />
 		<Unit filename="src/engine/kdtree/query_boundary.hpp" />
 		<Unit filename="src/engine/kdtree/search_tasks.cpp" />
