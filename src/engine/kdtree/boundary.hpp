@@ -24,6 +24,8 @@ public:
     virtual const Pivot& get_upper_bound(int index) const ;
     virtual const Pivot& get_lower_bound(int index) const ;
 
+    virtual void expand_by_point(const Row* row) ;
+
     void debug() const;
 
 protected:

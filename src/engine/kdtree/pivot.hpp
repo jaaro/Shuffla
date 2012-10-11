@@ -16,6 +16,7 @@ public:
 
     bool is_more_strict(const Pivot& rhs) const ;
     bool is_value_matching(const Type* value) const ;
+    bool is_value_matching(const Row* value) const ;
     bool is_disjoint(const Pivot& rhs) const ;
 
     bool is_upper_bound() const ;

@@ -56,6 +56,13 @@ bool Pivot::is_value_matching(const Type* rhs) const
     return false;
 }
 
+
+bool Pivot::is_value_matching(const Row* value) const
+{
+    const Type* type =  value->get_value(property_index_);
+    return is_value_matching(type);
+}
+
 bool Pivot::is_disjoint(const Pivot& rhs) const
 {
     if (rhs.is_upper_bound() == is_upper_bound()) return false;

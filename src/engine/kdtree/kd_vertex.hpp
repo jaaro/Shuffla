@@ -52,7 +52,7 @@ private:
     // left and right subtree and divider
     int divider_property_number_;
     int count;
-    Type* divider_;
+    Pivot pivot_;
     KDVertex* left_;
     KDVertex* right_;
 };

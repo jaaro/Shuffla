@@ -30,6 +30,31 @@ bool Boundary::add_pivot(Pivot pivot)
     return false;
 }
 
+
+void Boundary::expand_by_point(const Row* row)
+{
+    if (lower_bounds_[0].is_unbounded()) {
+        for(int i = 0; i < table_index_info_.get_property_index_limit(); i++) {
+            lower_bounds_[i] = Pivot(i, row->get_value(i), false, true);
+            upper_bounds_[i] = Pivot(i, row->get_value(i), true, true);
+        }
+    } else {
+       for(int i = 0; i < table_index_info_.get_property_index_limit(); i++) {
+            Pivot lower_bound(i, row->get_value(i), false, true);
+            Pivot upper_bound(i, row->get_value(i), true, true);
+
+            if (lower_bounds_[i].is_more_strict(lower_bound)) {
+                lower_bounds_[i] = lower_bound;
+            }
+
+
+            if (upper_bounds_[i].is_more_strict(upper_bound)) {
+                upper_bounds_[i] = upper_bound;
+            }
+        } 
+    }
+}
+
 bool Boundary::is_good_pivot(const Pivot& pivot) const
 {
     return is_good_pivot_internal(pivot) && is_good_pivot_internal(pivot.createReversePivot());

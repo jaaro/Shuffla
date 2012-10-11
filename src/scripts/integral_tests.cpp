@@ -10,7 +10,7 @@
 
 const int MAX_BUFFOR_LENGTH = 50000;
 const int LIMIT_FOR_INT = 100;
-const int NUMBER_OF_ITERATIONS = 918000;
+const int NUMBER_OF_ITERATIONS = 18000;
 const int DELETES_MODULO = 1000;
 
 char buffor[MAX_BUFFOR_LENGTH];

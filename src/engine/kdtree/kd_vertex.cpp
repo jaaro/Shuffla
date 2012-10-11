@@ -41,6 +41,9 @@ void KDVertex::add_collection(std::vector<const Row*> rows)
 {
     count += rows.size();
     rows_.insert(rows_.end(), rows.begin(), rows.end());
+    for(size_t i=0; i<rows.size(); i++) {
+        boundary_.expand_by_point(rows[i]);
+    }
     rebuild_if_necessary();
 }
 
@@ -50,7 +53,7 @@ int KDVertex::get_count() const {
 
 bool KDVertex::insert_row(const Row* row, int k)
 {
-    if (!boundary_.is_point_inside(row)) return false;
+    boundary_.expand_by_point(row);
 
     count++;
     if (left_ == NULL) {
@@ -59,8 +62,9 @@ bool KDVertex::insert_row(const Row* row, int k)
         return true;
     }
 
-    if (left_ != NULL) left_->insert_row(row, k+1);
-    if (right_ != NULL) right_->insert_row(row, k+1);
+    if (pivot_.is_value_matching(row)) left_->insert_row(row, k+1);
+    else right_->insert_row(row, k+1);
+
     rebuild_if_necessary();
 
     return true;
@@ -68,8 +72,6 @@ bool KDVertex::insert_row(const Row* row, int k)
 
 bool KDVertex::delete_row(const Row* row)
 {
-    if (!boundary_.is_point_inside(row)) return false;
-
     count--;
     if (left_ == NULL) {
         for(size_t i=0; i<rows_.size(); i++) {
@@ -77,10 +79,11 @@ bool KDVertex::delete_row(const Row* row)
                 rows_.erase(rows_.begin() + i);
             }
         }
+        return true;
     }
 
-    if (left_ != NULL) left_->delete_row(row);
-    if (right_ != NULL) right_->delete_row(row);
+    if (pivot_.is_value_matching(row)) left_->delete_row(row);
+    else right_->delete_row(row);
 
     rebuild_if_necessary();
     return true;
@@ -134,20 +137,17 @@ void KDVertex::rebuild_if_necessary()
             delete right_;
         }
 
-        Pivot limit = find_good_pivot();
+        pivot_ = find_good_pivot();
 
-        Boundary left_boundary(boundary_);
-        left_boundary.add_pivot(limit);
-        Boundary right_boundary(boundary_);
-        right_boundary.add_pivot(limit.createReversePivot());
+        Boundary left_boundary(table_index_info_);
+        Boundary right_boundary(table_index_info_);
 
         left_ = new KDVertex(table_index_info_, left_boundary);
         right_ = new KDVertex(table_index_info_, right_boundary);
         std::vector<const Row*> left_collection, right_collection;
 
-        int property_index = limit.get_property_index();
         for(auto it = rows_.begin(); it !=rows_.end(); it++) {
-            if (limit.is_value_matching((*it)->get_value(property_index))) {
+            if (pivot_.is_value_matching(*it)) {
                 left_collection.push_back(*it);
             } else {
                 right_collection.push_back(*it);
@@ -165,8 +165,6 @@ void KDVertex::rebuild_if_necessary()
 Pivot KDVertex::find_good_pivot() const
 {
     std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
-    
-    //TODO chyba tu będzie trzeba wkleić randomowe wybieranie 20 pivotów i dalsza część tylko jako last resort.
 
     Pivot current;
     
