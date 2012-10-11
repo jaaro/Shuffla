@@ -6,7 +6,7 @@
 
 TableIndex::TableIndex(TableIndexInfo index_info) : index_info_(index_info)
 {
-    kd_tree_ = new KDVertex(index_info_);
+    kd_tree_ = new KDVertex(index_info_, 0);
 }
 
 TableIndex::~TableIndex()

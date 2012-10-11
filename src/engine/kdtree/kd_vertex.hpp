@@ -15,8 +15,7 @@ class SearchTaskSearchNode ;
 class KDVertex
 {
 public:
-    explicit KDVertex(const TableIndexInfo& table_index_info, Boundary boundary);
-    explicit KDVertex(const TableIndexInfo& table_index_info);
+    explicit KDVertex(const TableIndexInfo& table_index_info, int level);
 
     void add_collection(std::vector<const Row*> rows);
     bool insert_row(const Row* row, int k);
@@ -50,7 +49,7 @@ private:
     std::vector<const Row*> rows_;
 
     // left and right subtree and divider
-    int divider_property_number_;
+    int level;
     int count;
     Pivot pivot_;
     KDVertex* left_;

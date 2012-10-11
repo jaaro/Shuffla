@@ -1,14 +1,7 @@
 #include "kd_vertex.hpp"
 #include "../../logger/logger.hpp"
 
-KDVertex::KDVertex(const TableIndexInfo& table_index_info, Boundary boundary) : table_index_info_(table_index_info), boundary_(boundary)
-{
-    left_ = NULL;
-    right_ = NULL;
-    count = 0;
-}
-
-KDVertex::KDVertex(const TableIndexInfo& table_index_info) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info))
+KDVertex::KDVertex(const TableIndexInfo& table_index_info, int level) : table_index_info_(table_index_info), boundary_(Boundary(table_index_info)), level(level)
 {
     left_ = NULL;
     right_ = NULL;
@@ -139,11 +132,8 @@ void KDVertex::rebuild_if_necessary()
 
         pivot_ = find_good_pivot();
 
-        Boundary left_boundary(table_index_info_);
-        Boundary right_boundary(table_index_info_);
-
-        left_ = new KDVertex(table_index_info_, left_boundary);
-        right_ = new KDVertex(table_index_info_, right_boundary);
+        left_ = new KDVertex(table_index_info_, level + 1);
+        right_ = new KDVertex(table_index_info_, level + 1);
         std::vector<const Row*> left_collection, right_collection;
 
         for(auto it = rows_.begin(); it !=rows_.end(); it++) {
@@ -168,8 +158,9 @@ Pivot KDVertex::find_good_pivot() const
 
     Pivot current;
     
-    for(auto it = rows_.begin(); it !=rows_.end(); it++) {
-        for(int property_index = 0; property_index < props.size(); property_index++) {
+    for(int i = 0; i < props.size(); i++) {
+        int property_index = (level + i) % props.size();
+        for(auto it = rows_.begin(); it !=rows_.end(); it++) {
             std::string property = props[property_index];
 
             Pivot current(property_index, (*it)->get_value(property), rand()&1, rand()&1);
