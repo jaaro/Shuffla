@@ -208,7 +208,7 @@ Narrowing result described in abstract is possible with defined model. GPS coord
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
 
 \subsection{Relational databases}
-A relational database management system (RDBMS) is a database management system (DBMS) that is based on the relational model as introduced by E. F. Codd, of IBM's San Jose Research Laboratory. Most popular databases currently in use are based on the relational database model. \jarek{Ściągniete z wiki}
+RDBMS data is structured in database tables, fields and records. RDBMS stands for Relational Database Management System.  Each RDBMS table consists of database table rows. Each database table row consists of one or more database table fields.  RDBMS store the data into collection of tables, which might be related by common fields (database table columns). RDBMS also provide relational operators to manipulate the data stored into the database tables. Most RDBMS use SQL as database query language. The most popular RDBMS are MS SQL Server, DB2, Oracle and MySQL. \jarek{Ściągnięte z google}
 In this paper I am only testing PostgreSQL which is in my opinion best RDBMs nowadays.
 
 \subsubsection{PostgreSQL}
@@ -222,10 +222,7 @@ In text retrieval, full text search refers to techniques for searching a single 
 \item Narrow as much as possible words from inverted index which needs to be processed. 
 \item Process remaining words. 
 \end{enumerate}
-For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Engine could use suffix tree which contains all words from inverted index. It would find that there is nobody with such last name \pawel{could? to znaczy używa? czy nie używa?} \jarek{Odpowiedzi na takie zapytania są robione błyskawicznie w SOlru, bede szukal źródła}. Such output would be rendered very fast, probably even without reading inverted index. In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
-\pawel{szczerze mówiąc ten kawałek niezbyt wyjaśnił mi inverted index przydaje się do zapytań typu substring}
-
-\jarek{Dużo nie daje, conajmniej kilka mini optymalizacji. Plus przejechanie się po wszystkich słowach ze słownika jest szybsze niż po całej bazie. Opisze to jakoś}
+For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. Ineqalities, prefix queries and substring queries are treated similary to equality checks. They are narrowing number of words in dictionary that algorithm needs to process. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Using sophisticated data structure, engine is able to find out that the aren't many people with name containing \verb|qwertyabc|. Such output is rendered very fast\footnote(with table containing 8 million rows Solr is rendering output for such query in less than 0.01 second} In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
 
 \subsubsection{Solr}
 
@@ -254,7 +251,7 @@ Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries 
 \bigskip
 \jarek{fix: ten kawałek kończy section? czy subsection? może powinien być jakoś wydzielony, lub znajdować się na początku section?}
 \subsection{Why am I creating new search engine?!}
-It seems that none of existing solutions are processing search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on disk could be stored in RAM by ramdisks, it is not primary target to software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that this area has a room for improvement. That is why I decided to create my own search engine.  
+It seems that none of existing solutions are processing search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on disk could be stored in RAM by ramdisks, it is not primary target to software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that this area has room for improvement. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
 We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range query. There are three data structures for performing efficient searches in a multidimensional space:
@@ -265,7 +262,7 @@ We can clearly see analogy to multidimensional range searches. All conditions (e
 \item K-D tree \cite{CGAAA}
 \end{enumerate}
 
-Complexities of these algorithms are depending on number of elements ($n$) and number of dimensions ($d$). In our case number of dimensions corresponds to number of columns in a table. Here is a table of complexities for listed algorithms. 
+Complexities of these algorithms are depending on number of elements ($n$) and number of dimensions ($d$). In our case number of dimensions is orresponding to number of columns in the table. Here is a table of complexities for listed algorithms. 
 
 \bigskip
 \begin{tabular}{|l|c|c|c|c|}
@@ -288,7 +285,7 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. Most important functions of our K-D tree are insert and search functions. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
+At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
 
 \begin{enumerate}
 \item If \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create \verb|node| sons if necessary
@@ -296,11 +293,11 @@ At the beginning lets start with basic description of K-D tree. Later, in chapte
 \item Otherwise recursively insert \verb|row| to right son of \verb|node|
 \end{enumerate}
 
-At this point we don't know nothing about how pivots are created and how/when rebuilding of a tree is processed. I will get back to this topic later.
+At this point we do not know nothing about how pivots are created and how/when rebuilding of a tree is processed. I will get back to this topic later.
 
 In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we are stopping processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we don't have to process all it's sons, we already know that all rows will be inside \verb|searchRegion|.
 
-As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process only one substring request in a query with suffix tree.
+As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process this way only one substring request in a query.
 
 There is another possibility. Engine may process search query without substring parts. In the end, if row is matching query without it substring parts then pattern matching is performed. In this solution rows should be provided to pattern matching in order defined within query.
 
@@ -319,7 +316,7 @@ Solution with suffix tree is faster when there aren't many rows with given subst
   \label{fig:httpservice}
 \end{figure}
 
-I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedures is creating all this threads. HTTP request are assign to one of these thread by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start are presented on Figure~\ref{fig:httpservice}.
+I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedure is to create all this threads. HTTP request are assign to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start procedure are presented on Figure~\ref{fig:httpservice}.
 
 \subsection{Validation and passing queries to SearchEngine class}
 
@@ -348,13 +345,12 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
 
 Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am selecting randomly about 30 rows belonging to node and I am iterating over them. Based on coordinate value in this row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows are creating good pivots.
 
-\pawel{Nie do końca kupuję to wyjaśnienie. Tym niemniej losowe wybieranie pivota nie jest takie głupie, aczkolwiek chyba lepiej robić to tak długo, jak to co znaleźliśmy nie zapewnia well-balanced trees. Przez chwilę patrzyłem się na find\_good\_pivot i prosiłbym Cię o poświęcenie jej chwili uwagi.}
-
-\jarek{Poprawie find\_good\_pivot. Co do wyjaśnienia to chwilowo lepszego nie mam;/}
+\pawel{Nie do końca kupuję to wyjaśnienie.}
+\jarek{Wyjaśnienia nie mam innego. Tutaj tylko pamięć chciałem optymalizować;/}
 
 \subsection{Processing search requests}
 
- (Figure~\ref{fig:search}).
+When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begins here. Lets look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfy all conditions defined in search request. Both these classes are extending abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, queue just adds row to result set. When processing \verb|SearchTaskSearchNode| queue passes control to \verb|KDVertex::search| which returns all events that should be added to queue. \verb|KDVertex::search| checks if boundary defined by query contains/is disjoint with current node's boundary. If it's disjoint there is nothing more to do. If not then algorithm simply adds two sons of current node to queue. There was idea to add possibility for multiple index creation. Such index could be created for some subset of table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
 
 \begin{figure}
 \centering
@@ -363,13 +359,13 @@ Balancing can be done using any linear algorithm for finding median in set. I ha
   \label{fig:search}
 \end{figure}
 
-When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begins here. Lets look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfy all conditions defined in search request. Both these classes are extending abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, queue just adds row to result set. When processing \verb|SearchTaskSearchNode| queue passes control to \verb|KDVertex::search| which returns all events that should be added to queue. \verb|KDVertex::search| checks if boundary defined by query contains/is disjoint with current node's boundary. If it's disjoint there is nothing more to do. If not then algorithm simply adds two sons of current node to queue. There was idea to add possibility for multiple index creation. Such index could be created for some subset of table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
+Dependencies of search process are visualized on (Figure~\ref{fig:search}).
 
 \subsection{Locking tables}
 
 \jarek{fix: mógłbyś napisać to pełnym zdaniem? I zdefiniować co to znaczy locking?}
 
-To correct work in multi-threaded environment we must ensure thread safety. It requires us to eliminate all data races, especially simultaneous writes which can make database inconsistent. That is why I introduced locking. Basically by acquiring lock we are restricting access to some part of code. 
+To correct work in multi-threaded environment we must ensure thread safety. It requires us to eliminate all data races, especially simultaneous writes which can make our data inconsistent. That is why I introduced locking. Basically by acquiring lock we are restricting access to some part of code. 
 
 Our goal is to create following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the moment, write queries can be performed if no other query is being performed at the moment. 
 
@@ -383,7 +379,6 @@ There are three most common kinds of locks. All locks are working in similar fas
 \end{enumerate}
 
 My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works exactly as it suppose to.
-\jarek{fix: dopisz tu jeszcze jakieś uzasadnienie, że taka implementacja jest ok}
 
 \subsection{How data is stored}
 
@@ -405,12 +400,11 @@ If we take a closer look at specification we may notice that we are never changi
 
 Both \verb|TypeString| and \verb|TypeNumber| are implementing all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
 
-Single row stores pointer to the table definition. Besides that there is an \verb|std::vector<Type>| which stores values of a row's fields. \jarek{fix: row stores, ale potem for each column I store? to kto, kogo, i za co w końcu trzyma? ;)}
+Single row stores pointer to the table definition. Besides that there is a \verb|std::vector<Type>| which stores values of a row's fields.
 
 \subsection{Database persistence}
 
 \jarek{fix: zdefiniuj persistence}
-
 In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserves data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which drastically decreases application speed. Instead of such solution, preferred way is to have “almost durable” system.
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
@@ -474,7 +468,7 @@ Lets revised this idea on example where point with minimal value of coordinate x
 
 \pawel{sorry, ale ten kawałek jest dla mnie średnio czytelny}
 
-\jarek{Dużo tu nie poprawiłem, mógłbyś mi powiedzieć którą część poprawić}
+\jarek{Dużo tu nie poprawiłem, mógłbyś mi powiedzieć którą część poprawić?}
 
 \subsection{Raw pointers instead of shared pointers}
 
@@ -502,7 +496,6 @@ Terminology:
 \jarek{Zmienna X, porównywanie wielkości poddrzew, jak próbowałem to robić zdaniem to było nieczytelne;/}
 
 Let $n$ be number of points in the tree. Tree is X-balanced if and only if 
-
 \begin{eqnarray*}
 \bigforall v: X * |left(v)| \leq |right(v)| \wedge X * |left(v)| \geq |right(v)|
 \end{eqnarray*}
@@ -531,14 +524,14 @@ Amortized time of insert/delete is $\Oh(\log^2 n)$.
 
 \begin{proof}
 
-We will give $3\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $3|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is well-balanced, this is at most $n\log n$). We must prove that the invariant still holds after each insert/delete and that we always have enough credits to amortize the rebuilding. We consider those two parts separately.
+We will give $8\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $8|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is well-balanced, this is at most $n\log n$). We must prove that the invariant still holds after each insert/delete and that we always have enough credits to amortize the rebuilding. We consider those two parts separately.
 
 \begin{enumerate}
 
-\item Each node visited during an insert/delete operation gets $3\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $3|n_{l}-n_{r}|\log n$ by at most $3\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
+\item Each node visited during an insert/delete operation gets $3\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $3|n_{l}-n_{r}|\log n$ by at most $8\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
 
-\item We rebuild a node as soon as one subtree is five times larger than the other, say $n_{l} = 5n_{r}$. Then the number of credits accumulated at the node is at least ($n_{l}-2n_{r}
-)\log n = 3n_{r}\log n \geq n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
+\item We rebuild a node as soon as one subtree is two times larger than the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least 8($2n_{r}-\frac{3}{2}n_{r}
+)\log n = 8\frac{1}{2}n_{r}\log n = n\log n \geq n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
 
 \end{enumerate}
 
@@ -567,12 +560,12 @@ K-d tree is a binary tree. Root has height 0, its children have height 1, and so
 
 
 \begin{lemma}\label{lem:4}
-Average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+Upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
 \end{lemma}
 
 \begin{proof}
 
-The total number of points on all nodes on level $d$ is $n$. The total number of points on the processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From previous paragraph we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+The total number of points on all nodes on level $d$ is $n$. The total number of points on the processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From previous paragraph we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
 
 \end{proof}
 
@@ -599,6 +592,7 @@ Hence $T(n)\leq c n^{a}$ as long as $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$.
 \bigskip
 
 \pawel{ten kawałek trzeba posprzątać}
+\jarek{Troche nie wiem, w jaki sposób posprzątać;/ Zmniejszyć ilość przejść?}
 
 $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$
 
@@ -641,7 +635,6 @@ Let me explain. Lets take for example data with random distribution. When algori
 
 \section{Tested engines}
 
-\jarek{fix: na początku powinno być jakieś zdanie wstępu}
 All engines must be tested on the same schema and by the same queries. Yet presented engines have different syntax. In chapters below I'm describing table configurations and how queries were translated during their testing.
 \subsection{Solr}
 
@@ -715,7 +708,7 @@ Shuffla's query format is:
 Where subquery can be:
 \begin{enumerate}
 \item \verb|field|=\verb|value| for equality check
-\item \verb|GREATER_THAN|(\verb|field|)=\verb|value| means that given value is greater than value of \verb|field| 
+\item \verb|GREATER_THAN|(\verb|field|)=\verb|value| means that given value is greater than value in \verb|field| 
 \item \verb|SMALLER_THAN|, \verb|SMALLER_OR_EQUAL|, \verb|GREATER_OR_EQUAL| are working in similar fashion to \verb|GREATER_THAN|
 \item \verb|PREFIX|(\verb|field|)=\verb|value| requires \verb|field| to have prefix \verb|value|
 \item \verb|CONTAINS|(\verb|field|)=\verb|value| requires \verb|field| to contain \verb|value| as a substring
