@@ -208,21 +208,20 @@ Narrowing result described in abstract is possible with defined model. GPS coord
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
 
 \subsection{Relational databases}
-RDBMS data is structured in database tables, fields and records. RDBMS stands for Relational Database Management System.  Each RDBMS table consists of database table rows. Each database table row consists of one or more database table fields.  RDBMS store the data into collection of tables, which might be related by common fields (database table columns). RDBMS also provide relational operators to manipulate the data stored into the database tables. Most RDBMS use SQL as database query language. The most popular RDBMS are MS SQL Server, DB2, Oracle and MySQL. \jarek{Ściągnięte z google}
-In this paper I am only testing PostgreSQL which is in my opinion best RDBMs nowadays.
+Relational Database Management System data is structured in database tables, fields and records. Each RDBMS table consists of database table rows. Each database table row consists of one or more database table fields. RDBMS store the data into collection of tables, which might be related by common fields (database table columns). RDBMS also provide relational operators to manipulate the data stored into the database tables. Most RDBMS use SQL as database query language. The most popular RDBMS are MySQL, MSSQL Server, PostgreSQL \jarek{Ściągnięte z google}. In this paper I am only testing PostgreSQL which is in my opinion best RDBMs nowadays.
 
 \subsubsection{PostgreSQL}
 PostgreSQL has really cool features like: point in time recovery, tablespaces, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer, and write ahead logging for fault tolerance. It supports international character sets, multibyte character encodings, Unicode, and it is locale-aware for sorting, case-sensitivity, and formatting. It is highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate. There are active PostgreSQL systems in production environments that manage in excess of 4 terabytes of data \jarek{Kopiowane ze strony Postgresa, mam nadzieje, że to nie plagiat}.
-PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication \cite{PSQLREPL}. There is a slow log, error log, PostgreSQL performance can be easily monitored by monitoring software like munin, new relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
+PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication \cite{PSQLREPL}. There is a slow log, error log, PostgreSQL performance can be easily monitored by software like Munin and New Relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
 Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time \jarek{fix: co to jest $n$?} where $n$ is number of rows in the table. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
 
 \subsection{Full-text search engine}
-In text retrieval, full text search refers to techniques for searching a single computer-stored document or a collection in a full text database. Full text search is distinguished from searches based on metadata or on parts of the original texts represented in databases (such as titles, abstracts, selected sections or bibliographical references) \jarek{Ściągniete z wiki}. Another solution is to use full-text search engine. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
+In text retrieval, full text search refers to techniques for searching a single computer-stored document or a collection in a full text database. Full text search is distinguished from searches based on metadata or on parts of the original texts represented in databases (such as titles, abstracts, selected sections or bibliographical references) \jarek{Ściągniete z wiki}. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
 \begin{enumerate}
 \item Narrow as much as possible words from inverted index which needs to be processed. 
 \item Process remaining words. 
 \end{enumerate}
-For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. Ineqalities, prefix queries and substring queries are treated similary to equality checks. They are narrowing number of words in dictionary that algorithm needs to process. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. Using sophisticated data structure, engine is able to find out that the aren't many people with name containing \verb|qwertyabc|. Such output is rendered very fast\footnote{with table containing 8 million rows Solr is rendering output for such query in less than 0.01 second} In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
+For example if query is \verb|first name = John| \verb|and| \verb|limit 1| then we are only interested in word John from inverted index. Engine finds first occurrence and returns it. Ineqalities, prefix queries and substring queries are treated similary to equality checks. They are narrowing number of words in dictionary that algorithm needs to process. If query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1| then it is likely that there are more Johns then all people with last name containing \verb|qwertyabc|. By using sophisticated data structure, engine may find out that the aren't many people with name containing \verb|qwertyabc|. Such output is rendered very fast\footnote{with table containing 8 million rows Solr is rendering output for such query in less than 0.01 second} In worst case scenario algorithm works in linear time. Example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and result set will be empty.
 
 \subsubsection{Solr}
 
@@ -248,17 +247,15 @@ Except of replication sphinx has another problem. There are two different kinds 
 
 Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries are not supported yet. Periodical rebuild of index with more than 40 million elements is problematic. Apache Solr and Sphinx search are using similar data structures. Since number of features implemented by Solr is much greater than in Sphinx search I decided to look into only Solr. 
 
-\bigskip
-\jarek{fix: ten kawałek kończy section? czy subsection? może powinien być jakoś wydzielony, lub znajdować się na początku section?}
 \subsection{Why am I creating new search engine?!}
 It seems that none of existing solutions are processing search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on disk could be stored in RAM by ramdisks, it is not primary target to software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that this area has room for improvement. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
-We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range query. There are three data structures for performing efficient searches in a multidimensional space:
+We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range queries. There are three data structures for performing efficient searches in a multidimensional space:
 
 \begin{enumerate}
 \item Range Tree \cite{CGAAA}
-\item Inverted Index \cite{CGAAA}
+\item Inverted Index
 \item K-D tree \cite{CGAAA}
 \end{enumerate}
 
@@ -293,11 +290,11 @@ At the beginning lets start with basic description of K-D tree. Later, in chapte
 \item Otherwise recursively insert \verb|row| to right son of \verb|node|
 \end{enumerate}
 
-At this point we do not know nothing about how pivots are created and how/when rebuilding of a tree is processed. I will get back to this topic later.
+At this point we do not know nothing about how pivots are choosed and how/when rebuilding of a tree is processed. I will get back to this topics later.
 
-In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we are stopping processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we don't have to process all it's sons, we already know that all rows will be inside \verb|searchRegion|.
+In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we can stop processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we don't have to process all it's children, we already know that all rows will be inside \verb|searchRegion|.
 
-As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process this way only one substring request in a query.
+As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process this way only one substring condition in a query.
 
 There is another possibility. Engine may process search query without substring parts. In the end, if row is matching query without it substring parts then pattern matching is performed. In this solution rows should be provided to pattern matching in order defined within query.
 
@@ -316,7 +313,7 @@ Solution with suffix tree is faster when there aren't many rows with given subst
   \label{fig:httpservice}
 \end{figure}
 
-I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedure is to create all this threads. HTTP request are assign to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start procedure are presented on Figure~\ref{fig:httpservice}.
+I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedure is to create all this threads. Every HTTP request is assign to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start procedure are presented on Figure~\ref{fig:httpservice}.
 
 \subsection{Validation and passing queries to SearchEngine class}
 
@@ -332,9 +329,7 @@ Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEn
 
 \subsection{Processing insert/delete requests}
 
-Inserting/deleting without tree balancing is pretty straight-forward. Just simple recursion. Balancing is a little bit tricky. 
-
- (Figure~\ref{fig:rebuild}).
+Inserting/deleting without tree balancing is pretty straight-forward. Just simple recursion. Balancing is tricky as you may see in dependencies visualisation on (Figure~\ref{fig:rebuild}).
 
 \begin{figure}
 \centering
@@ -396,11 +391,11 @@ Values can be strings or numbers, therefore I created 3 classes:
 \item class \verb|TypeNumber| which extends \verb|Type|.
 \end{enumerate}
 
-If we take a closer look at specification we may notice that we are never changing values of existing numbers and string. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Lets take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. Text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know text length.   
+If we take a closer look at specification we may notice that we are never changing values of existing numbers and strings. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Lets take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. Text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know text length.   
 
 Both \verb|TypeString| and \verb|TypeNumber| are implementing all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
 
-Single row stores pointer to the table definition. Besides that there is a \verb|std::vector<Type>| which stores values of a row's fields.
+Single row stores pointer to the table definition. Besides that there is a \verb|std::vector<Type>| which stores values of all fields.
 
 \subsection{Database persistence}
 
@@ -515,7 +510,7 @@ Rebuilding tree of size $n$ takes $\Oh(n \log n)$.
 \end{lemma}
 
 \begin{proof}
-We can find the median in linear time~\cite{FIVE}. Hence in order to rebuild a tree, we first find the median, and then recursively rebuild two subtrees half the size. Complexity of such procedure can be described by $T(n) = 2 T(n/2) + \Oh(n)$, which solves to $T(n) = \Oh(n \log n).$
+We can find the median in linear time~\cite{FIVE}. Hence in order to rebuild a tree, we first find the median, and then recursively rebuild two subtrees. Complexity of such procedure can be described by $T(n)=\Oh(n)+T(\alpha n)+T((1-\alpha)n)$, where $\frac{3}{8}\leq \alpha \leq \frac{5}{8}$. The recurrence solves to $T(n)=\Theta(n\log n)$. This can be proved by drawing recurrence call tree. At each level work done sums to $\Oh(n)$. There are $\Oh(\log n)$ levels therefore the complexity is $\Oh(n \log n)$.
 \end{proof}
 
 \begin{lemma}\label{lem:2}
@@ -524,14 +519,14 @@ Amortized time of insert/delete is $\Oh(\log^2 n)$.
 
 \begin{proof}
 
-We will give $8\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $8|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is well-balanced, this is at most $n\log n$). We must prove that the invariant still holds after each insert/delete and that we always have enough credits to amortize the rebuilding. We consider those two parts separately.
+We will give $6\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $6|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is well-balanced, this is at most $n\log n$). We must prove that the invariant still holds after each insert/delete and that we always have enough credits to amortize the rebuilding. We consider those two parts separately.
 
 \begin{enumerate}
 
-\item Each node visited during an insert/delete operation gets $8\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $8|n_{l}-n_{r}|\log n$ by at most $8\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
+\item Each node visited during an insert/delete operation gets $6\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $6|n_{l}-n_{r}|\log n$ by at most $6\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
 
-\item We rebuild a node as soon as one subtree is two times larger than the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least 8($2n_{r}-\frac{3}{2}n_{r}
-)\log n = 8\frac{1}{2}n_{r}\log n = n\log n \geq n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
+\item We rebuild a node as soon as one subtree is two times larger than the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least 6($2n_{r}-\frac{3}{2}n_{r}
+)\log n = 6\frac{1}{2}n_{r}\log n = n\log n, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
 
 \end{enumerate}
 
@@ -544,7 +539,7 @@ We have enough credits to pay for the increase.
 
 \subsection{Search}
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x>=c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
 
 Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
 
@@ -565,7 +560,7 @@ Upper bound for average number of points inside a processed node on level $d$ is
 
 \begin{proof}
 
-The total number of points on all nodes on level $d$ is $n$. The total number of points on the processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From previous paragraph we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+The total number of points on all nodes on level $d$ is $n$. The total number of points in processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From lemma 3 \TODO{zrób z tego reference} we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all nodes with pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
 
 \end{proof}
 
@@ -660,7 +655,7 @@ Solr requires unique key. Combining all properties is not enough. For example th
 Below I'm presenting syntax for all types of queries:
 \begin{enumerate}
 \item Equality check: \verb|property:value|
-\item Inequalities are realized by range queries: \verb|property:[from TO to]|. \verb|From| and \verb|to| can be replaced by *. For example searching number greater or equal to 2 is performed by \verb|property:[2 TO *]|. \verb|property:[* TO *]| matches everything.
+\item Inequalities are realized by range queries: \verb|property:[from TO to]|. \verb|From| and \verb|to| can be replaced by \verb|*|. For example searching number greater then or equal to 2 is performed by \verb|property:[2 TO *]|. \verb|property:[* TO *]| matches everything.
 \item Strict inequalities are realized by excluding some range \verb|-property:[from TO to]|. For example searching numbers smaller than 2 is performed by excluding range [2,$\infty$]: \verb|-property:[2 TO *]|.
 \item Prefix queries: \verb|property:value*|.
 \item Substring queries: \verb|property:*value*|.
@@ -722,27 +717,27 @@ Testing environment is machine with Intel i5-2500 processor (4 cores, 3.5GHz), 8
 
 In nk we have got several millions registered users. This number does not grow in spectacular fashion. I want to simulate engines behaviour in similar conditions. 
 
-At the beginning I am inserting $8 * 10^6$ random users. Then I am running a script which creates random insert/search queries. It sends created queries for few hours and calculates statistics.
+At the beginning I am inserting $8 * 10^6$ randomly generated users. Then I am running a script which creates random insert/search queries. It sends created queries for few hours and calculates statistics.
 
-Inserted data is generated in a very simple way. I have gather lists of most popular first names and last names in Poland (with counts). Probability of selecting name is proportional to its count. Age is selected with linear distribution from set $[5, 100]$.
+Inserted data is generated in a very simple way. I have gather lists of most popular first names and last names in Poland (with counts). Probability of selecting name is proportional to its count. Age is selected with linear distribution from set $[5, 100]$. 
 
-Search queries are generated by this procedure:
+Search queries are generated by following procedure:
 \begin{enumerate}
 \item Pick N - number of expressions in search query
 \item Column in expression is selected from set [first name, last name, age, city]. Each of them has 25 percent chance to be chosen.
-\item If selected column has int type (only age is an integer) then possible queries are comparison and inequalities. There are 1 comparison and 4 inequalities. Each of them has 20 percent chance to be chosen.
-\item If selected column has string type then possible queries are comparison, inequalities, prefix queries and substring queries. Prefix and substring queries are having 25 percent chance to be chosen. Each of the comparison and inequalities has 10 percent chance to be chosen. Selected column is always compared to another string. This string is selected by selecting random word with 1 to 5 characters.
+\item If selected column has int type (only age is an integer) then possible queries are equality check, inequalities and strict inequalities. Each of them has 20 percent chance to be chosen.
+\item If selected column has string type then possible queries are comparison, inequalities, prefix queries and substring queries. Prefix and substring queries are having 25 percent chance to be chosen. Each of the remaining conditions has 10 percent chance to be chosen. Selected column is always compared to another string. This string is selected by selecting random word with 1 to 5 characters.
 \end{enumerate}
 
 Then I am selecting random column and I am setting it as order by column. Then I am choosing offset and limit from range $[0, 50]$.
 
 \subsection{Inserting 8 million rows}
 
-8 million rows. Average value of fields \verb|first_name|, \verb|last_name|, \verb|city| contains 7 characters. It means that size of inserted data is about 250 MB. There is always some overhead of keeping data in data structures. It causes shuffla to use 6 GB RAM.
+Average value of fields \verb|first_name|, \verb|last_name|, \verb|city| contains 7 characters. It means that size of inserted data is about 250 MB. There is always some overhead of keeping data in data structures. It causes shuffla to use 6 GB RAM.
 
 Inserting 8 million rows is not most important part of testing. It is performed before production deployment and we are doing this part only once. I am happy as long as indexing time does not last longer than a few hours. 
 
-Shuffla inserts data with 1000 request per second. Using single inserts with other engines is not so efficient. All considered engines are able to read csv file and import data from such file. This is the only way to import data within few hours.
+Shuffla handles insert requests with speed of hunderds requests per second. Using single inserts with other engines is not so efficient. All considered engines are able to read csv file and import data from such file. For them it is the only way to import data within few hours.
 
 \subsection{Statistics}
 
@@ -750,7 +745,7 @@ For purpose of testing in true multi-threaded environment I used tsung. Tsung is
 
 I am using 4 core processor for testing so I decided to test all engines using 4 threads. Each thread is sending 10.000 randomly created queries. 
 
-Solr and PostgreSQL are using less than 1 GB of RAM. It is possible because both these engines are keeping data on a hard drive. Shuffla stores everything in RAM and it is consuming 6GB of RAM. 
+Solr and PostgreSQL are using less than 1 GB of RAM. It is possible because both these engines are keeping data on a hard drive. Shuffla stores everything in RAM and is consuming 6GB of RAM. 
 
 \begin{figure}
 \centering
@@ -767,7 +762,7 @@ Solr and PostgreSQL are using less than 1 GB of RAM. It is possible because both
 \hline 
 \end{tabular}
 
-Solr is superior over Shuffla in every way. Solr is faster. Solr consumes less memory. It is more configurable, for example we could increase Solr memory limit. Solr is just better choice, especially for big social website purposes. 
+Solr is superior over Shuffla in every way. Solr is faster. Solr uses less memory. It is more configurable, for example we could increase Solr memory limit. Solr is just better choice, especially for big social website purposes. 
 
 \section{Few words about Solr in nk}
 
@@ -780,11 +775,11 @@ Solr is superior over Shuffla in every way. Solr is faster. Solr consumes less m
   \label{fig:architektura_wyszukiwania}
 \end{figure}
 
-In nk we have 3 servers with Solr. There is master-slave replication between them. One server is a master another and two other are slaves. Only master processes modifying queries. When user does anything related to searching, PHP code handles it.
+In nk we have 3 servers with Solr. There is master-slave replication between them. One server is a master, another two others are slaves. Only master processes modifying queries. When user does anything related to searching, PHP code handles it.
 
 When some action requires modifying data in Solr, PHP code is creating task for it. This task is inserted into a queue. There is a background job which processes all tasks from queue one by one. We need queue to avoid unexpected spikes. For example uncaught spammer attack may cause 1000 modifying requests per second \footnote{Actually this is highly unlikely, nk crashes spammers activity extremely well}. If this happens master could easily crash or at least experience some kind of slowness due to a big load. We want to avoid such situations. 
 
-In case of search request, we need to distribute requests between servers. For this purpose search requests are going through HAProxy \cite{HAPROXY}. This load balancer is distributing requests between our 3 servers.
+In case of search request we need to distribute requests between servers. For this purpose search requests are going through HAProxy \cite{HAPROXY}. This load balancer is distributing requests between our 3 servers.
 
 \subsection{Statistics from master server}
 
