@@ -526,7 +526,7 @@ We will give $6\log n$ credits to each node visited during insert/delete. As the
 \item Each node visited during an insert/delete operation gets $6\log n$ credits. Notice that after the visit we either increase or decrease $n_{l}$ or $n_{r}$. Hence we increase $6|n_{l}-n_{r}|\log n$ by at most $6\log n$, and so we can afford to pay for this increase using the new credits allocated to the node (it can also happen that we decrease $|n_{l}-n_{r}|\log n$, which is even better).
 
 \item We rebuild a node as soon as one subtree is two times larger than the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least 6($2n_{r}-\frac{3}{2}n_{r}
-)\log n = 6\frac{1}{2}n_{r}\log n = n\log n, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
+)\log n = 6\frac{1}{2}n_{r}\log n = n\log n$, where $n=n_{l}+n_{r}$. After we reconstruct the tree, the required number of credits will be at most $\log n$. Hence we can use $(n-1)\log n$ credits to pay for the reconstruction, and by Lemma~\ref{lem:1} this is enough.
 
 \end{enumerate}
 
@@ -560,7 +560,7 @@ Upper bound for average number of points inside a processed node on level $d$ is
 
 \begin{proof}
 
-The total number of points on all nodes on level $d$ is $n$. The total number of points in processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From lemma 3 \TODO{zrób z tego reference} we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all nodes with pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+The total number of points on all nodes on level $d$ is $n$. The total number of points in processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From lemma 3 \todo{zrób z tego reference} we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all nodes with pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
 
 \end{proof}
 
