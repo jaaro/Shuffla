@@ -156,14 +156,12 @@ Pivot KDVertex::find_good_pivot() const
 {
     std::vector<std::string> props = table_index_info_.get_table_definition()->get_property_names();
 
-    Pivot current;
-    
-    for(int i = 0; i < props.size(); i++) {
-        int property_index = (level + i) % props.size();
-        for(auto it = rows_.begin(); it !=rows_.end(); it++) {
-            std::string property = props[property_index];
+    for(auto it = rows_.begin(); it !=rows_.end(); it++) {
+        // randomly selecting about 20 pivots
+        if (rand() % (rows_.size() / 20 + 1) == 0) {
+            int property_index = level % props.size();
 
-            Pivot current(property_index, (*it)->get_value(property), rand()&1, rand()&1);
+            Pivot current(property_index, (*it)->get_value(property_index), rand()&1, rand()&1);
             int local_res = calculate_pivot_efficiency(current);
             if (local_res <= signed(rows_.size()) / 8) {
                 return current;
@@ -171,10 +169,26 @@ Pivot KDVertex::find_good_pivot() const
         }
     }
 
-    Logger::getInstance().log_error("Unable to find good pivot");
-    assert(!current.is_unbounded());
+    int best_result = 123456789;
+    Pivot best_pivot;
 
-    return current;
+    for(int i = 0; i < props.size(); i++) {
+        int property_index = (level + i) % props.size();
+        for(auto it = rows_.begin(); it !=rows_.end(); it++) {
+            Pivot current(property_index, (*it)->get_value(property_index), rand()&1, rand()&1);
+            int local_res = calculate_pivot_efficiency(current);
+            if (local_res <= signed(rows_.size()) / 8) {
+                return current;
+            }
+
+            if (local_res < best_result) {
+                best_result = local_res;
+                best_pivot = current;
+            }
+        }
+    }
+
+    return best_pivot;
 }
 
 int KDVertex::calculate_pivot_efficiency(const Pivot& limit) const

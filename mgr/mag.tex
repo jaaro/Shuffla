@@ -115,20 +115,7 @@ Data: \dotfill\quad Podpis opiekuna pracy: \dotfill
 \thispagestyle{empty}
 
 \begin{abstract}
-Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania zbioru użytkowników dużego portalu społecznościowego. Przechowywane dane to imię, nazwisko, wiek, oraz miejsce zamieszkania.
-
-Użytkownik portalu może wyszukiwać innych użytkowników poprzez:
-\bigskip
-\begin{enumerate}
-\item{podanie imienia (jego prefiksu lub podsłowa),}
-\item{podanie nazwiska (jego prefiksu lub podsłowa),}
-\item{podanie wieku (dokładnie bądź przez określenie dolnej i górnej granicy),}
-\item{podanie miejsca zamieszkania (jego prefiksu lub podsłowa).}
-\end{enumerate}
-
-\bigskip
-
-Kolejnym założeniem jest konieczność personalizacji wyników wyszukiwania. Na przykładu użytkownik z San Francisco szukający Jane powinien dostać w pierwszej kolejności osoby o imieniu Jane z San Francisco, następnie osoby z Kaliforni, Stanów Zjednoczonych, a dopiero na samym końcu z innych części świata.
+Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania zbioru użytkowników dużego portalu społecznościowego. 
 
 Jednym z możliwych rozwiązań tak postawionego problemu jest zastosowanie jednej z popularnych relacyjnych baz danych. Inną możliwością jest użycie wyszukiwarki tekstowej takiej jak Apache Solr czy Sphinx Search. Jeszcze innym pomysłem jest zaimplementowanie własnego narzędzia. Celem tej pracy jest przedstawienie Shuffli, wyspecjalizowanej wyszukiwarki stworzonej przeze mnie z myślą o tym konkretnym problemie. Oprócz przedstawienia architektury i szczegółów implementacji, porównam jej efektywność z PostgreSQL, Apache Solr, oraz Sphinx Search.
 
@@ -148,24 +135,11 @@ Pracuję nad portalem nk.pl (który jest największym polskim portalem społeczn
 
 \maketitle
 
-\pawel{to w zasadzie jest nie abstract, a introduction}
-
-\jarek{Troche tak wyszło, spróbuje część tego przenieść do rozdziału 1 a tu napisze kilka zdań o tym, że temat to wyszukiwarki, że pisze własną, że je porównuje, że mam statsy działania takiej wyszukiwarki w nk} 
-
 \begin{abstract}
 Given a list of people (their first name, last name, age, home town) we want to provide high-available, scalable and very fast solution that can search through such data.
-User can narrow search results by:
 
 \bigskip
-\begin{enumerate}
-\item{defining first name (its prefix or substring)}
-\item{defining last name (its prefix or substring)}
-\item{narrowing age (user can provide lower or/and upper bound for age)}
-\item{defining city (its prefix or substring)}
-\end{enumerate}
-
-\bigskip
-Furthermore, it should be possible to personalize the order of of the results. For example, if user from San Francisco is looking for Jane, top results should show Janes from San Francisco, then Janes from California, then rest of U.S. One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop own specialized search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, and PostgreSQL. 
+One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop own specialized search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, and PostgreSQL. 
 
 \bigskip
 I am working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve the task described above. 
@@ -179,29 +153,24 @@ I am working on nk.pl (which is biggest polish social networking website) since 
 
 \section{Problem definition}
 
-\jarek{Fix: Zaczynasz od definicja, ale właściwie nie wiadomo po co ta definicja. Może najpierw napisz, że chcesz mieć wiele tabel, na których będziesz wykonywał inserty/search, a pojedyncza tabela to...}
-
-Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of table name and list of pairs <column name, type of column>. Type of column can be either a string or a number.
+Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of table name and list of pairs <column name, type of column>. Fields in out model table are first name, last name, age, home town. They are strings and numbers therefore type of column can be either a string or a number.
 
 \subsection{Selecting data}
-Shuffla like every other database provides possibility for searching data. 
-There are different possible conditions for different types. Possible conditions for numbers are equality check, inequalities and strict inequalities. Strings are compared using lexicographic order so equality check, inequalities and strict inequalities should be supported. There are two additional conditions
+Shuffla like every other database provides possibility for searching data. There are different possible conditions for different types. Possible conditions for numbers are equality check, inequalities and strict inequalities. Strings are compared using lexicographic order so equality check, inequalities and strict inequalities should be supported. There are two additional conditions
 \begin{enumerate}
 \item Checking if given string is prefix of selected column value.
 \item Checking if given string is substring of selected column value. 
 \end{enumerate}
 
-\jarek{fix: a może napisz to pełnym zdaniem, użytkownik ma możliwość wyboru kolejności blablabla}
 User can define order in which results will be returned. Size of the results may be narrowed by defining offset and limit. These search parameters must work exactly the same as their equivalents in SQL.
 
-Narrowing result described in abstract is possible with defined model. GPS coordinates may be fetched by the modern web browsers \cite{FETCHGPS}. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
+Furthermore, it should be possible to personalize the order of of the results. For example, if user from San Francisco is looking for Jane, top results should show Janes from San Francisco, then Janes from California, then rest of U.S. GPS coordinates may be fetched by the modern web browsers \cite{FETCHGPS}. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
 \begin{enumerate}
 \item{someLatitiude - radius $\leq$ latitude $\wedge$ latitude $\geq$ someLatitude + radius}
 \item{someLongitude - radius $\leq$ longitude $\wedge$ longitude $\geq$ someLongitude + radius}
 \end{enumerate}
 
 \jarek{Fix: to jest troszeczkę naciągane moim zdaniem.}
-
 \jarek{Napisałem to, bo to chyba najrozsądniejsza metoda na sortowanie userów. Próbowaliśmy coś takiego w nk robić. Niestety wydajnościowo to było na styk dla Solarów i musieliśmy to cofnąć. Wydawało mi się, że wyniki są zdecydowanie trafniejsze przy takim rozwiązaniu. }
 
 \section{Shuffla's competition}
@@ -213,7 +182,7 @@ Relational Database Management System data is structured in database tables, fie
 \subsubsection{PostgreSQL}
 PostgreSQL has really cool features like: point in time recovery, tablespaces, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer, and write ahead logging for fault tolerance. It supports international character sets, multibyte character encodings, Unicode, and it is locale-aware for sorting, case-sensitivity, and formatting. It is highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate. There are active PostgreSQL systems in production environments that manage in excess of 4 terabytes of data \jarek{Kopiowane ze strony Postgresa, mam nadzieje, że to nie plagiat}.
 PostgreSQL keeps its data on disk. PostgreSQL implements their own master-slave replication, there are also few middlewares which could provide master-master replication \cite{PSQLREPL}. There is a slow log, error log, PostgreSQL performance can be easily monitored by software like Munin and New Relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Big disadvantage of using PostgreSQL for this problem is performance on substring queries. B-tree based indexes are not supporting fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
-Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time \jarek{fix: co to jest $n$?} where $n$ is number of rows in the table. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
+Example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine is finding first person with first name John. It takes $O(\log n)$ time where $n$ is number of rows in the table. Finding another person with first name John takes $\Oh(1)$. Unfortunately all these rows must be processed one by one for checking if they contain substring \verb|qwertyabc|. Since there is no one with such name, engine will process all guys named John, and it will find nothing.
 
 \subsection{Full-text search engine}
 In text retrieval, full text search refers to techniques for searching a single computer-stored document or a collection in a full text database. Full text search is distinguished from searches based on metadata or on parts of the original texts represented in databases (such as titles, abstracts, selected sections or bibliographical references) \jarek{Ściągniete z wiki}. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every occurring word in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on disk. When processing query, engine selects best strategy to follow. Strategy can be seen as procedure
@@ -231,7 +200,6 @@ Solr does not modify database in real-time. Data is not added immediately to dat
 
 \subsubsection{Sphinx Search}
 
-\jarek{fix: Może zacznij ten kawałek od stwierdzenia, że Sphinx ma dużo minusów, i teraz je wymienisz?}
 Sphinx Search is very good and fast search engine. Sphinx provides good relevance ranking through combination of phrase proximity ranking and statistical ranking \jarek{To zdanie skopiowane ze strony Sphinxa}. It is possible to install Sphinx as MySQL or PostgreSQL plugin. Unfortunately our specification emphasizes Sphinx disadvantages.
 Sphinx does not have replication. It is unacceptable for big social website. There is a way to simulate replication. Inverted index is stored on disk. Directory containing index could be replicated by file system (for example network file system). But if index is big than syncing such directories would take too much time and would be inefficient and problematic.
 
@@ -304,8 +272,6 @@ Solution with suffix tree is faster when there aren't many rows with given subst
 
 \subsection{HTTP Service}
 
-\jarek{fix:Odnośniki do rysunków powinny być choć minimalnie zintegrowane z tekstem}
-
 \begin{figure}
 \centering
   \includegraphics[width=16cm]{start}
@@ -358,13 +324,11 @@ Dependencies of search process are visualized on (Figure~\ref{fig:search}).
 
 \subsection{Locking tables}
 
-\jarek{fix: mógłbyś napisać to pełnym zdaniem? I zdefiniować co to znaczy locking?}
-
 To correct work in multi-threaded environment we must ensure thread safety. It requires us to eliminate all data races, especially simultaneous writes which can make our data inconsistent. That is why I introduced locking. Basically by acquiring lock we are restricting access to some part of code. 
 
 Our goal is to create following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the moment, write queries can be performed if no other query is being performed at the moment. 
 
-This locking schema has the advantage that it can be implemented using only \verb|mutexes| and \verb|locks| from \verb|boost|. A \verb|mutex| object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. \verb|Boost.Thread| supplies recursive and non-recursive mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex. \jarek{3 ostatnie zdania są przeklejone z dokumentacji boosta, nie wiem czy tak może być}
+This locking schema has the advantage that it can be implemented using only \verb|mutexes| and \verb|locks| from \verb|boost|. A \verb|mutex| object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. \verb|Boost.Thread| supplies recursive and non-recursive mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex. \jarek{3 ostatnie zdania to kopia z boost doca}
 There are three most common kinds of locks. All locks are working in similar fashion. Mutex is passed as constructor parameter to lock. Ownership of mutex is acquired in constructor. Ownership of mutex is released when lock object is destroyed.  
 
 \begin{enumerate}
@@ -399,7 +363,6 @@ Single row stores pointer to the table definition. Besides that there is a \verb
 
 \subsection{Database persistence}
 
-\jarek{fix: zdefiniuj persistence}
 In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserves data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which drastically decreases application speed. Instead of such solution, preferred way is to have “almost durable” system.
 Nowadays there are two most popular ways of having almost durable database in RAM:
 
@@ -411,13 +374,11 @@ I implemented both possibilities.
 
 \subsection{Presenting results}
 
-\jarek{fix: tutaj nie wiadomo czego dotyczą te formaty. Rozumiem, że wyników, ale.. jest to niejasne :( w szczególności o jakie feeding data chodzi?}
 Presenting results may sound like a trivial issue. Actually it's not and not many libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it, by following \cite{SOANS} .
 
 \section{Implemented optimizations}
 
-\jarek{fix: tutaj widziałbym jakiś akapicik, w którym mówisz, że o ostatecznej efektywności decydują szczegóły, a niżej opiszesz kilka z nich}
-What makes an algorithm really fast are optimizations. Here is a description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
+What makes an algorithm really fast are optimizations. In this chapter I am presenting description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
 
 \subsection{Queue event}
 Web search-engines usually shows maximum of 10-20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 first (most relevant) results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
@@ -485,8 +446,6 @@ Terminology:
 \item $left(v)$ - left subtree of vertex $v$
 \item $right(v)$ - right subtree of vertex $v$
 \end{enumerate}
-
-\jarek{fix: ja bym ten warunek napisał zdaniem, zamiast >= i <= powinny być specjalne znaczki}
 
 \jarek{Zmienna X, porównywanie wielkości poddrzew, jak próbowałem to robić zdaniem to było nieczytelne;/}
 
@@ -560,7 +519,7 @@ Upper bound for average number of points inside a processed node on level $d$ is
 
 \begin{proof}
 
-The total number of points on all nodes on level $d$ is $n$. The total number of points in processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From lemma 3 \todo{zrób z tego reference} we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all nodes with pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
+The total number of points on all nodes on level $d$ is $n$. The total number of points in processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From proof of lemma ~\ref{lem:3} we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all nodes with pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
 
 \end{proof}
 
@@ -621,12 +580,11 @@ Here is table with a few values of d and complexity associated with this d.
 \hline 10 & $\Oh(n^{0.939})$ \\
 \hline 
 \end{tabular}
-\jarek{Nie wiem czy ta tabelka ma sens. A może warto to rozszerzyć o jakiś wykresik?}
 
 \bigskip
-While the worst case bound might seem somehow disappointing when $d$ is large, one should remember that in practice we will observe a much better performance. For average queries algorithm behaves like $\Oh(S \log n)$ where S = offset + limit.
+While the worst case bound might seem somehow disappointing when $d$ is large, one should remember that in practice we will observe a much better performance. For average queries without substring conditions algorithm behaves like $\Oh(S \log n)$ where S = offset + limit.
 
-Let me explain. Lets take for example data with random distribution. When algorithm recursively enters node of K-D tree then with some probability there are some rows fitting query. If we define this probability as a constant then finding single row takes $\Oh(\log n)$. \pawel{rozwiń to proszę}
+Let me explain. Lets take data with random distribution. When algorithm recursively enters node of K-D tree then with some probability there are some rows fitting query. Algorithm will find some results if there is a point on intersection of search region and region representing the node. Probability of such event for search region $S$ and region $R$ representing node can be defined as $P(S, R) = 1 - (\frac{|S \cap R|}{|R|})^p$ where $p$ is number of points inside $R$. This number may be small only if $|S \cap R|$ is very small compared to $|R|$. If bound this probability by a constant then finding single row takes $\Oh(\log n)$.
 
 \section{Tested engines}
 
@@ -852,7 +810,21 @@ In case of search request we need to distribute requests between servers. For th
         \label{fig:animals}
 \end{figure}
 
-At night Solr does not do much. Load grows as the day progress. At the peek our master server handles 18 search requests per second (about 8 PM). Number of other requests like updates/replication/commit is negligible. Do not forget that we have three Solr servers on production and this chart is only from one of them. Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache. Load is a measure of the amount of computational work that a computer system performs. \jarek{Zdanie z wiki} Load X means that we need at least ceil(X) CPUs to run all processes without any of them waiting for a turn.  We are using half of available memory because the other half is reserved for unexpected events, for example crash of one server. It may require increasing memory limits on two other machines. When we are closer to the peek we have more connections to Solr. It is close to a 100 at the peek. Thread pool contains more than 300 threads. Usually only small amount of this number is used. Java on our production environment is executed with \verb|-Xms24G -Xmx24G| which means that memory used by heap plus memory used by stack cannot exceed 24GB. You may find our heap usage very strange. Most of heap memory is used by caches. We are committing changes every 15 minutes which causes all caches to be flushed. For another 15 minutes cache is filling by search queries and then flushed again. At night there is small number of request and Solr is unable to get passed warming stage before next commit. You can see it at "Solr caches - by day" chart. Hit ratio is slightly smaller, about 60 percent at night.
+\subsubsection*{Number of requests, load - by day} 
+At night Solr does not do much. Load grows as the day progresses. At the peek (about 8 PM) our master server handles 18 search requests per second. Number of other requests like updates/replication/commit is negligible. Do not forget that we have three Solr servers on production and this chart is only from one of them. Load is a measure of the amount of computational work that a computer system performs. \jarek{Zdanie z wiki} Load $X$ means that we need at least $\lceil X \rceil$ CPUs to run all processes without any of them waiting for a turn. 
+
+\subsubsection*{Memory, heap usage}
+We are using half of available memory because the other half is reserved for unexpected events, for example crash of one server. It may require increasing memory limits on two other machines. Java on our production environment is executed with \verb|-Xms24G -Xmx24G| which means that memory used by heap plus memory used by stack cannot exceed 24GB. You may find our heap usage very strange. Most of heap memory is used by caches. We are committing changes every 15 minutes which causes all caches to be flushed. For another 15 minutes cache is filling by search queries and then flushed again.
+
+\subsubsection*{Disk usage and network traffic statistics}
+IO Service shows how much time disk in working during an average second. It shows very small values. On production all Solr data is kept on ramdisks. It isn't zero because of work done by operating system. Solr network traffic isn't huge, it rarely reaches 1 megabit. In the evening we reach peek with more than a 100 simultaneous connections from PHP servers to Solr.
+
+
+\subsubsection*{JBoss threads}
+Thread pool contains more than 300 threads. Usually only small amount of this number is used.
+
+\subsubsection*{Cache usage}
+Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache.  At night there is small number of request and Solr is unable to get passed warming stage before next commit.  Hit ratio is slightly smaller, about 60 percent at night.
 
 \section{Summary}
 
