@@ -31,6 +31,8 @@
 \definecolor{myYellow}{rgb}{0.99,0.99,0.05}
 \newcommand{\jarek}[1]{\noindent\colorbox{myYellow}{Jarek: #1}}
 \newcommand{\todo}[1]{\noindent\colorbox{myRed}{TODO: #1}}
+\DeclareMathOperator{\rightSon}{right}
+\DeclareMathOperator{\leftSon}{left}
 
 \newcommand{\Oh}{\mathcal{O}}
 \newcommand\bigforall{\mbox{\Large $\mathsurround0pt\forall$}} 
@@ -239,6 +241,7 @@ Complexities of these algorithms are depending on number of elements ($n$) and n
 \end{tabular}
 
 \jarek{fix: W źródle do którego się odwołuje (\cite{CGAAA}) złożonosci są takie jakie podałem (strona 110, końcówka kartki)}
+\pawel{OK, sorry!}
 
 \bigskip
 
@@ -250,7 +253,7 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
+At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension \pawel{napisz, że na itym poziomie dzielimi według współrzędnej i}. Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
 
 \begin{enumerate}
 \item If \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create \verb|node| sons if necessary
@@ -258,9 +261,11 @@ At the beginning lets start with basic description of K-D tree. Later, in chapte
 \item Otherwise recursively insert \verb|row| to right son of \verb|node|
 \end{enumerate}
 
-At this point we do not know nothing about how pivots are choosed and how/when rebuilding of a tree is processed. I will get back to this topics later.
+At this point we do not know nothing about how pivots are chosen and how/when rebuilding of a tree is processed. I will get back to this topics later.
 
 In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we can stop processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we don't have to process all it's children, we already know that all rows will be inside \verb|searchRegion|.
+
+\pawel{tutaj może wklej dowód, że w idealnie zbalansowanym KD drzewie przeszukiwanie zajmuje ...}
 
 As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process this way only one substring condition in a query.
 
@@ -308,6 +313,7 @@ Balancing can be done using any linear algorithm for finding median in set. I ha
 
 \pawel{Nie do końca kupuję to wyjaśnienie.}
 \jarek{Wyjaśnienia nie mam innego. Tutaj tylko pamięć chciałem optymalizować;/. }
+\pawel{Chodziło mi o to, że pry przebudowywaniu chyba duplikujesz tylko wskaźniki na wiersze, więc może nie będzie tak tragicznie. Ale może zostaw jak jest, dopisz tylko, że oczekiwana złożonośc przebudowy to nlogn.}
 
 \subsection{Processing search requests}
 
@@ -378,7 +384,7 @@ Presenting results may sound like a trivial issue. Actually it's not and not man
 
 \section{Implemented optimizations}
 
-What makes an algorithm really fast are optimizations. In this chapter I am presenting description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
+What makes an algorithm useful in practice are optimizations. In this chapter I am presenting description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
 
 \subsection{Queue event}
 Web search-engines usually shows maximum of 10-20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 first (most relevant) results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
@@ -398,6 +404,8 @@ $T(n) \geq 2^{d-1} * T(n/2^{d})$
 \pawel{ta rekurencja zakłada, że drzewo jest w pełni zbalansowane, nie? Ale u Ciebie raczej nie jest?}
 
 \jarek{Ja tu chciałem zobrazować ile jest takich nodów. To że pisze T(n) $\geq$, a później $\Omega$ nie wystarczy?}
+\pawel{Aaaa, dopiero teraz zrozumiałem :)}
+
 \bigskip
 
 There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optimization described in next chapter.
@@ -420,11 +428,13 @@ Instead of storing whole area covered by the node (see Figure~\ref{fig:covered})
   \label{fig:inside}
 \end{figure}
 
-Lets revised this idea on example where point with minimal value of coordinate x is requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ nodes are processed. Finding minimum value of coordinate x of node takes $\Oh(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and finding minimum in $\Oh(1)$ which reduces complexity to $\Oh(\log n)$.
+Lets revised this idea on example where point with minimal value of coordinate x is requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ nodes are processed. Finding minimum value of coordinate x of node takes $\Oh(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and extracting minimum in $\Oh(\log n)$ which reduces complexity to $\Oh(\log n)$.
 
 \pawel{sorry, ale ten kawałek jest dla mnie średnio czytelny}
 
 \jarek{Dużo tu nie poprawiłem, mógłbyś mi powiedzieć którą część poprawić?}
+
+\pawel{Mam problem z tym, że piszesz o znajdowaniu jednego punktu. Więcej sensu miałoby napisanie o tym jak znaleźć $k$ punktów o najmniejszym $x$ :) jeden punkt możesz przecież znaleźć patrząc na boundary. }
 
 \subsection{Raw pointers instead of shared pointers}
 
@@ -437,22 +447,21 @@ This is known as partial rebuilding, a simple yet very powerful paradigm often u
 
 \pawel{zdefiniuj amortized complexity}
 \jarek{Ten reference nie wystarczy?}
+\pawel{No może i wystarczy, ale jedno zdanie definicji... jedno króciutkie zdanko...}
 
 
 \section{Complexities}
 
 Terminology:
 \begin{enumerate}
-\item $left(v)$ - left subtree of vertex $v$
-\item $right(v)$ - right subtree of vertex $v$
+\item $\leftSon(v)$ - left subtree of vertex $v$
+\item $\rightSon(v)$ - right subtree of vertex $v$
 \end{enumerate}
 
 \jarek{Zmienna X, porównywanie wielkości poddrzew, jak próbowałem to robić zdaniem to było nieczytelne;/}
 
-Let $n$ be number of points in the tree. Tree is X-balanced if and only if 
-\begin{eqnarray*}
-\bigforall v: X * |left(v)| \leq |right(v)| \wedge X * |left(v)| \geq |right(v)|
-\end{eqnarray*}
+Let $n$ be number of points in the tree. Tree $T$ is $\alpha$-balanced if and only if 
+$$\displaystyle\mathop{\bigforall}_{v\in T} \quad \frac{1}{\alpha} \leq \frac{|\leftSon(v)|}{|\rightSon(v)|} \leq \alpha$$
 
 Tree is well-balanced if it is 2-balanced. Tree is super-balanced if it is  $\frac{3}{2}$-balanced. Height of both well and super balanced trees are $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
@@ -509,7 +518,6 @@ Upper bound for number of processed nodes on level $d$ is $2^{d-1}$.
 \begin{proof}
 
 K-d tree is a binary tree. Root has height 0, its children have height 1, and so on. Lets count maximal possible number of visited nodes on level $d$ by a recursive search algorithm where region is defined by $X_e$ $\geq$ $C$. Node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension $e$. Such line intersects either the region represented by left son or right son, not both. Therefore only one of its sons will be recursively called. Then the upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce number of processed nodes. Hence upper bound for number of processed nodes on level $d$ is $2^{d-1}$. 
-
 \end{proof}
 
 
@@ -520,7 +528,6 @@ Upper bound for average number of points inside a processed node on level $d$ is
 \begin{proof}
 
 The total number of points on all nodes on level $d$ is $n$. The total number of points in processed nodes on level $d$ is at most $\frac{2}{3}n$. Worst case scenario occurs when number of processed nodes is maximal. From proof of lemma ~\ref{lem:3} we know that it is the scenario with search region defined as $X_e$ $\geq$ $C$. For all nodes with pivots on dimension $e$ it is true that nodes from one son will be processed and nodes from other son will not be processed. Tree is well-balanced so ratio between processed points and not precessed points is not greater than 2:1. Hence the upper bound for average number of points inside a processed node on level $d$ is $\frac{\frac{2}{3}n}{2^{d-1}}$.
-
 \end{proof}
 
 I will prove that the worst case scenario occurs when all subproblems are the same size. Then the complexity will be $T(n)=2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$.
@@ -547,6 +554,7 @@ Hence $T(n)\leq c n^{a}$ as long as $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$.
 
 \pawel{ten kawałek trzeba posprzątać}
 \jarek{Troche nie wiem, w jaki sposób posprzątać;/ Zmniejszyć ilość przejść?}
+\pawel{Zrobić tak, żeby ładnie wyglądał :) Trochę zmniejszyć i jakoś wyrównać wszystkie nierówności, może w eqnarray}
 
 $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$
 
@@ -570,6 +578,7 @@ $\frac{\log 2^{d-1}}{\log 3*2^{d-2}} = \log_{3*2^{d-2}}{2^{d-1}} = \log_{3*2^{d-
 
 Here is table with a few values of d and complexity associated with this d.
 
+\pawel{wycentruj to}
 \bigskip
 \begin{tabular}{|l|c|}
 \hline d & Complexity \\
