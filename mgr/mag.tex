@@ -137,23 +137,19 @@ Pracuję nad portalem nk.pl (który jest największym polskim portalem społeczn
 
 \maketitle
 
-\begin{abstract}
-Given a list of people (their first name, last name, age, home town) we want to provide high-available, scalable and very fast solution that can search through such data.
-
-\bigskip
-One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop own specialized search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, and PostgreSQL. 
-
-\bigskip
-I am working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve the task described above. 
-
-\bigskip
-\noindent \textbf{Keywords:} database, nosql
-\end{abstract}
-
 \pagenumbering{arabic}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Problem definition}
+
+\subsection{Introduction}
+Given a list of people (their first name, last name, age, home town) we want to provide high-available, scalable and very fast solution that can search through such data.
+
+One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop own specialized search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, and PostgreSQL. 
+
+I am working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve the task described above. 
+
+\subsection{Database model}
 
 Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of table name and list of pairs <column name, type of column>. Fields in out model table are first name, last name, age, home town. They are strings and numbers therefore type of column can be either a string or a number.
 
@@ -171,9 +167,6 @@ Furthermore, it should be possible to personalize the order of of the results. F
 \item{someLatitiude - radius $\leq$ latitude $\wedge$ latitude $\geq$ someLatitude + radius}
 \item{someLongitude - radius $\leq$ longitude $\wedge$ longitude $\geq$ someLongitude + radius}
 \end{enumerate}
-
-\jarek{Fix: to jest troszeczkę naciągane moim zdaniem.}
-\jarek{Napisałem to, bo to chyba najrozsądniejsza metoda na sortowanie userów. Próbowaliśmy coś takiego w nk robić. Niestety wydajnościowo to było na styk dla Solarów i musieliśmy to cofnąć. Wydawało mi się, że wyniki są zdecydowanie trafniejsze przy takim rozwiązaniu. }
 
 \section{Shuffla's competition}
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
@@ -240,9 +233,6 @@ Complexities of these algorithms are depending on number of elements ($n$) and n
 \hline 
 \end{tabular}
 
-\jarek{fix: W źródle do którego się odwołuje (\cite{CGAAA}) złożonosci są takie jakie podałem (strona 110, końcówka kartki)}
-\pawel{OK, sorry!}
-
 \bigskip
 
 Since both Apache Solr and Sphinx Search are using inverted index I decided not to follow this direction and try something new. It seems that K-D tree could outperform inverted index on search queries.
@@ -253,7 +243,7 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension \pawel{napisz, że na itym poziomie dzielimi według współrzędnej i}. Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
+At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. In node on level h, pivot is pointing to dimension $h \bmod{D}$ (where D is number of dimensions). Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
 
 \begin{enumerate}
 \item If \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create \verb|node| sons if necessary
@@ -309,11 +299,7 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
   \label{fig:rebuild}
 \end{figure}
 
-Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows are creating good pivots.
-
-\pawel{Nie do końca kupuję to wyjaśnienie.}
-\jarek{Wyjaśnienia nie mam innego. Tutaj tylko pamięć chciałem optymalizować;/. }
-\pawel{Chodziło mi o to, że pry przebudowywaniu chyba duplikujesz tylko wskaźniki na wiersze, więc może nie będzie tak tragicznie. Ale może zostaw jak jest, dopisz tylko, że oczekiwana złożonośc przebudowy to nlogn.}
+Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{8}$ of rows are creating good pivots. Therefore expected complexity of rebuilding subtree with n nodes is $\Oh(n \log n)$. 
 
 \subsection{Processing search requests}
 
@@ -401,11 +387,6 @@ $T(1) = 1$
 
 $T(n) \geq 2^{d-1} * T(n/2^{d})$
 
-\pawel{ta rekurencja zakłada, że drzewo jest w pełni zbalansowane, nie? Ale u Ciebie raczej nie jest?}
-
-\jarek{Ja tu chciałem zobrazować ile jest takich nodów. To że pisze T(n) $\geq$, a później $\Omega$ nie wystarczy?}
-\pawel{Aaaa, dopiero teraz zrozumiałem :)}
-
 \bigskip
 
 There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optimization described in next chapter.
@@ -443,12 +424,7 @@ Right now I think it was biggest mistake in the project. Source code became real
 
 \subsection{Balancing K-D tree}
 K-D tree has similar problem to binary trees. Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When number of nodes in one subtree is 2 times larger that number of nodes in opposite subtree then I am rebuilding their parent subtree from the beginning.
-This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity~\cite{AMOR} is actually rather good.
-
-\pawel{zdefiniuj amortized complexity}
-\jarek{Ten reference nie wystarczy?}
-\pawel{No może i wystarczy, ale jedno zdanie definicji... jedno króciutkie zdanko...}
-
+This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity is actually rather good. Amortized complexity describes time required to perform a sequence of related operations is averaged over all the operations performed. Detail description with examples of amortized complexity can be found in ~\cite{AMOR}.
 
 \section{Complexities}
 
@@ -457,8 +433,6 @@ Terminology:
 \item $\leftSon(v)$ - left subtree of vertex $v$
 \item $\rightSon(v)$ - right subtree of vertex $v$
 \end{enumerate}
-
-\jarek{Zmienna X, porównywanie wielkości poddrzew, jak próbowałem to robić zdaniem to było nieczytelne;/}
 
 Let $n$ be number of points in the tree. Tree $T$ is $\alpha$-balanced if and only if 
 $$\displaystyle\mathop{\bigforall}_{v\in T} \quad \frac{1}{\alpha} \leq \frac{|\leftSon(v)|}{|\rightSon(v)|} \leq \alpha$$
@@ -552,21 +526,12 @@ T(n) &=& \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} T\left(\frac{
 Hence $T(n)\leq c n^{a}$ as long as $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$.
 \bigskip
 
-\pawel{ten kawałek trzeba posprzątać}
-\jarek{Troche nie wiem, w jaki sposób posprzątać;/ Zmniejszyć ilość przejść?}
-\pawel{Zrobić tak, żeby ładnie wyglądał :) Trochę zmniejszyć i jakoś wyrównać wszystkie nierówności, może w eqnarray}
-
-$2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$
-
-$2^{(1-a)(d-1)} 2^a \leq 3^a$
-
-$2^{d-1-ad+2a} \leq 2^{a \log_2{3}}$
-
-$d-1-ad+2a \leq a \log_2{3}$
-
-$d-1 \leq a (\log_2{3} + d - 2)$
-
-$a \geq \frac{d-1}{\log_2{3} + d - 2} $
+\begin{alignat*}{2}
+2^{(1-a)(d-1)} (\frac{2}{3})^a & \leq & 1 \\
+2^{d-1-ad+2a} & \leq & 2^{a \log_2{3}} \\
+d-1-ad+2a & \leq & a \log_2{3} \\
+\frac{d-1}{\log_2{3} + d - 2}  & \leq & a
+\end{alignat*}
 
 $\frac{d-1}{\log_2{3} + d - 2} < 1$ so for all d exists a < 1.
 
@@ -574,11 +539,15 @@ $\frac{d-1}{\log_2{3} + d - 2} < 1$ so for all d exists a < 1.
 
 $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ solves to (by the master theorem) $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 3*2^{d-2}}})$.
 
-$\frac{\log 2^{d-1}}{\log 3*2^{d-2}} = \log_{3*2^{d-2}}{2^{d-1}} = \log_{3*2^{d-2}}{2^{d-1}} + \log_{3*2^{d-2}}{\frac{3}{2}} - \log_{3*2^{d-2}}{\frac{3}{2}} = \log_{3*2^{d-2}}{3*2^{d-2}} - \log_{3*2^{d-2}}{\frac{3}{2}} = 1 - \log_{3*2^{d-2}}{\frac{3}{2}}$. Therefore $T(n) = \Oh(n^{1 - \log_{3*2^{d-2}}{\frac{3}{2}}})$.
+\begin{eqnarray*}
+\frac{\log 2^{d-1}}{\log 3*2^{d-2}} = \log_{3*2^{d-2}}{2^{d-1}} = \log_{3*2^{d-2}}{2^{d-1}} + \log_{3*2^{d-2}}{\frac{3}{2}} - \log_{3*2^{d-2}}{\frac{3}{2}} = \\ \log_{3*2^{d-2}}{3*2^{d-2}} - \log_{3*2^{d-2}}{\frac{3}{2}} = 1 - \log_{3*2^{d-2}}{\frac{3}{2}}
+\end{eqnarray*}
 
+Therefore $T(n) = \Oh(n^{1 - \log_{3*2^{d-2}}{\frac{3}{2}}})$.
 Here is table with a few values of d and complexity associated with this d.
+\bigskip
 
-\pawel{wycentruj to}
+\noindent\makebox[\textwidth]{%
 \bigskip
 \begin{tabular}{|l|c|}
 \hline d & Complexity \\
@@ -589,6 +558,7 @@ Here is table with a few values of d and complexity associated with this d.
 \hline 10 & $\Oh(n^{0.939})$ \\
 \hline 
 \end{tabular}
+}
 
 \bigskip
 While the worst case bound might seem somehow disappointing when $d$ is large, one should remember that in practice we will observe a much better performance. For average queries without substring conditions algorithm behaves like $\Oh(S \log n)$ where S = offset + limit.
