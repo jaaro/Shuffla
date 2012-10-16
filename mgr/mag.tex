@@ -564,7 +564,7 @@ Let me explain. Lets take data with random distribution. When algorithm recursiv
 All engines must be tested on the same schema and by the same queries. Yet presented engines have different syntax. In chapters below I'm describing table configurations and how queries were translated during their testing.
 \subsection{Solr}
 
-During tests I was using Solr 3.6.1. Tables in Solr are defined via xml file called schema.xml. Below is part of this file which is responsible for creating table.
+During tests I was using Solr 3.6.1. Tables in Solr are defined via xml file called schema.xml. Part of this file responsible for creating table is listed below.
 
 \begin{verbatim}
 <fields>
@@ -583,7 +583,7 @@ During tests I was using Solr 3.6.1. Tables in Solr are defined via xml file cal
 Solr requires unique key. Combining all properties is not enough. For example there are lots of guys named Jan Kowalski in Warsaw. Therefore I created another property named id.
 
 \bigskip
-Below I'm presenting syntax for all types of queries:
+Below I am presenting syntax for all types of queries:
 \begin{enumerate}
 \item Equality check: \verb|property:value|
 \item Inequalities are realized by range queries: \verb|property:[from TO to]|. \verb|From| and \verb|to| can be replaced by \verb|*|. For example searching number greater then or equal to 2 is performed by \verb|property:[2 TO *]|. \verb|property:[* TO *]| matches everything.
@@ -613,7 +613,7 @@ CREATE INDEX index4 ON users (age, first_name, last_name);
 
 Syntax:
 \begin{enumerate}
-\item Equality check, inequalities and strict inequalities are realized by \verb|=|, \verb|>=|, \verb|>|, \verb|<=|, \verb|<|
+\item Equality check, inequalities and strict inequalities are realized by \verb|=|, \verb|>=|, \verb|<=|, \verb|>|, \verb|<|
 \item Prefix queries are handled by \verb|property LIKE "text%"|
 \item Substring queries are handled by \verb|property LIKE "%text%"|
 \end{enumerate}
@@ -634,7 +634,7 @@ Shuffla's query format is:
 Where subquery can be:
 \begin{enumerate}
 \item \verb|field|=\verb|value| for equality check
-\item \verb|GREATER_THAN|(\verb|field|)=\verb|value| means that given value is greater than value in \verb|field| 
+\item \verb|GREATER_THAN|(\verb|field|)=\verb|value| means that given value must be greater than value of \verb|field| 
 \item \verb|SMALLER_THAN|, \verb|SMALLER_OR_EQUAL|, \verb|GREATER_OR_EQUAL| are working in similar fashion to \verb|GREATER_THAN|
 \item \verb|PREFIX|(\verb|field|)=\verb|value| requires \verb|field| to have prefix \verb|value|
 \item \verb|CONTAINS|(\verb|field|)=\verb|value| requires \verb|field| to contain \verb|value| as a substring
