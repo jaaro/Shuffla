@@ -222,7 +222,7 @@ We can clearly see analogy to multidimensional range searches. All conditions (e
 \item K-D tree \cite{CGAAA}
 \end{enumerate}
 
-Complexities of these algorithms are depending on number of elements ($n$) and number of dimensions ($d$). In our case number of dimensions is orresponding to number of columns in the table. Here is a table of complexities for listed algorithms. 
+Complexities of these algorithms are depending on number of elements ($n$) and number of dimensions ($d$). In our case number of dimensions is corresponding to number of columns in the table. Here is a table of complexities for listed algorithms. 
 
 \bigskip
 \begin{tabular}{|l|c|c|c|c|}
@@ -239,7 +239,7 @@ Since both Apache Solr and Sphinx Search are using inverted index I decided not 
 
 I chose to implement K-D trees over Range trees because:
 \begin{enumerate}
-\item They are only worse in processing search requests. Operations which modify data i.e. insert/delete are more important. If they are very fast, scaling can be easily achieved (for example by implementing master-slave replication). Moreover, while the search bounds are worse in theory, they seem to be significantly better in practice.
+\item K-D tree is worse only in processing search requests. Modifying operations i.e. insert/delete are more important. If these are very fast, scaling can be easily achieved (for example by implementing master-slave replication). Moreover, while the search bounds are worse in theory, they seem to be significantly better in practice.
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
@@ -257,7 +257,7 @@ In classical K-D tree we are searching points in some orthogonal search region. 
 
 Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
 
-As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process this way only one substring condition in a query.
+As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring condition and sort them. Not mentioning that we can process this way only one substring condition in a query.
 
 There is another possibility. Engine may process search query without substring parts. In the end, if row is matching query without it substring parts then pattern matching is performed. In this solution rows should be provided to pattern matching in order defined within query.
 
@@ -278,19 +278,19 @@ I decided that it would be best if search engine could work as simple HTTP serve
 
 \subsection{Validation and passing queries to SearchEngine class}
 
-\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For example, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
+\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
 
 Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
 \item data validation (types, correspondence to table definition),
-\item measuring running time (engine should report queries which executing is taking too much time),
+\item measuring running time (engine should report queries executing for too much time),
 \item locking tables in case of modifying query,
 \item passing valid requests to K-D Trees.
 \end{enumerate}
 
 \subsection{Processing insert/delete requests}
 
-Inserting/deleting without tree balancing is pretty straight-forward. Just simple recursion. Balancing is tricky as you may see in dependencies visualisation on (Figure~\ref{fig:rebuild}).
+Inserting/deleting without tree balancing is pretty straight-forward. Just simple recursion described in previous chapter. Balancing is tricky as you may see in dependencies visualisation on Figure~\ref{fig:rebuild}.
 
 \begin{figure}
 \centering
@@ -303,7 +303,9 @@ Balancing can be done using any linear algorithm for finding median in set. I ha
 
 \subsection{Processing search requests}
 
-When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begins here. Lets look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfy all conditions defined in search request. Both these classes are extending abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, queue just adds row to result set. When processing \verb|SearchTaskSearchNode| queue passes control to \verb|KDVertex::search| which returns all events that should be added to queue. \verb|KDVertex::search| checks if boundary defined by query contains/is disjoint with current node's boundary. If it's disjoint there is nothing more to do. If not then algorithm simply adds two sons of current node to queue. There was idea to add possibility for multiple index creation. Such index could be created for some subset of table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
+When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begins here. Lets look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfies all conditions defined in search request. Both these classes are extending abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, algorithm just adds row to result set. When processing \verb|SearchTaskSearchNode| algorithm passes control to \verb|KDVertex::search| which returns all events that should be added to queue. \verb|KDVertex::search| checks if boundary defined by query is disjoint with current node's boundary. If it's disjoint there is nothing more to do. If not then algorithm simply adds two sons of current node to queue.
+
+There was idea to add possibility for multiple index creation. Such index could be created for some subset of table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
 
 \begin{figure}
 \centering
@@ -312,7 +314,7 @@ When request data is validated, control is passed to \verb|TableIndex| class. Ac
   \label{fig:search}
 \end{figure}
 
-Dependencies of search process are visualized on (Figure~\ref{fig:search}).
+Dependencies of search process are visualized on Figure~\ref{fig:search}.
 
 \subsection{Locking tables}
 
@@ -366,7 +368,7 @@ I implemented both possibilities.
 
 \subsection{Presenting results}
 
-Presenting results may sound like a trivial issue. Actually it's not and not many libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it, by following \cite{SOANS} .
+Presenting results may sound like a trivial issue. Actually it's not and not many libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it by following \cite{SOANS} .
 
 \section{Implemented optimizations}
 
