@@ -255,7 +255,7 @@ At this point we do not know nothing about how pivots are chosen and how/when re
 
 In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we can stop processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we don't have to process all it's children, we already know that all rows will be inside \verb|searchRegion|.
 
-\pawel{tutaj może wklej dowód, że w idealnie zbalansowanym KD drzewie przeszukiwanie zajmuje ...}
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
 
 As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring query and sort them. Not mentioning that we can process this way only one substring condition in a query.
 
@@ -373,13 +373,13 @@ Presenting results may sound like a trivial issue. Actually it's not and not man
 What makes an algorithm useful in practice are optimizations. In this chapter I am presenting description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
 
 \subsection{Queue event}
-Web search-engines usually shows maximum of 10-20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 first (most relevant) results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
+Web search-engines usually shows maximum of 20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 most relevant results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
 
 In classical K-D tree implementations, search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
 Instead of running search events right away we could insert such events into a priority queue. Consider case when user requested data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficiently many results have been found, engine can stop processing search events from the queue. Hence we can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like big improvement. It actually isn't. Number of nodes added to the queue may be large.
 
-Imagine that we want to find point with smallest value of the $x$ coordinate. We need to process all nodes
+Imagine that we want to find few points with smallest values of the $x$ coordinate. We need to process at least all nodes
 that do not have a lower bound on $x$. Lets count them:
 \bigskip
 
@@ -409,13 +409,7 @@ Instead of storing whole area covered by the node (see Figure~\ref{fig:covered})
   \label{fig:inside}
 \end{figure}
 
-Lets revised this idea on example where point with minimal value of coordinate x is requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes, and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found point with minimal value of coordinate x. Search process can be stopped and results may be rendered. Summarizing $\Oh(\log n)$ nodes are added to queue, and $\Oh(\log n)$ nodes are processed. Finding minimum value of coordinate x of node takes $\Oh(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(\log n \log \log n)$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and extracting minimum in $\Oh(\log n)$ which reduces complexity to $\Oh(\log n)$.
-
-\pawel{sorry, ale ten kawałek jest dla mnie średnio czytelny}
-
-\jarek{Dużo tu nie poprawiłem, mógłbyś mi powiedzieć którą część poprawić?}
-
-\pawel{Mam problem z tym, że piszesz o znajdowaniu jednego punktu. Więcej sensu miałoby napisanie o tym jak znaleźć $k$ punktów o najmniejszym $x$ :) jeden punkt możesz przecież znaleźć patrząc na boundary. }
+Lets revised this idea on example where $k$ points with minimal values of coordinate x are requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Then we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. Point with minimal value of coordinate x belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with minimum value of coordinate x is processed. At this point we found first point with minimal value of coordinate x. Then all nodes with lower bound equal to second minimal value of coordinate x are processed. There are again $\Oh(log \n) such nodes, all of them are processed and one row is found. The situation goes on until we find $k$ rows.  After finding $k$ points, search process can be stopped and results may be rendered. Summarizing $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we are storing this information in boundary. Processing one node takes $\Oh(1)$ time. Bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log{k \log n})$. It can be improved by using binomial heaps \cite{BINOMHEAPS}. Binomial heap has an insert in amortized time of $\Oh(1)$ and extracting minimum in $\Oh(k \log n)$ which reduces complexity to $\Oh(k \log n)$.
 
 \subsection{Raw pointers instead of shared pointers}
 
@@ -481,9 +475,7 @@ We have enough credits to pay for the increase.
 
 \subsection{Search}
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
-
-Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
 
 \begin{lemma}\label{lem:3}
 Upper bound for number of processed nodes on level $d$ is $2^{d-1}$.
