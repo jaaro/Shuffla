@@ -664,7 +664,7 @@ Then I am selecting random column and I am setting it as order by column. Then I
 
 \subsection{Inserting 8 million rows}
 
-Average value of fields \verb|first_name|, \verb|last_name|, \verb|city| contains 7 characters. It means that size of inserted data is about 250 MB. There is always some overhead of keeping data in data structures. It causes shuffla to use 6 GB RAM.
+Average length of combined fields \verb|first_name|, \verb|last_name|, \verb|city| contains 21 characters. It means that size of inserted data is about 250 MB. There is always some overhead of keeping data in data structures. It causes shuffla to use 6 GB RAM.
 
 Inserting 8 million rows is not most important part of testing. It is performed before production deployment and we are doing this part only once. I am happy as long as indexing time does not last longer than a few hours. 
 
@@ -787,17 +787,17 @@ In case of search request we need to distribute requests between servers. For th
 At night Solr does not do much. Load grows as the day progresses. At the peek (about 8 PM) our master server handles 18 search requests per second. Number of other requests like updates/replication/commit is negligible. Do not forget that we have three Solr servers on production and this chart is only from one of them. Load is a measure of the amount of computational work that a computer system performs. \jarek{Zdanie z wiki} Load $X$ means that we need at least $\lceil X \rceil$ CPUs to run all processes without any of them waiting for a turn. 
 
 \subsubsection*{Memory, heap usage}
-We are using half of available memory because the other half is reserved for unexpected events, for example crash of one server. It may require increasing memory limits on two other machines. Java on our production environment is executed with \verb|-Xms24G -Xmx24G| which means that memory used by heap plus memory used by stack cannot exceed 24GB. You may find our heap usage very strange. Most of heap memory is used by caches. We are committing changes every 15 minutes which causes all caches to be flushed. For another 15 minutes cache is filling by search queries and then flushed again.
+We are using half of available memory because the other half is reserved for unexpected events, for example crash of one server. It may require increasing memory limits on two other machines. Java on our production environment is executed with \verb|-Xms24G -Xmx24G| which means that memory used by heap plus memory used by stack cannot exceed 24GB. You may find our heap usage very strange. Most of heap memory is used by caches. We are committing changes every 15 minutes which causes all caches to be flushed. For another 15 minutes cache is filling (by processing search queries) and then flushed again.
 
 \subsubsection*{Disk usage and network traffic statistics}
-IO Service shows how much time disk in working during an average second. It shows very small values. On production all Solr data is kept on ramdisks. It isn't zero because of work done by operating system. Solr network traffic isn't huge, it rarely reaches 1 megabit. In the evening we reach peek with more than a 100 simultaneous connections from PHP servers to Solr.
+IO Service shows average values of how much time disk in working during a second. It shows very small values. On production all Solr data is kept on ramdisks. It isn't zero because of work done by operating system. Solr network traffic isn't huge, it rarely reaches 1 megabit. In the evening we reach peek with more than a 100 simultaneous connections from PHP servers to Solr.
 
 
 \subsubsection*{JBoss threads}
-Thread pool contains more than 300 threads. Usually only small amount of this number is used.
+Solr must be executed by some application container. For this purpose we choose JBoss. Thread pool contains more than 300 threads. Usually only small amount of this number is used.
 
 \subsubsection*{Cache usage}
-Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache.  At night there is small number of request and Solr is unable to get passed warming stage before next commit.  Hit ratio is slightly smaller, about 60 percent at night.
+Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache.  At night there is small number of requests and Solr is unable to get passed warming stage before next commit.  Hit ratio is slightly smaller, about 60 percent at night.
 
 \section{Summary}
 
