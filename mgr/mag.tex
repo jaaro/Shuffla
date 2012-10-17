@@ -145,15 +145,26 @@ Pracuję nad portalem nk.pl (który jest największym polskim portalem społeczn
 \subsection{Introduction}
 Given a list of people (their first name, last name, age, home town) we want to provide high-available, scalable and very fast solution that can search through such data.
 
+\pawel{screenshot z nk?}
+
 One of possible solution is to use relational database. Other solution is to use full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop own specialized search engine dedicated to solving such task. In this paper I will describe Shuffla, full-text search engine created by me. I will compare it to Sphinx, Solr, and PostgreSQL. 
 
+\pawel{mam pewne watpliwosci co do teog okreslenia full-text search engine}
+
 I am working on nk.pl (which is biggest polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve the task described above. 
+
+\pawel{tutaj przydaloby sie jeszcze kilka zdan dlaczego chcesz pisac wlasny soft}
 
 \subsection{Database model}
 
 Like in many databases, Shuffla should provide possibility for storing different types of objects. SQL solves it by giving possibility to create multiple tables and so does Shuffla. Lets define table definition by combination of table name and list of pairs <column name, type of column>. Fields in out model table are first name, last name, age, home town. They are strings and numbers therefore type of column can be either a string or a number.
 
+\pawel{tutaj moze wklej jakas przykladowa definicje tabeli}
+
 \subsection{Selecting data}
+
+\pawel{wczesniej piszesz should provide, a potem provides...}
+
 Shuffla like every other database provides possibility for searching data. There are different possible conditions for different types. Possible conditions for numbers are equality check, inequalities and strict inequalities. Strings are compared using lexicographic order so equality check, inequalities and strict inequalities should be supported. There are two additional conditions
 \begin{enumerate}
 \item Checking if given string is prefix of selected column value.
@@ -161,6 +172,8 @@ Shuffla like every other database provides possibility for searching data. There
 \end{enumerate}
 
 User can define order in which results will be returned. Size of the results may be narrowed by defining offset and limit. These search parameters must work exactly the same as their equivalents in SQL.
+
+\pawel{order pojawia sie w poprzednim i nastepnym zdaniu, moze jakos to sklej, oraz zdefiniuj o jaki order Ci chodzi}
 
 Furthermore, it should be possible to personalize the order of of the results. For example, if user from San Francisco is looking for Jane, top results should show Janes from San Francisco, then Janes from California, then rest of U.S. GPS coordinates may be fetched by the modern web browsers \cite{FETCHGPS}. GPS coordinates can be added to scheme. For selecting users in some range we can add conditions   
 \begin{enumerate}
@@ -170,6 +183,8 @@ Furthermore, it should be possible to personalize the order of of the results. F
 
 \section{Shuffla's competition}
 Problem described in this paper is solvable by various existing software. There are two most common kinds of software which can be used:
+
+\pawel{..can be used: relational databases and full text search engines}
 
 \subsection{Relational databases}
 Relational Database Management System data is structured in database tables, records and fields. Each table contains multiple rows. Each row contains multiple fields. Relational Databases are storing data in collection of tables, which might be related by common fields. They also provide relational operators to manipulate the data stored in those tables. Most relational databases are using SQL as query language. The most popular relational databases are PostgreSQL, MySQL, MSSQL Server. In this paper I am only testing PostgreSQL which is in my opinion best relational database nowadays.
@@ -214,15 +229,17 @@ Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries 
 It seems that none of the existing solutions are processing search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions are working on data stored on disk. In age when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on disk could be stored in RAM by ramdisks, it is not primary target to software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that this area has room for improvement. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
-We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range queries. There are three data structures for performing efficient searches in a multidimensional space:
+We can clearly see analogy to multidimensional range searches. \pawel{rozwin} All conditions (except substring condition) can be represented as orthogonal range queries. There are three data structures for performing efficient searches in a multidimensional space:
 
 \begin{enumerate}
 \item Range Tree \cite{CGAAA}
-\item Inverted Index
+\item Inverted Index \pawel{cytowanie}
 \item K-D tree \cite{CGAAA}
 \end{enumerate}
 
 Complexities of these algorithms are depending on number of elements ($n$) and number of dimensions ($d$). In our case number of dimensions is corresponding to number of columns in the table. Here is a table of complexities for listed algorithms. 
+
+\pawel{za szeroka tabelka}
 
 \bigskip
 \begin{tabular}{|l|c|c|c|c|}
@@ -243,7 +260,9 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. In node on level h, pivot is pointing to dimension $h \bmod{D}$ (where D is number of dimensions). Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
+At the beginning lets start with basic description of K-D tree. Later, in chapter 5, I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ is pointing to some dimension. In node on level $h$, pivot is pointing to dimension $h \bmod{D}$ (\pawel{duze czy male d?} where D is number of dimensions). Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by following procedure: 
+
+\pawel{fajnie byloby miec jakis pseudokod...}
 
 \begin{enumerate}
 \item If \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create \verb|node| sons if necessary
@@ -252,10 +271,11 @@ At the beginning lets start with basic description of K-D tree. Later, in chapte
 \end{enumerate}
 
 At this point we do not know nothing about how pivots are chosen and how/when rebuilding of a tree is processed. I will get back to this topics later.
+\pawel{potem cos piszesz o static K-D tree, wiec chyba powinienes gdzies wspomniec, ze w takim pivot jest po prostu mediana?}
 
-In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we can stop processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we do not have to process all it's children, we already know that all rows will be inside \verb|searchRegion|.
+In classical K-D tree we are searching points in some orthogonal search region. Parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf then we are processing all rows inside \verb|node|. Otherwise we recursively searching through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty then we can stop processing this subtree. If region represented by \verb|node| is fully contained in \verb|searchRegion| then we do not have to process all it's children, we already know that all rows will be inside \verb|searchRegion|. \pawel{nie musimy przetwarzac dzieci? hmm raczej musimy wypisac cale poddrzewo, co sie amortyzuje do k}
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. \pawel{wklej tutaj master theorem}
 
 As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently process substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column then all we can do is fetch all rows matching substring condition and sort them. Not mentioning that we can process this way only one substring condition in a query.
 
@@ -277,6 +297,8 @@ Solution with suffix tree is faster when there are not many rows with given subs
 I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedure is to create all this threads. Every HTTP request is assign to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start procedure are presented on Figure~\ref{fig:httpservice}.
 
 \subsection{Validation and passing queries to SearchEngine class}
+
+\pawel{za szeroka linijka}
 
 \verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
 
@@ -300,6 +322,8 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
 \end{figure}
 
 Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over all rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. I have got a pivot and I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows are creating good pivots. Therefore expected complexity of rebuilding subtree with n nodes is $\Oh(n \log n)$. 
+
+\pawel{to w koncu nie masz losowego wybierania?! co to jest good pivot?}
 
 \subsection{Processing search requests}
 
@@ -373,6 +397,8 @@ Presenting results may sound like a trivial issue. Actually it is not and not ma
 \section{Implemented optimizations}
 
 What makes an algorithm useful in practice are optimizations. In this chapter I am presenting description of core optimizations implemented in Shuffla. Most important are first two optimizations which are making Shuffla few times faster.
+
+\pawel{mam wrazenie, ze ten rozdzial powinienen byc przed implementacja}
 
 \subsection{Queue event}
 Web search-engines usually shows maximum of 20 results per page. High percentage of users would not look at more results anyway. Lets input random english word into google search engine. Google shows, that they have found millions of results. Rather than showing all results they are showing us only 10 most relevant results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
@@ -476,6 +502,8 @@ We have enough credits to pay for the increase.
 \end{proof}
 
 \subsection{Search}
+
+\pawel{almost? well? super? pogubilem sie}
 
 Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. Unfortunately, such worst case bound seems difficult to achieve in our dynamic settings, where the tree is just almost balanced. Nevertheless, a slightly weaker bound holds under the assumption that a child of a node corresponding to $n$ points corresponds to at most $\frac{2}{3}n$ points itself.
 
