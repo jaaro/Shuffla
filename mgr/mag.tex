@@ -315,7 +315,7 @@ There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optim
         \begin{subfigure}[b]{0.4\textwidth}
                 \centering
                 \includegraphics[width=8cm]{Figure1}
-  				\caption{Storing whole area covered by nodes}
+    			\caption{Storing whole area covered by nodes}
   				\label{fig:covered}
         \end{subfigure}%
         \qquad\qquad\qquad\qquad
@@ -346,7 +346,7 @@ This is known as partial rebuilding, a simple yet very powerful paradigm often u
 
 \subsection{HTTP Service}
 
-I decided that it would be best if search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define number of available threads. One of the server start procedure is to create all this threads. Every HTTP request is assign to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently its invoking only saving snapshots. All dependencies of server start procedure are presented on Figure~\ref{fig:httpservice}.
+I decided that it would be best if the search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define the number of available threads. One of the server's starting procedure is to create all these threads. Every HTTP request is assigned to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently it's invoking only saving snapshots. All dependencies of server starting procedure are presented in Figure~\ref{fig:httpservice}.
 
 \begin{figure}[h!]
 \centering
@@ -357,19 +357,19 @@ I decided that it would be best if search engine could work as simple HTTP serve
 
 \subsection{Validation and passing queries to SearchEngine class}
 
-\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, search request is converted to \verb|SearchQuery|, insert is converted \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned, and error message is appended to the log file with errors. 
+\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to \verb|SearchQuery|, insert is converted to \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and error message is appended to the log file with errors. 
 
 Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
 \item data validation (types, correspondence to table definition),
-\item measuring running time (engine should report queries executing for too much time),
+\item measuring running time (the engine should report queries being executed for too long),
 \item locking tables in case of modifying query,
 \item passing valid requests to K-D Trees.
 \end{enumerate}
 
 \subsection{Processing insert/delete requests}
 
-Inserting/deleting without tree balancing is pretty straight-forward. Just simple recursion described in previous chapter. Balancing is tricky as you may see in dependencies visualisation on Figure~\ref{fig:rebuild}.
+Inserting/deleting without tree balancing is pretty straight forward. It is just a simple recursion described in the previous chapter. Balancing is tricky as you may see in dependencies visualisation in Figure~\ref{fig:rebuild}.
 
 \begin{figure}[h!]
 \centering
@@ -378,7 +378,7 @@ Inserting/deleting without tree balancing is pretty straight-forward. Just simpl
   \label{fig:rebuild}
 \end{figure}
 
-Balancing can be done using any linear algorithm for finding median in set. I have decided to take different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I am creating a \verb|Pivot|. \verb|Pivot| is simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of well-balanced tree) than I am stopping calculations. If none of these rows were creating good pivots than I am iterating over all rows and checking them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear size than rebuilding root may cause memory usage to double. Such behaviour is very unwelcome in server environment. Implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows are creating good pivots. Therefore expected complexity of rebuilding subtree with n nodes is $\Oh(n \log n)$.
+Balancing can be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of a well-balanced tree) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behaviour is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with n nodes is $\Oh(n \log n)$.
 
 \subsection{Processing search requests}
 
@@ -389,32 +389,32 @@ Balancing can be done using any linear algorithm for finding median in set. I ha
   \label{fig:search}
 \end{figure}
 
-When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begins here. Lets look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfies all conditions defined in search request. Both these classes are extending abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, algorithm just adds row to result set. When processing \verb|SearchTaskSearchNode| algorithm passes control to \verb|KDVertex::search| which returns all events that should be added to queue. \verb|KDVertex::search| checks if boundary defined by query is disjoint with current node's boundary. If it's disjoint there is nothing more to do. If not then algorithm simply adds two sons of current node to queue.
+When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begin here. Let us look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfies all conditions defined in the search request. Both these classes extend abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, algorithm just adds row to the result set. When processing \verb|SearchTaskSearchNode| algorithm passes control to \verb|KDVertex::search|, which returns all events that should be added to the queue. \verb|KDVertex::search| checks if boundary defined by query is disjoint with current node boundary. If it is disjoint, there is nothing more to do. If not, the algorithm simply adds two sons of current node to the queue.
 
-There was idea to add possibility for multiple index creation. Such index could be created for some subset of table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
+There was an idea to add possibility of multiple index creation. Such index could be created for some subset of the table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
 
-Dependencies of search process are visualized on Figure~\ref{fig:search}.
+Dependencies of the searching process are visualized in Figure~\ref{fig:search}.
 
 \subsection{Locking tables}
 
-To correct work in multi-threaded environment we must ensure thread safety. It requires us to eliminate all data races, especially simultaneous writes which can make our data inconsistent. That is why I introduced locking. Basically by acquiring lock we are restricting access to some part of code. 
+To correct work in multi-threaded environment we must ensure thread safety. It requires from us to eliminate all data races, especially simultaneous writes which can make our data inconsistent. That is why I introduced locking. Basically, by acquiring lock we are restricting access to some part of the code. 
 
-Our goal is to create following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the moment, write queries can be performed if no other query is being performed at the moment. 
+Our goal is to create the following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the time. Write queries can be performed if no other query is being performed at the same time. 
 
-This locking schema has the advantage that it can be implemented using only \verb|mutexes| and \verb|locks| from \verb|boost|. A \verb|mutex| object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive, and may grant simultaneous ownership to one or many threads. \verb|Boost.Thread| supplies mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex.
-There are three most common kinds of locks. All locks are working in similar fashion. Mutex is passed as constructor parameter to lock. Ownership of mutex is acquired in constructor. Ownership of mutex is released when lock object is destroyed.  
+The advantage of this locking schema is that it can be implemented using only \verb|mutexes| and \verb|locks| from \verb|boost|. A \verb|mutex| object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive and may grant simultaneous ownership to one or many threads. \verb|Boost.Thread| supplies mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex.
+There are three most common kinds of locks. All locks work in a similar fashion. Mutex is passed as a constructor parameter to lock. Ownership of mutex is acquired in a constructor. Ownership of mutex is released when the lock object is destroyed.  
 
 \begin{enumerate}
-\item \verb|unique_lock| - When mutex is acquired by \verb|unique_lock|, then no one can acquire this lock until unique lock will release ownership of mutex. 
+\item \verb|unique_lock| - When mutex is acquired by \verb|unique_lock|, no one can acquire this lock until unique lock releases ownership of mutex. 
 \item \verb|shared_lock| - Multiple shared locks can acquire the same mutex.
 \item \verb|upgrade_lock| - Acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
 \end{enumerate}
 
-My solution requires every table to have its own mutex. Read-only request use \verb|shared_lock| and write request use \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works exactly as it suppose to.
+My solution requires every table to have its own mutex. Read-only request uses \verb|shared_lock| and write request uses \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works exactly as it supposed to.
 
 \subsection{How data is stored}
 
-Architecture of data storage in databases is very important. It influences application performance and architecture of all other components. I defined requirement for data storage as: 
+Architecture of data storage in databases is very important. It influences application performance and architecture of all other components. Here are the requirements for data storage: 
 \begin{enumerate}
 \item all data must be serializable,
 \item chosen architecture should force type safety,
@@ -428,26 +428,26 @@ Values can be strings or numbers, therefore I created 3 classes:
 \item class \verb|TypeNumber| which extends \verb|Type|.
 \end{enumerate}
 
-If we take a closer look at specification we may notice that we are never changing values of existing numbers and strings. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Lets take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. Text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know text length.   
+If we take a closer look at specification we may notice that we never change values of existing numbers and strings. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Let us take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. A text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know the text length.   
 
-Both \verb|TypeString| and \verb|TypeNumber| are implementing all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
+Both \verb|TypeString| and \verb|TypeNumber| implement all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
 
-Single row stores pointer to the table definition. Besides that there is a \verb|std::vector<Type>| which stores values of all fields.
+Single row stores pointer to the table definition. Apart from that, there is a \verb|std::vector<Type>|, which stores values of all fields.
 
 \subsection{Database persistence}
 
-In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserves data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see by example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which drastically decreases application speed. Instead of such solution, preferred way is to have “almost durable” system.
-Nowadays there are two most popular ways of having almost durable database in RAM:
+In case of a crash there must be a way to restore database. In this chapter I will describe how Shuffla preserves data. Guaranteeing persistence of database which holds data in RAM is difficult (as you can see in the example of Redis ~\cite{REDPE}). After every modifying query, engine should not only write such data to disk but ensure that OS will actually write such data to disk. It is a very costly operation which drastically decreases application speed. Instead of such solution, a preferred way is to have “almost durable” system.
+Nowadays, there are two most popular ways of having almost durable database in RAM:
 
 \begin{enumerate}
 \item AOF - append only file, every modifying query is saved to disk (without forcing OS to actually do it),
-\item Snapshotting - in constant time intervals, snapshots of database are saved to disk.
+\item Snapshotting - in constant time intervals snapshots of database are saved to disk.
 \end{enumerate}
 I implemented both possibilities. 
 
 \subsection{Presenting results}
 
-Presenting results may sound like a trivial issue. Actually it is not and not many libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it by following \cite{SOANS} .
+Presenting results may sound like a trivial issue. Actually it is not and hardly any libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it by following \cite{SOANS} .
 
 \section{Complexities}
 
