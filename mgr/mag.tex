@@ -66,7 +66,7 @@ Jarosław Gomułka
 
 \vspace{0.5cm}
 \textbf{%\normalsize%
-Shuffla: fast and scalable full-text search engine}
+Shuffla: a fast and scalable full-text search engine}
 
 \end{center}
 
@@ -117,22 +117,18 @@ Data: \dotfill\quad Podpis opiekuna pracy: \dotfill
 \thispagestyle{empty}
 
 \begin{abstract}
-Celem tej pracy jest stworzenie efektywnego i skalowalnego narzędzia do dokładnego przeszukiwania zbioru użytkowników dużego portalu społecznościowego. 
+Mając dany zbiór użytkowników dużego portalu społecznościowego chcielibyśmy dysponować efektywnym i skalowalnym narzędziem, które umożliwi nam jego dokładne przeszukiwanie.
 
-Jednym z możliwych rozwiązań tak postawionego problemu jest zastosowanie jednej z popularnych relacyjnych baz danych. Inną możliwością jest użycie wyszukiwarki tekstowej takiej jak Apache Solr czy Sphinx Search. Jeszcze innym pomysłem jest zaimplementowanie własnego narzędzia. Celem tej pracy jest przedstawienie Shuffli, wyspecjalizowanej wyszukiwarki stworzonej przeze mnie z myślą o tym konkretnym problemie. Oprócz przedstawienia architektury i szczegółów implementacji, porównam jej efektywność z PostgreSQL, Apache Solr, oraz Sphinx Search.
+Naturalnym rozwiązaniem tak postawionego problemu jest użycie relacyjnej baz danych. Inną możliwością jest użycie wyszukiwarki tekstowej takiej jak Apache Solr czy Sphinx Search. Jeszcze innym pomysłem jest zaimplementowanie własnego narzędzia. Celem tej pracy jest przedstawienie Shuffli, wyspecjalizowanej wyszukiwarki stworzonej przeze mnie z myślą o tym konkretnym zadaniu. Oprócz opisania architektury i szczegółów implementacji, porównam jej efektywność z PostgreSQL, Apache Solr, oraz Sphinx Search.
 
-\bigskip
-Pracuję nad portalem nk.pl (który jest największym polskim portalem społecznościowym) od początku roku 2011. W sierpniu 2011 roku zostało mi powierzone rozwiązanie tego problemu.
-
-\bigskip
-\noindent \textbf{Słowa kluczowe:} bazy danych, nosql
+Jestem członkiem zespołu rozwijającego portal nk.pl (który jest największym polskim serwisem społecznościowym) od początku roku 2011. W sierpniu 2011 roku zostało mi powierzone rozwiązanie tego problemu.
 \end{abstract}
 
 \selectlanguage{english}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\title{Shuffla: fast and scalable full-text search engine}
+\title{Shuffla: a fast and scalable full-text search engine}
 \author{Jarosław Gomułka}
 
 \maketitle
@@ -140,11 +136,11 @@ Pracuję nad portalem nk.pl (który jest największym polskim portalem społeczn
 \pagenumbering{arabic}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Introduction}
+\section{Introduction and overview of the content}
 
 Given a list of people (their first name, last name, age, home town) we want to provide highly available, scalable and very fast solution that can search through such data.
 
-One possible solution is to use relational database. Other solution is to use a full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop our own specialized search engine dedicated to solving such tasks. In this paper I will describe Shuffla, a full-text search engine created by me and compare it to Sphinx, Solr, and PostgreSQL. 
+One possible solution is to use a relational database. Other solution is to use a full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop our own specialized search engine dedicated to solving such tasks. In this thesis I will describe Shuffla, a full-text search engine created by me and compare it to Sphinx, Solr, and PostgreSQL. 
 
 I have been working at nk.pl (the biggest Polish social networking website) since the beginning of 2011. In August 2011 I was appointed to solve the task described above. 
 
@@ -155,45 +151,47 @@ I have been working at nk.pl (the biggest Polish social networking website) sinc
   \label{fig:nk_search}
 \end{figure}
 
+\pawel{jedno zdanie o każdym rozdziale}
+
 \section{Problem definition}
 
 \subsection{Database model}
 
-As with many databases, Shuffla allows you to store different types of objects. Like SQL, Shuffla does it by offering possibility of creating multiple tables. A table might be defined as a combination of a table name and a list of pairs <column name, type of column>. Fields in out model table are first name, last name, age, home town. They are strings and numbers; therefore a type of column can be either a string or a number.
+As with many databases, Shuffla allows you to store different types of objects. Like SQL, Shuffla does so by offering possibility of creating multiple tables. A table is defined by specifying its name and a list of columns, where each column has a name and a type. In our example use case the columns are: first name, last name, age, and home town. They are strings and numbers, therefore a type of column can be either a string or a number.
 
 \subsection{Selecting data}
 
-Shuffla like every other database offers possibility of searching data. There are different possible conditions for different types. Possible conditions for numbers are equality check, inequalities and strict inequalities. Strings are compared using lexicographic order so equality check, inequalities and strict inequalities should be supported. There are two additional conditions
+Shuffla like every other database offers possibility of searching data. There are different possible conditions for different types. Possible conditions for numbers are equality check, inequalities and strict inequalities. Strings are compared using lexicographic order, so possible conditions are (again) equality check, inequalities and strict inequalities. Additionally, the following two conditions should be supported:
 \begin{enumerate}
-\item Checking if a given string is a prefix of the selected column value.
-\item Checking if a given string is a substring of the selected column value. 
+\item checking if a given string is a prefix of the selected column value,
+\item checking if a given string is a substring of the selected column value. 
 \end{enumerate}
 
 Users can define \verb|order_by| column. If the \verb|order_by| clause is specified, the returned rows are sorted in the specified order. Size of the results may be narrowed by defining \verb|offset| and \verb|limit|. These search parameters must work exactly in the same way as their equivalents in SQL.
 
-Furthermore, it should be possible to personalize the order of the results. For example, if a user from San Francisco is looking for Jane, the top results should show Janes from San Francisco, then Janes from California, then the rest of U.S. GPS coordinates may be fetched by the modern web browsers \cite{FETCHGPS}. GPS coordinates can be added to the scheme. To selecting users in some range we can add conditions   
+Furthermore, it should be possible to personalize the order of the results. For example, if a user from San Francisco is looking for Jane, the top results should show Janes from San Francisco, then Janes from California, then the rest of U.S. GPS coordinates of the user can be fetched by the modern web browsers \cite{FETCHGPS}, and GPS coordinates of each home town can be added to the scheme. Then to select results in some range we use the following conditions:   
 \begin{enumerate}
-\item{someLatitiude - radius $\leq$ latitude $\wedge$ latitude $\geq$ someLatitude + radius}
-\item{someLongitude - radius $\leq$ longitude $\wedge$ longitude $\geq$ someLongitude + radius}
+\item{someLatitiude - radius $\leq$ latitude $\wedge$ latitude $\geq$ someLatitude + radius},
+\item{someLongitude - radius $\leq$ longitude $\wedge$ longitude $\geq$ someLongitude + radius}.
 \end{enumerate}
 
 \section{Shuffla's competition}
-The problem described in this paper may be solved by various existing software. There are two most common kinds of software which can be used: relational databases and full-text search engines.
+The problem described in this thesis may be solved by various existing software. There are two most common kinds of software which can be used: relational databases and full-text search engines.
 
 \subsection{Relational databases}
-Relational Database Management System data is structured in database tables, records and fields. Each table contains multiple rows. Each row contains multiple fields. Relational Databases store data in collection of tables, which might be related by common fields. They also provide relational operators to manipulate the data stored in those tables. Most relational databases use SQL as query language. The most popular relational databases are PostgreSQL, MySQL, MSSQL Server. In this paper I will only test PostgreSQL which is in my opinion best relational database nowadays.
+Relational Database Management System data is structured in database tables, records and fields. Each table contains multiple rows. Each row contains multiple fields. Relational Databases store data in collection of tables, which might be related by common fields. They also provide relational operators to manipulate the data stored in those tables. Most relational databases use SQL as query language. The most popular relational databases are PostgreSQL, MySQL, MSSQL Server. In this thesis I will only test PostgreSQL which is in my opinion best relational database nowadays.
 
 \subsubsection{PostgreSQL}
-PostgreSQL has really useful features such as: point-in-time recovery, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer and write ahead logging for fault tolerance. It supports international character sets, unicode, and is locale-aware for sorting and case-sensitivity. It is highly scalable both in the quantity of data it can manage and in the number of concurrent users it can accommodate. PostgreSQL keeps its data on a disk and it implements their own master-slave replication. There are also few middlewares which could provide master-master replication \cite{PSQLREPL}. PostgreSQL performance can be easily monitored by software like Munin and New Relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Serious disadvantage of using PostgreSQL for this problem is performance on substring queries; B-tree based indexes do not support fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
+PostgreSQL has really useful features such as: point-in-time recovery, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer and write ahead logging for fault tolerance. It supports international character sets, unicode, and is locale-aware for sorting and case-sensitivity. It is highly scalable both in the quantity of data it can manage and in the number of concurrent users it can accommodate. PostgreSQL keeps its data on a disk and it implements their own master-slave replication. There are also few middlewares which could provide master-master replication \cite{PSQLREPL}. PostgreSQL performance can be easily monitored by software like Munin and New Relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Serious disadvantage of using PostgreSQL for this problem is performance on substring queries, as B-tree based indexes do not support fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
 Here is a brief example of processing query by B-tree: \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|. In this case engine finds first person with first name John. It takes $\Oh(\log n)$ time where $n$ is number of rows in the table. Finding another person with first name John takes $\Oh(1)$. Unfortunately, all these rows must be processed one by one to check if they contain substring \verb|qwertyabc|. Since there is no one with such a name, engine will process all men named John and will find nothing.
 
 \subsection{Full-text search engine}
-In text retrieval full-text search refers to techniques for searching document or a collection in a full text database. The searches are based on parts of the original texts represented in databases. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every word occurring in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on a disk. When processing query, engine selects best strategy to follow. Strategy can be seen as a procedure:
+In text retrieval full-text search refers to techniques for searching document or a collection in a full text database. The searches are based on parts of the original texts represented in databases. The most popular full-text search engines are Sphinx Search and Apache Solr. Almost all big players are choosing Sphinx and Solr over other engines like Elastic Search and Xapian so I am going to consider only the first two. Both engines are based on similar data structure called inverted index. Inverted index keeps list of every word occurring in database. For each word inverted index remembers where this word occurs. This is similar to glossaries which we can often see at the end of books. Such inverted index is stored on a disk. When processing query, engine selects best strategy to follow. Strategy can be seen as the following procedure:
 \begin{enumerate}
-\item Narrow as many words as possible from inverted index which needs to be processed. 
-\item Process remaining words. 
+\item narrow as many words as possible from inverted index which needs to be processed, 
+\item process remaining words. 
 \end{enumerate}
-For example, if a query is \verb|first name = John| \verb|and| \verb|limit 1|, we are only interested in word \verb|John| from inverted index. The engine finds the first occurrence and returns it. Ineqalities, prefix queries and substring queries are treated similarly to equality checks. They narrow the number of words in the dictionary that algorithm needs to process. If a query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|, it is likely that there are more Johns than all people with last name containing \verb|qwertyabc|. By using sophisticated data structure, engine may find out that the are not many people with a name containing \verb|qwertyabc|. Such output is rendered very fast\footnote{with table containing 8 million rows Solr renders output for such query in less than 0.01 second} In worst case scenario algorithm works in linear time. An example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and the result set will be empty.
+For example, if a query is \verb|first name = John| \verb|and| \verb|limit = 1|, we are only interested in word \verb|John| from inverted index. The engine finds the first occurrence and returns it. Inequalities, prefix queries and substring queries are treated similarly to equality checks. They narrow the number of words in the dictionary that algorithm needs to process. If a query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|, it is likely that there are more Johns than all people with last name containing \verb|qwertyabc|. By using sophisticated data structure, engine may find out that the are not many people with a name containing \verb|qwertyabc|. Such output is rendered very fast\footnote{With table containing 8 million rows Solr renders output for such query in less than 0.01 second.} In worst case scenario algorithm works in linear time. An example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and the result set will be empty.
 
 \subsubsection{Solr}
 
@@ -204,44 +202,43 @@ Solr does not modify database in real-time. Data is not added to database immedi
 \subsubsection{Sphinx Search}
 
 Sphinx Search is a very good and fast search engine. Sphinx provides excellent relevance ranking (by using multiple factors like phrase proximity and various statistics). It is possible to install Sphinx as MySQL or PostgreSQL plugin. Unfortunately our specification emphasizes Sphinx disadvantages.
-Sphinx does not have replication. It is unacceptable for any high traffic website. There is a way to simulate replication. Inverted index is stored on a disk. Directory containing index could be replicated by a file system (for example network file system). But if an index is big than syncing such directories would take too much time and would be inefficient and problematic.
+Sphinx does not have replication. It is unacceptable for any high traffic website. There is a way to simulate replication by storing the inverted index on disk. Then the directory containing the index could be replicated by a file system (for example a network file system). But if the index is big then syncing such directories would take too much time and would be inefficient and problematic.
 
-There are several high-traffic websites with Sphinx search. They horizontally partition searched data across search nodes and then process it in parallel \cite{SPHINXPARAL}.
+There are several high-traffic websites using Sphinx Search. They horizontally partition searched data across search nodes and then process it in parallel \cite{SPHINXPARAL}.
 
 Replication is very important to us because in case of server failure we want to avoid downtime. This eliminated Sphinx Search from our list of potential search engines. 
 
-Apart from replication sphinx has another problem. There are two different kinds of indexes in sphinx.
+Apart from replication Sphinx has another problem. There are two different kinds of indexes possible:
 \begin{enumerate}
-\item Real-time index - enables inserts
-\item Normal index - modifications possible only by rebuilding the whole index (which takes too much time for our requirements)
+\item real-time index, where inserts are possible,
+\item normal index, where modifications possible only by rebuilding the whole index (which takes too much time for our requirements).
 \end{enumerate}
 
-Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries are not supported yet. Periodical rebuiling of an index with more than 20 million elements is problematic. Apache Solr and Sphinx search use similar data structures. Since number of features implemented by Solr is much greater than in Sphinx I decided to look only into Solr. 
+Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries are not supported yet. Periodical rebuilding of an index with more than 20 million elements is problematic. Apache Solr and Sphinx search use similar data structures. Since number of features implemented by Solr is much greater than in Sphinx I decided to look only into Solr. 
 
 \subsection{Why am I creating new search engine?!}
 It seems that none of the existing solutions process search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions work on data stored on a disk. Nowadays when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on a disk could be stored in RAM by ramdisks, it is not a primary target for software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that there is room for improvement in this area. I was also very eager to write my own search engine. I have never implemented such a tool and I was interested to see how it goes. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
-We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range queries. There are three data structures for performing efficient searches in a multidimensional space:
+We can clearly see analogy to multidimensional range searches. All conditions (except substring condition) can be represented as orthogonal range queries. There are three standard data structures for performing efficient searches in a multidimensional space:
 
 \begin{enumerate}
-\item Range Tree \cite{CGAAA}
-\item Inverted Index \cite{INVIND}
-\item K-D tree \cite{CGAAA}
+\item range Tree \cite{CGAAA},
+\item inverted Index \cite{INVIND},
+\item K-D tree \cite{CGAAA}.
 \end{enumerate}
 
-Complexities of these algorithms depend on the number of elements ($n$) and the number of dimensions ($d$). In our case number of dimensions corresponds to number of columns in the table. Here is a table of complexities for listed algorithms.
+Complexities of these algorithms depend on the number of elements $n$ and the number of dimensions $d$. In our case number of dimensions corresponds to number of columns in the table. Here is a table of complexities for those three data structures.
 
-\bigskip
+\begin{center}
 \begin{tabular}{|l|c|c|c|c|}
-\hline Algorithm & Insert & Delete & Search & Space \\
+\hline Data structure & Insert time & Delete time & Search time & Space usage \\
 \hline K-D tree & $\Oh(\log{n})$ & $\Oh(\log{n})$ & $\Oh(n^{1-1/d} + k)$ & $\Oh(n)$ \\
 \hline Inverted index & $\Oh(\log n)$ & $\Oh(\log n)$ & $\Oh(n)$ & $\Oh(n)$ \\
 \hline Range tree & $\Oh(\log^{d-1}{n})$ & $\Oh(\log^{d-1}{n})$ & $\Oh(\log^d{n})$ & $\Oh(n\log^{d-1}{n})$ \\
 \hline 
 \end{tabular}
-
-\bigskip
+\end{center}
 
 Since both Apache Solr and Sphinx Search use inverted index, I decided not to follow this direction and try something new. It seems that K-D tree could outperform inverted index on search queries.
 
@@ -251,62 +248,58 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-I will start with a basic description of K-D tree. In chapter 5 I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ points to some dimension. In node on level $h$, pivot points to dimension $h \bmod{D}$ (where $D$ is number of dimensions). Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by the following procedure: 
+I will start with a basic description of K-D tree \pawel{gdybym nie wiedzial jak wyglada K-D tree, nijak by mi ten Twoj opis nie pomogl}. In Chapter 5 I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ points to some dimension. In node on level $h$, pivot points to dimension $h \bmod{d}$ (where $d$ is number of dimensions). Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by the following procedure:
 
 \begin{enumerate}
-\item If \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create \verb|node| sons if necessary
-\item Otherwise, if \verb|row| matches condition defined by \verb|node->pivot|, recursively insert \verb|row| to left son of \verb|node|
-\item Otherwise, recursively insert \verb|row| to right son of \verb|node|
+\item if \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create sons of \verb|node| if necessary,
+\item Otherwise, if \verb|row| matches condition defined by \verb|node->pivot|, recursively insert \verb|row| to left son of \verb|node|,
+\item Otherwise, recursively insert \verb|row| to right son of \verb|node|.
 \end{enumerate}
 
 At this point let us assume that splitting leaf into two nodes occurs when leaf contains at least 30 rows. Pivot should be equal to the value of a median.
 
 In classical K-D tree we search points in some orthogonal search region. The parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf, we process all rows inside \verb|node|. Otherwise, we recursively search through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty, we can stop processing this subtree. If the region represented by \verb|node| is fully contained in \verb|searchRegion|, we can assume that all rows will be inside \verb|searchRegion| (but still these rows must be collected).
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. 
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. We will repeatedly use the master theorem in our complexity analysis, hence we state it below.
 
-We have to remember part of master theorem which have been just used. If $T(n)$ for $a \geq 1, b > 1, n > 0$ is defined by
-
-
+\begin{theorem}[Master theorem]
+Assume that $a \geq 1, b > 1$ and for all $n\geq 1$:
 \[
-  f(n) = \left\{ 
+  T(n) = \left\{ 
   \begin{array}{l l}
     \Theta(1) & \quad \text{if $1 \leq n < b$}\\
     a T(\frac{n}{b}) + f(n) & \quad \text{if $b \leq n$ }\\
   \end{array} \right.
 \]
+Then, if $f(n)=\Oh(n^{{\log_{b}{a}} - \epsilon})$ for some constant $\epsilon$, $T(n) = \Theta(n^{\log_{b}{a}})$.
+\end{theorem}
 
-and $f(n)=\Oh(n^{{\log_{b}{a}} - \epsilon})$ for some constant $\epsilon$, then $T(n) = \Theta(n^{\log_{b}{a}})$
 \bigskip
 
 As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently processes substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column, all we can do is fetch all rows matching substring condition and sort them. Not to mention that this way we can process only one substring condition in a query.
 
 There is another possibility. Engine may process search query without substring parts. In the end, if the row matches query without it substring parts the pattern matching is performed. In this solution rows should be provided to pattern matching in the the order defined within query.
 
-The solution with the suffix tree is faster when there are not many rows with given substring. If situation is opposite, the pattern matching will work faster. I decided to implement the solution with pattern matching because of its simplicity and superiority in space complexity. As you may see in tests results at the end of this paper, even without suffix trees memory usage is high. 
+The solution with the suffix tree is faster when there are not many rows with given substring. If situation is opposite, the pattern matching will work faster. I decided to implement the solution with pattern matching because of its simplicity and superiority in space complexity. As you may see in tests results at the end of this thesis, even without suffix trees memory usage is high. 
 
 \section{Implemented optimizations}
 
 What makes an algorithm useful in practice are optimizations. In this chapter I will present description of core optimizations implemented in Shuffla. The most important are first two optimizations which are making Shuffla few times faster.
 
 \subsection{Queue event}
-Web search-engines usually show maximum of 20 results per page. A high percentage of users would not look at more results anyway. If we input a random english word into google search engine, Google presents number of results exceeding millions. Rather than showing all Google shows 10 most relevant results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
+Web search-engines usually show maximum of 20 results per page. A high percentage of users would not look at more results anyway. If we input a random english word into Google search engine, the number of results exceeds millions. Nevertheless, instead of showing all of them, Google shows just 10 most relevant results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
 
 In classical K-D tree implementations, a search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
 Instead of running search events right away we could insert such events into a priority queue. Let us consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, we can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
 
 Imagine that we want to find few points with smallest values of the $x$ coordinate. We need to process at least all nodes
-that do not have a lower bound on $x$. Lets count them:
-\bigskip
-
-$T(1) = 1$
-
-$T(n) \geq 2^{d-1} * T(n/2^{d})$
-
-\bigskip
-
-There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optimization described in next chapter.
+that do not have a lower bound on $x$. Lets compute how many of them we need to process in the worst possible case:
+\begin{eqnarray*}
+T(1) &=& 1\\
+T(n) &\geq& 2^{d-1} * T(n/2^{d})
+\end{eqnarray*}
+Hence there are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optimization described in next chapter.
 
 \subsection{Defined boundary and real boundary}
 
@@ -314,16 +307,16 @@ There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optim
         \centering
         \begin{subfigure}[b]{0.42\textwidth}
                 \centering
-                \includegraphics[width=8cm]{Figure1}
+                \includegraphics[width=7cm]{Figure1}
       		\caption{Storing whole area covered by nodes}
   				\label{fig:covered}
         \end{subfigure}%
-        \qquad\qquad\qquad
+        \qquad\qquad
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc. 
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.42\textwidth}
                 \centering
- 				\includegraphics[width=8cm]{Figure2}
+ 				\includegraphics[width=7cm]{Figure2}
  				 \caption{Area covered by points inside nodes}
  				 \label{fig:inside}
         \end{subfigure}
@@ -332,14 +325,14 @@ There are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by optim
 
 Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), we could calculate area covered by points inside each node (see Figure~\ref{fig:inside}).
 
-Let us take on example where $k$ points with minimal values of coordinate x are requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Next, we chose node with smaller minimum value of coordinate x. This event is processed and another two nodes are added. The point with minimal value of coordinate x belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with a minimum value of coordinate x is processed. At this point we found first point with a minimal value of coordinate x. Then all nodes with lower bound equal to second minimal value of coordinate x are processed. There are again $\Oh(\log n)$ such nodes, all of them are processed and one row is found. The situation goes on until we find $k$ rows.  After finding $k$ points, search process can be stopped and results may be rendered. To sum up, $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we store this information in boundary. Processing one node takes $\Oh(1)$ time. The bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log(k \log n))$.
+Let us take on example where $k$ points with minimal values of coordinate $x$ are requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Next, we chose node with smaller minimum value of coordinate $x$. This event is processed and another two nodes are added. The point with minimal value of coordinate $x$ belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with a minimum value of coordinate $x$ is processed. At this point we found first point with a minimal value of coordinate $x$. Then all nodes with lower bound equal to second minimal value of coordinate $x$ are processed. There are again $\Oh(\log n)$ such nodes, all of them are processed and one row is found. The situation goes on until we find $k$ rows.  After finding $k$ points, search process can be terminated and results may be rendered. To sum up, $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we store this information in boundary. Processing one node takes $\Oh(1)$ time. The bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log(k \log n))$.
 
 \subsection{Raw pointers instead of shared pointers}
 
-In modern C++ pointers should not be used and shared pointers are recommended instead. The idea behind shared pointer is to automate releasing resources. Basically, shared pointer keeps the counter representing the number of copies of the current pointer. When the shared pointer is created, the counter is incremented. When shared pointer is deleted, the counter is decremented. When the counter is decreased to zero, the resource is released. With such a tool developer is free from most common cause of memory leaks. Unfortunately shared pointers come with time and space overhead. I decided to use raw pointers, which gives better running time. In retrospect, I think it was biggest mistake in the project. The source code became really messy, even small change in legacy code could create bugs.
+In modern C++ pointers should not be used and shared pointers are recommended instead. The idea behind shared pointer is to automate releasing resources. Basically, shared pointer keeps the counter representing the number of copies of the current pointer. When the shared pointer is created, the counter is incremented. When shared pointer is deleted, the counter is decremented. When the counter is decreased to zero, the resource is released. With such a tool developer can avoid the most common source of memory leaks. Unfortunately shared pointers come with time and space overhead. I decided to use raw pointers, which gives better running time. In retrospect, I think it was biggest mistake in the project. The source code became really messy, even small change in legacy code could create bugs.
 
 \subsection{Balancing K-D tree}
-K-D tree has similar problem to binary trees. A Binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When the number of nodes in one subtree is 2 times larger than the number of nodes in the opposite subtree, I rebuild their parent subtree from scratch.
+K-D tree has similar problem to binary trees. A binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When the number of nodes in one subtree is 2 times larger than the number of nodes in the opposite subtree, I rebuild their parent subtree from scratch.
 This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity is actually rather good. Amortized complexity describes average time required to perform a sequence of related operations. A detailed description with examples of amortized complexity can be found in ~\cite{AMOR}.
 
 \section{Implementation}
@@ -357,7 +350,7 @@ I decided that it would be best if the search engine could work as simple HTTP s
 
 \subsection{Validation and passing queries to SearchEngine class}
 
-\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to \verb|SearchQuery|, insert is converted to \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and error message is appended to the log file with errors. 
+\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. Then \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to \verb|SearchQuery|, insert is converted to \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and error message is appended to the log file with errors. 
 
 Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
@@ -369,7 +362,7 @@ Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEn
 
 \subsection{Processing insert/delete requests}
 
-Inserting/deleting without tree balancing is pretty straight forward. It is just a simple recursion described in the previous chapter. Balancing is tricky as you may see in dependencies visualisation in Figure~\ref{fig:rebuild}.
+Inserting/deleting without tree balancing is pretty straight forward. It is just a simple recursion described in the previous chapter. Balancing is tricky as you may see in dependencies visualization in Figure~\ref{fig:rebuild}.
 
 \begin{figure}[h!]
 \centering
@@ -378,7 +371,7 @@ Inserting/deleting without tree balancing is pretty straight forward. It is just
   \label{fig:rebuild}
 \end{figure}
 
-Balancing can be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (See definition of a well-balanced tree) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behaviour is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with n nodes is $\Oh(n \log n)$.
+Balancing can be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (see definition of a super-balanced tree in Chapter 7) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behavior is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with $n$ nodes is $\Oh(n \log n)$.
 
 \subsection{Processing search requests}
 
@@ -405,9 +398,9 @@ The advantage of this locking schema is that it can be implemented using only \v
 There are three most common kinds of locks. All locks work in a similar fashion. Mutex is passed as a constructor parameter to lock. Ownership of mutex is acquired in a constructor. Ownership of mutex is released when the lock object is destroyed.  
 
 \begin{enumerate}
-\item \verb|unique_lock| - When mutex is acquired by \verb|unique_lock|, no one can acquire this lock until unique lock releases ownership of mutex. 
-\item \verb|shared_lock| - Multiple shared locks can acquire the same mutex.
-\item \verb|upgrade_lock| - Acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
+\item \verb|unique_lock| - when mutex is acquired by \verb|unique_lock|, no one can acquire this lock until unique lock releases ownership of mutex. 
+\item \verb|shared_lock| - multiple shared locks can acquire the same mutex.
+\item \verb|upgrade_lock| - acquires upgradable ownership. Upgradable ownership may be at any time upgraded from shared lock to unique lock and vice versa.
 \end{enumerate}
 
 My solution requires every table to have its own mutex. Read-only request uses \verb|shared_lock| and write request uses \verb|unique_lock|. With such solution write queries cannot be executed along with other queries. Using \verb|shared_lock| allows simultaneous execution of other read-only queries. So everything works exactly as it supposed to.
@@ -732,7 +725,7 @@ Solr is superior over Shuffla in every way. Solr is faster. It uses less memory.
 
 In nk we have 3 servers with Solr. There is master-slave replication between them. One server is a master, another two others are slaves. Only master processes modifying queries. When user does anything related to searching, PHP code handles it.
 
-When some action requires modifying data in Solr, PHP code creates task for it. This task is inserted into a queue. There is a background job which processes all tasks from queue one by one. We need queue to avoid unexpected spikes. For example, the uncaught spammer attack may cause 1000 modifying requests per second \footnote{Actually this is highly unlikely, nk crashes spammers activity extremely well}. If this happens, master could easily crash or at least experience some kind of slowness due to a big load. We want to avoid such situations. 
+When some action requires modifying data in Solr, PHP code creates task for it. This task is inserted into a queue. There is a background job which processes all tasks from queue one by one. We need queue to avoid unexpected spikes. For example, the uncaught spammer attack may cause 1000 modifying requests per second \footnote{Actually this is highly unlikely, nk catches spammers activity extremely well.}. If this happens, master could easily crash or at least experience some kind of slowness due to a big load. We want to avoid such situations. 
 
 In case of search request we need to distribute requests between servers. For this purpose the search requests go through HAProxy \cite{HAPROXY}. This load balancer is distributes requests between our 3 servers.
 
