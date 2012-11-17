@@ -151,7 +151,7 @@ I have been working at nk.pl (the biggest Polish social networking website) sinc
   \label{fig:nk_search}
 \end{figure}
 
-\pawel{jedno zdanie o każdym rozdziale}
+In next chapter I will define a specification for searching in nk. Then I will present description of a existing software which may fulfil this specification and of course I will try to justify writing new search engine. My database must have a powerful data structure for efficient query handling. I will compare available data structures. I will describe Shuffla architecture along with optimizations of a chosen data structure. I will present a comparison of various search engines along with the conclusions. In the end I will present architecture and several statistics of search engine in nk.
 
 \section{Problem definition}
 
@@ -248,7 +248,9 @@ I chose to implement K-D trees over Range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-I will start with a basic description of K-D tree \pawel{gdybym nie wiedzial jak wyglada K-D tree, nijak by mi ten Twoj opis nie pomogl}. In Chapter 5 I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ points to some dimension. In node on level $h$, pivot points to dimension $h \bmod{d}$ (where $d$ is number of dimensions). Most important functions of our data structure are insert and search. Both these functions are recursive. Insert call of \verb|row| to \verb|node| is handled by the following procedure:
+I will start with a basic description of K-D tree. In Chapter 5 I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view this as a condition $row_{e} \leq C$ where $e$ points to some dimension. Insert/delete will be similar to their equivalents in classical binary tree. Each function is recursive. Based on condition in given node algorithm processes either left or right subtree. To achieve best complexity, in node on level $h$, pivot points to dimension $h \bmod{d}$ (where $d$ is number of dimensions). 
+
+Insert call of \verb|row| to \verb|node| is handled by the following procedure:
 
 \begin{enumerate}
 \item if \verb|node| is a leaf then add \verb|row| to the node. Choose a pivot and create sons of \verb|node| if necessary,
@@ -287,7 +289,7 @@ The solution with the suffix tree is faster when there are not many rows with gi
 What makes an algorithm useful in practice are optimizations. In this chapter I will present description of core optimizations implemented in Shuffla. The most important are first two optimizations which are making Shuffla few times faster.
 
 \subsection{Queue event}
-Web search-engines usually show maximum of 20 results per page. A high percentage of users would not look at more results anyway. If we input a random english word into Google search engine, the number of results exceeds millions. Nevertheless, instead of showing all of them, Google shows just 10 most relevant results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
+Web search-engines usually show maximum of 20 results per page. A high percentage of users would not look at more results anyway. If we input a random English word into Google search engine, the number of results exceeds millions. Nevertheless, instead of showing all of them, Google shows just 10 most relevant results. Such cases are very typical and they must be processed very fast, i.e. $\Oh$((offset + limit) $*$ ?) instead of $\Oh$(total number of results $*$ ?).
 
 In classical K-D tree implementations, a search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
@@ -303,7 +305,7 @@ Hence there are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by
 
 \subsection{Defined boundary and real boundary}
 
-\begin{figure}
+\begin{figure}[h!]
         \centering
         \begin{subfigure}[b]{0.42\textwidth}
                 \centering
@@ -371,7 +373,7 @@ Inserting/deleting without tree balancing is pretty straight forward. It is just
   \label{fig:rebuild}
 \end{figure}
 
-Balancing can be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (see definition of a super-balanced tree in Chapter 7) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behavior is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with $n$ nodes is $\Oh(n \log n)$.
+Balancing can be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (see definition of a super-balanced tree in Chapter 7) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behaviour is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with $n$ nodes is $\Oh(n \log n)$.
 
 \subsection{Processing search requests}
 
@@ -682,7 +684,7 @@ The average length of combined \verb|first_name|, \verb|last_name|, \verb|city| 
 
 Inserting 8 million rows is not the most important part of testing. It is performed before production deployment and I will do this part only once. I am happy as long as indexing time does not last longer than a few hours. 
 
-Shuffla handles insert requests with speed of hunderds requests per second. Using single inserts with other engines is not so efficient. All considered engines are able to read csv file and import data from such file. For them it is the only way to import data within few hours.
+Shuffla handles insert requests with speed of hundreds requests per second. Using single inserts with other engines is not so efficient. All considered engines are able to read csv file and import data from such file. For them it is the only way to import data within few hours.
 
 \subsection{Statistics}
 
@@ -798,7 +800,7 @@ In case of search request we need to distribute requests between servers. For th
 \end{figure}
 
 \subsubsection*{Number of requests, load - by day} 
-At night Solr does not do much. The load grows as the day progresses. At the peek (about 8 PM) our master server handles 18 search requests per second. the number of other requests like updates/replication/commit is negligible. One might not forget that we have three Solr servers on production and this chart is only from one of them. A load is a measure of the amount of computational work that a computer system performs. \jarek{Zdanie z wiki} Load $X$ means that we need at least $\lceil X \rceil$ CPUs to run all processes without any of them waiting for a turn. 
+At night Solr does not do much. The load grows as the day progresses. At the peek (about 8 PM) our master server handles 18 search requests per second. the number of other requests like updates/replication/commit is negligible. One might not forget that we have three Solr servers on production and this chart is only from one of them. A load is a measure of the amount of computational work that a computer performs. Load $X$ means that we need at least $\lceil X \rceil$ CPUs to run all processes without any of them waiting for a turn. 
 
 \subsubsection*{Memory, heap usage}
 At nk we use half of available memory because the other half is reserved for unexpected events, for example, a crash of one server. It may require increasing memory limits on two other machines. Java on our production environment is executed with \verb|-Xms24G -Xmx24G|, which means that memory used by heap plus memory used by stack cannot exceed 24GB. You may find our heap usage very strange. Most of heap memory is used by caches. We commit changes every 15 minutes, which causes all caches to be flushed. For another 15 minutes cache is filling (by processing search queries) and then flushed again.
