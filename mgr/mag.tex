@@ -431,7 +431,7 @@ Values can be strings or numbers, therefore I created 3 classes:
 
 If we take a closer look at specification we may notice that we never change values of existing numbers and strings. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Let us take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. A text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know the text length.   
 
-Both \verb|TypeString| and \verb|TypeNumber| implement all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring| \cite{STRSTR}.
+Both \verb|TypeString| and \verb|TypeNumber| implement all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring|~\cite{STRSTR}.
 
 Single row stores pointer to the table definition. Apart from that, there is a \verb|std::vector<Type>|, which stores values of all fields.
 
