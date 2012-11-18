@@ -193,7 +193,7 @@ In text retrieval full-text search refers to techniques for searching document o
 \item narrow as many words as possible from inverted index which needs to be processed, 
 \item process remaining words. 
 \end{enumerate}
-For example, if a query is \verb|first name = John| \verb|and| \verb|limit = 1|, we are only interested in word \verb|John| from inverted index. The engine finds the first occurrence and returns it. Inequalities, prefix queries and substring queries are treated similarly to equality checks. They narrow the number of words in the dictionary that algorithm needs to process. If a query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|, it is likely that there are more Johns than all people with last name containing \verb|qwertyabc|. By using sophisticated data structure, engine may find out that the are not many people with a name containing \verb|qwertyabc|. Such output is rendered very fast\footnote{With table containing 8 million rows Solr renders output for such query in less than 0.01 second.} In worst case scenario algorithm works in linear time. An example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and the result set will be empty.
+For example, if a query is \verb|first name = John| \verb|and| \verb|limit = 1|, I am only interested in word \verb|John| from inverted index. The engine finds the first occurrence and returns it. Inequalities, prefix queries and substring queries are treated similarly to equality checks. They narrow the number of words in the dictionary that algorithm needs to process. If a query is \verb|first name = John| \verb|and| \verb|substring(last name) = qwertyabc| \verb|and| \verb|limit = 1|, it is likely that there are more Johns than all people with last name containing \verb|qwertyabc|. By using sophisticated data structure, engine may find out that the are not many people with a name containing \verb|qwertyabc|. Such output is rendered very fast\footnote{With table containing 8 million rows Solr renders output for such query in less than 0.01 second.} In worst case scenario algorithm works in linear time. An example for such case could be \verb|substring(last name)=a| \verb|and| \verb|substring(last name) = b| \verb|and| ... \verb|and| \verb|substring(last name) = z| \verb|and| \verb|limit = 1|. Almost whole inverted index must be processed and the result set will be empty.
 
 \subsubsection{Solr}
 
@@ -263,9 +263,9 @@ Insert call of \verb|row| to \verb|node| is handled by the following procedure:
 
 At this point let us assume that splitting leaf into two nodes occurs when leaf contains at least 30 rows. Pivot should be chosen as the median of the corresponding coordinates of all points in the subtree.
 
-In classical K-D tree we search points in some orthogonal search region. The parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf, we process all rows inside \verb|node|. Otherwise, we recursively search through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty, we can stop processing this subtree. If the region represented by \verb|node| is fully contained in \verb|searchRegion|, we can assume that all rows will be inside \verb|searchRegion| (but still these rows must be collected).
+In classical K-D tree algorithm searches points in some orthogonal search region. The parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf, algorithm processes all rows inside \verb|node|. Otherwise, algorithm recursively searches through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty, I can stop processing this subtree. If the region represented by \verb|node| is fully contained in \verb|searchRegion|, I can assume that all rows will be inside \verb|searchRegion| (but still these rows must be collected).
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. We want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, we can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. We will repeatedly use the master theorem in our complexity analysis, hence we state it below.
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. I want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, I can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. I will repeatedly use the master theorem in our complexity analysis, hence we state it below.
 
 \begin{theorem}[Master theorem]
 Assume that $a \geq 1, b > 1$ and for all $n\geq 1$:
@@ -281,11 +281,11 @@ Then, if $f(n)=\Oh(n^{{\log_{b}{a}} - \epsilon})$ for some constant $\epsilon$, 
 
 \bigskip
 
-As I mentioned before almost all conditions can be represented as orthogonal range queries. But we also have to handle queries with substring conditions. In each node of K-D tree we could store structure which efficiently processes substring queries. We could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with suffix trees. If we have to return data ordered by some column, all we can do is fetch all rows matching substring condition and sort them. Not to mention that this way we can process only one substring condition in a query.
+As I mentioned before almost all conditions can be represented as orthogonal range queries. But the data structure also has to handle queries with a substring conditions. In each node of K-D tree I could store a structure which efficiently processes substring queries. I could use suffix trees, for example Ukonnen's algorithm \cite{STUKK}. Unfortunately adding linear structure to every node of K-D tree increases the space complexity to $\Oh(n \log n)$. There are other problems with the suffix trees. If data structure has to return data ordered by some column, all it can do is fetch all rows matching the substring condition and sort them. Not to mention that this way I can process only one substring condition in a query.
 
-There is another possibility. Engine may process search query without substring parts. In the end, if the row matches query without it substring parts the pattern matching is performed. In this solution rows should be provided to pattern matching in the the order defined within query.
+There is another possibility. Engine may process search query without substring parts. In the end, if the row matches query without it substring parts the pattern matching is performed. In this solution rows should be provided to the pattern matching in the order defined within query.
 
-The solution with the suffix tree is faster when there are not many rows with given substring. If situation is opposite, the pattern matching will work faster. I decided to implement the solution with pattern matching because of its simplicity and superiority in space complexity. As you may see in tests results at the end of this thesis, even without suffix trees memory usage is high. 
+The solution with the suffix tree is faster when there are not many rows with a given substring. If situation is opposite, the pattern matching will work faster. I decided to implement the solution with the pattern matching because of its simplicity and superiority in space complexity. As you may see in the tests results at the end of this thesis, even without suffix trees memory usage is high. 
 
 \section{Implemented optimizations}
 \label{chapter:opt}
@@ -297,10 +297,10 @@ Web search-engines usually show maximum of 20 results per page. A high percentag
 
 In classical K-D tree implementations, a search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
-Instead of running search events right away we could insert such events into a priority queue. Let us consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, we can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
+Instead of running search events right away I could insert such events into a priority queue. Let me consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, we can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
 
-Imagine that we want to find few points with smallest values of the $x$ coordinate. We need to process at least all nodes
-that do not have a lower bound on $x$. Lets compute how many of them we need to process in the worst possible case:
+Imagine that I want to find few points with smallest values of the $x$ coordinate. Data structure needs to process at least all nodes
+that do not have a lower bound on $x$. Let me compute how many of them we need to process in the worst possible case:
 \begin{eqnarray*}
 T(1) &=& 1\\
 T(n) &\geq& 2^{d-1} * T(n/2^{d})
@@ -329,16 +329,16 @@ Hence there are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by
         
 \end{figure}
 
-Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), we could calculate area covered by points inside each node (see Figure~\ref{fig:inside}).
+Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), I could calculate area covered by points inside each node (see Figure~\ref{fig:inside}).
 
-Let us take on example where $k$ points with minimal values of coordinate $x$ are requested. First event contains root of a tree. It is processed. It causes to push two of its sons to the queue. Next, we chose node with smaller minimum value of coordinate $x$. This event is processed and another two nodes are added. The point with minimal value of coordinate $x$ belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with a minimum value of coordinate $x$ is processed. At this point we found first point with a minimal value of coordinate $x$. Then all nodes with lower bound equal to second minimal value of coordinate $x$ are processed. There are again $\Oh(\log n)$ such nodes, all of them are processed and one row is found. The situation goes on until we find $k$ rows.  After finding $k$ points, search process can be terminated and results may be rendered. To sum up, $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we store this information in boundary. Processing one node takes $\Oh(1)$ time. The bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. We processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log(k \log n))$.
+Let me take on an example where $k$ points with minimal values of coordinate $x$ are requested. First event contains a root of a tree. It is processed. It causes to push two of its sons to the queue. Next, I chose node with the smaller minimum value of coordinate $x$. This event is processed and another two nodes are added. The point with minimal value of coordinate $x$ belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with a minimum value of coordinate $x$ is processed. At this point I found first point with a minimal value of coordinate $x$. Then all nodes with lower bound equal to second minimal value of coordinate $x$ are processed. There are again $\Oh(\log n)$ such nodes, all of them are processed and one row is found. The situation goes on until I find $k$ rows.  After finding $k$ points, search process can be terminated and results may be rendered. To sum up, $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we store this information in boundary. Processing one node takes $\Oh(1)$ time. The bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. I processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log(k \log n))$.
 
 \subsection{Raw pointers instead of shared pointers}
 
 In modern C++ pointers should not be used and shared pointers are recommended instead. The idea behind shared pointer is to automate releasing resources. Basically, shared pointer keeps the counter representing the number of copies of the current pointer. When the shared pointer is created, the counter is incremented. When shared pointer is deleted, the counter is decremented. When the counter is decreased to zero, the resource is released. With such a tool developer can avoid the most common source of memory leaks. Unfortunately shared pointers come with time and space overhead. I decided to use raw pointers, which gives better running time. In retrospect, I think it was biggest mistake in the project. The source code became really messy, even small change in legacy code could create bugs.
 
 \subsection{Balancing K-D tree}
-K-D tree has similar problem to binary trees. A binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When the number of nodes in one subtree is 2 times larger than the number of nodes in the opposite subtree, I rebuild their parent subtree from scratch.
+K-D tree has similar problem to the binary trees. A binary tree can be unbalanced and so can K-D tree. My idea for balancing K-D tree is very simple. When the number of nodes in one subtree is 2 times larger than the number of nodes in the opposite subtree, I rebuild their parent subtree from scratch.
 This is known as partial rebuilding, a simple yet very powerful paradigm often used for making data structures dynamic, for example in weight-balanced trees~\cite{ALPHATREES}. While the worst case complexity of a single operations can be large because of this rebalancing, the amortized complexity is actually rather good. Amortized complexity describes average time required to perform a sequence of related operations. A detailed description with examples of amortized complexity can be found in ~\cite{AMOR}.
 
 \section{Implementation}
@@ -346,7 +346,7 @@ This is known as partial rebuilding, a simple yet very powerful paradigm often u
 
 \subsection{HTTP Service}
 
-I decided that it would be best if the search engine could work as simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define the number of available threads. One of the server's starting procedure is to create all these threads. Every HTTP request is assigned to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently it's invoking only saving snapshots. All dependencies of server starting procedure are presented in Figure~\ref{fig:httpservice}.
+I decided that it would be best if the search engine could work as a simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define the number of available threads. One of the server's starting procedure is to create all these threads. Every HTTP request is assigned to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently it's invoking only saving snapshots. All dependencies of server starting procedure are presented in Figure~\ref{fig:httpservice}.
 
 \begin{figure}[h!]
 \centering
@@ -357,7 +357,7 @@ I decided that it would be best if the search engine could work as simple HTTP s
 
 \subsection{Validation and passing queries to SearchEngine class}
 
-\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. Then \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to \verb|SearchQuery|, insert is converted to \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and error message is appended to the log file with errors. 
+\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. Then \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to \verb|SearchQuery|, insert is converted to \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and an error message is appended to the log file with errors. 
 
 Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
@@ -390,7 +390,7 @@ Balancing can be done using any linear algorithm for finding median in the set. 
   \label{fig:search}
 \end{figure}
 
-When request data is validated, control is passed to \verb|TableIndex| class. Actual computations begin here. Let us look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to task queue if and only if it satisfies all conditions defined in the search request. Both these classes extend abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, algorithm just adds row to the result set. When processing \verb|SearchTaskSearchNode| algorithm passes control to \verb|KDVertex::search|, which returns all events that should be added to the queue. \verb|KDVertex::search| checks if boundary defined by query is disjoint with current node boundary. If it is disjoint, there is nothing more to do. If not, the algorithm simply adds two sons of current node to the queue.
+When request data is validated, control is passed to the \verb|TableIndex| class. Actual computations begin here. Let us look at processing search request. Method \verb|TableIndex::search| contains priority queue which processes all search events. There are different objects for different tasks. There is \verb|SearchTaskSearchNode| which contains a node to process. There is also \verb|SearchTaskFoundRow| which always contains one row. This row may be inserted to the task queue if and only if it satisfies all conditions defined in the search request. Both these classes extend abstract class \verb|SearchTask|. When processing \verb|SearchTaskFoundRow|, algorithm just adds row to the result set. When processing \verb|SearchTaskSearchNode| algorithm passes control to \verb|KDVertex::search|, which returns all events that should be added to the queue. \verb|KDVertex::search| checks if boundary defined by query is disjoint with current node boundary. If it is disjoint, there is nothing more to do. If not, the algorithm simply adds two sons of current node to the queue.
 
 There was an idea to add possibility of multiple index creation. Such index could be created for some subset of the table's properties. Queries with conditions containing only properties from such subset would run much faster. For this feature I introduced two functions \verb|KDVertex:filter_non_index_conditions| \verb|QueryBoundary::are_there_extra_requirements|. Possibility of creating additional indexes is not implemented yet.  
 
@@ -400,7 +400,7 @@ Dependencies of the searching process are visualized in Figure~\ref{fig:search}.
 
 To correct work in multi-threaded environment we must ensure thread safety. It requires from us to eliminate all data races, especially simultaneous writes which can make our data inconsistent. That is why I introduced locking. Basically, by acquiring lock we are restricting access to some part of the code. 
 
-Our goal is to create the following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the time. Write queries can be performed if no other query is being performed at the same time. 
+My goal is to create the following schema: Any number of read-only queries can be run concurrently as long as no write query is being performed at the time. Write queries can be performed if no other query is being performed at the same time. 
 
 The advantage of this locking schema is that it can be implemented using only \verb|mutexes| and \verb|locks| from \verb|boost|. A \verb|mutex| object facilitates protection against data races and allows thread-safe synchronization of data between threads. A thread obtains ownership of a mutex object by calling one of the lock functions and relinquishes ownership by calling the corresponding unlock function. Mutexes may be either recursive or non-recursive and may grant simultaneous ownership to one or many threads. \verb|Boost.Thread| supplies mutexes with exclusive ownership semantics, along with a shared ownership (multiple-reader or single-writer) mutex.
 There are three most common kinds of locks. All locks work in a similar fashion. Mutex is passed as a constructor parameter to lock. Ownership of mutex is acquired in a constructor. Ownership of mutex is released when the lock object is destroyed.  
@@ -429,7 +429,7 @@ Values can be strings or numbers, therefore I created 3 classes:
 \item class \verb|TypeNumber| which extends \verb|Type|.
 \end{enumerate}
 
-If we take a closer look at specification we may notice that we never change values of existing numbers and strings. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Let us take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. A text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point we know the text length.   
+If we take a closer look at specification we may notice that we never change values of existing numbers and strings. Therefore these classes may be immutable. Immutable object is an object whose state cannot be modified after it is created. Immutability trivially guarantees thread-safety and allows for some storage optimization. Let us take a look at \verb|TypeString|. Storing text values in \verb|std::string| would be inefficient because of overhead caused by \verb|std::string| being not immutable. A text is actually stored in \verb|char*|. This array is created in \verb|TypeString| constructor because at this point I know the text length.   
 
 Both \verb|TypeString| and \verb|TypeNumber| implement all supported functions. \verb|TypeNumber| implements equality check, inequalities and strict inequalities. \verb|TypeString| implements equality check, inequalities, strict inequalities, substring and prefix function. Pattern matching is done by function \verb|strstr| from \verb|cstring|~\cite{STRSTR}.
 
@@ -457,7 +457,7 @@ Let $n$ be the total number of points stored in the whole tree $T$. For a vertex
 $$\displaystyle\mathop{\bigforall}_{v\in T} \quad \frac{1}{\alpha} \leq \frac{|\leftSon(v)|}{|\rightSon(v)|} \leq \alpha$$
 The tree is well-balanced if it is 2-balanced and super-balanced if it is  $\frac{3}{2}$-balanced. The height of both well- and super-balanced trees is $\Oh(\log n)$. Every point belongs to $\Oh(\log n)$ nodes. 
 
-To simplify the analysis, the assume that the values in all columns are unique. We will ensure that the tree is always well-balanced by rebuilding its subtrees that violate this property. We assume that whenever we rebuild a subtree, it becomes super-balanced. While it is possible to ensure that it becomes perfectly balanced, for the reasons explained in Section~\ref{chapter:processing} the actual implementation guarantees a weaker invariant.
+To simplify the analysis, I assume that the values in all columns are unique. I will ensure that the tree is always well-balanced by rebuilding its subtrees that violate this property. I assume that whenever data structure rebuilds a subtree, it becomes super-balanced. While it is possible to ensure that it becomes perfectly balanced, for the reasons explained in Section~\ref{chapter:processing} the actual implementation guarantees a weaker invariant.
 
 \subsection{Inserting/deleting point}
 
@@ -466,7 +466,7 @@ Rebuilding tree of size $n$ can be done in $\Oh(n \log n)$ time.
 \end{lemma}
 
 \begin{proof}
-We can find the median in linear time~\cite{FIVE}. Hence, in order to rebuild a tree, we first find the median and then, recursively, rebuild two subtrees. Complexity of such procedure can be described by $T(n)=\Oh(n)+T(\alpha n)+T((1-\alpha)n)$, where $\frac{2}{5}\leq \alpha \leq \frac{3}{5}$. The recurrence solves to $T(n)=\Theta(n\log n)$. This can be proved by drawing recurrence call tree. At each level the work done sums to $\Oh(n)$. There are $\Oh(\log n)$ levels, therefore the complexity is $\Oh(n \log n)$.
+I can find the median in linear time~\cite{FIVE}. Hence, in order to rebuild a tree, I first find the median and then, recursively, rebuild two subtrees. Complexity of such procedure can be described by $T(n)=\Oh(n)+T(\alpha n)+T((1-\alpha)n)$, where $\frac{2}{5}\leq \alpha \leq \frac{3}{5}$. The recurrence solves to $T(n)=\Theta(n\log n)$. This can be proved by drawing recurrence call tree. At each level the work done sums to $\Oh(n)$. There are $\Oh(\log n)$ levels, therefore the complexity is $\Oh(n \log n)$.
 \end{proof}
 
 \begin{lemma}\label{lem:2}
@@ -475,7 +475,7 @@ Amortized time of insert/delete is $\Oh(\log^2 n)$.
 
 \begin{proof}
 
-We will give $6\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $6|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is well-balanced this is at most $n\log n$). We must prove that the invariant still holds after each insert/delete and that we always have enough credits to amortize the rebuilding. I will consider those two parts separately.
+I will give $6\log n$ credits to each node visited during insert/delete. As the depth of the whole tree is $\Oh(\log n)$, the total number of credits allocated during a single insert/delete operation is just $\Oh(\log^{2}n)$. The goal is to make sure that the following invariant holds: a node such that the left subtree is of size $n_{l}$ and the right subtree is of size $n_{r}$ has at least $6|n_{l}-n_{r}|\log n$ credits available (observe that because the tree is well-balanced this is at most $n\log n$). I must prove that the invariant still holds after each insert/delete and that I always have enough credits to amortize the rebuilding. I will consider those two parts separately.
 
 \begin{enumerate}
 
@@ -486,7 +486,7 @@ We will give $6\log n$ credits to each node visited during insert/delete. As the
 
 \end{enumerate}
 
-There is one additional detail. The value of $\log n$ can (and will) actually change during the execution of the algorithm. Its integer part is actually important. In order for it to increase, we need to perform $n$ insert/delete operations. Hence, if we charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, we will have $cn\log^{2} n$ credits available. 
+There is one additional detail. The value of $\log n$ can (and will) actually change during the execution of the algorithm. Its integer part is actually important. In order for it to increase, I need to perform $n$ insert/delete operations. Hence, if I charge each such operation with additional $c\log^{2} n$ credits, whenever the integer part of $\log n$ increases, I will have $cn\log^{2} n$ credits available. 
 
 Now, for each node of the tree we need to add $n\log n$ credits, hence the total required number of credits is described by the recurrence $T(n)=n\log n+T(\alpha n)+T((1-\alpha)n)$, where $\frac{1}{3}\leq \alpha \leq \frac{2}{3}$. The recurrence solves to $T(n)=\Theta(n\log^{2}n)$. This can be proved by drawing recurrence call tree. At each level the work done sums to $\Oh(n \log n)$. There are $\Oh(\log n)$ levels, therefore the complexity is $\Oh(n \log^2 n)$.
 
@@ -528,7 +528,7 @@ My goal is to prove that $T(n) \leq c n^a$ for some constant $a < 1$ using induc
 
 $$T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)\leq\displaystyle\sum\limits_{i=1}^{2^{d-1}} c(x_i)^{a}  \quad\text{where}\quad  \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$$ 
 
-As we are interested in upperbounding $T(n)$, we are interested in the maximum possible value of the sum of all $(x_i)^{a}$ under the condition that all $x_{i}$ sum up to $\frac{2}{3}n$. Because the function $f(x)=x^{a}$ is convex for $a<1$, from Jensen's inequality we get that the sum is maximized when all $x_{i}$ are equal. Hence:
+As I am interested in upperbounding $T(n)$, I am interested in the maximum possible value of the sum of all $(x_i)^{a}$ under the condition that all $x_{i}$ sum up to $\frac{2}{3}n$. Because the function $f(x)=x^{a}$ is convex for $a<1$, from Jensen's inequality we get that the sum is maximized when all $x_{i}$ are equal. Hence:
 
 \begin{eqnarray*}
 T(n) &=& \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i) = 2^{d-1} T\left(\frac{\frac{2}{3}n}{2^{d-1}}\right) \leq 2^{d-1} c \left(\frac{\frac{2}{3}n}{2^{d-1}}\right) ^ a  \\
@@ -543,7 +543,7 @@ Simple transformations of $2^{(1-a)(d-1)} (\frac{2}{3})^a \leq 1$ gives $\frac{d
 
 \end{proof}
 
-Now, we can solve $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ by applying the master theorem, which boils down to the following simple computation:
+Now, I can solve $T(n)=1+2^{d-1}T(\frac{\frac{2}{3}n}{2^{d-1}})$ by applying the master theorem, which boils down to the following simple computation:
 
 \begin{eqnarray*}
 \frac{\log 2^{d-1}}{\log 3*2^{d-2}} &=& \log_{3*2^{d-2}}{2^{d-1}} = \log_{3*2^{d-2}}{2^{d-1}} + \log_{3*2^{d-2}}{\frac{3}{2}} - \log_{3*2^{d-2}}{\frac{3}{2}}\\ 
@@ -803,7 +803,7 @@ Solr has advanced cache system. Usually about 70 percent of requests are rendere
 
 \section{Summary}
 
-After this discussion it might seem that Shuffla is useless. I have to disagree. Shuffla fits great for smaller projects like searching through internet forum or a blog. Both Solr and PostgreSQL require quite difficult installation and configuration. Installation of shuffla takes 2 minutes, creating table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is more than welcome.
+After this discussion it might seem that Shuffla is useless. I have to disagree. Shuffla fits great for smaller projects like searching through internet forum or a blog. Both Solr and PostgreSQL require quite difficult installation and configuration. Installation of shuffla takes 2 minutes, creating a table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is more than welcome.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
