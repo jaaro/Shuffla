@@ -231,7 +231,7 @@ We can clearly see analogy to multidimensional range searches. All conditions (e
 \item K-D tree \cite{CGAAA}.
 \end{enumerate}
 
-Complexities of these algorithms depend on the number of elements $n$ and the number of dimensions $d$. In our case number of dimensions corresponds to number of columns in the table. Here is a table of complexities for those three data structures.
+Complexities of these algorithms depend on the number of elements $n$ and the number of dimensions $d$. In our case, number of dimensions corresponds to number of columns in the table. Here is a table of complexities for those three data structures.
 
 \begin{center}
 \begin{tabular}{|l|c|c|c|c|}
@@ -265,7 +265,7 @@ At this point let us assume that splitting leaf into two nodes occurs when leaf 
 
 In classical K-D tree algorithm searches points in some orthogonal search region. The parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf, algorithm processes all rows inside \verb|node|. Otherwise, algorithm recursively searches through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty, I can stop processing this subtree. If the region represented by \verb|node| is fully contained in \verb|searchRegion|, I can assume that all rows will be inside \verb|searchRegion| (but still these rows must be collected).
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. I want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, I can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. I will repeatedly use the master theorem in our complexity analysis, hence we state it below.
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. I want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, I can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. I will repeatedly use the master theorem in our complexity analysis, hence I state it below.
 
 \begin{theorem}[Master theorem]
 Assume that $a \geq 1, b > 1$ and for all $n\geq 1$:
@@ -297,7 +297,7 @@ Web search-engines usually show maximum of 20 results per page. A high percentag
 
 In classical K-D tree implementations, a search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
-Instead of running search events right away I could insert such events into a priority queue. Let me consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, we can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
+Instead of running search events right away I could insert such events into a priority queue. Let me consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, I can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
 
 Imagine that I want to find few points with smallest values of the $x$ coordinate. Data structure needs to process at least all nodes
 that do not have a lower bound on $x$. Let me compute how many of them we need to process in the worst possible case:
@@ -314,7 +314,7 @@ Hence there are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by
         \begin{subfigure}[b]{0.42\textwidth}
                 \centering
                 \includegraphics[width=7cm]{Figure1}
-      		\caption{Storing whole area covered by nodes}
+        	\caption{Storing whole area covered by nodes}
   				\label{fig:covered}
         \end{subfigure}%
         \qquad\qquad
