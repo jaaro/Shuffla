@@ -483,7 +483,6 @@ I will give $6\log n$ credits to each node visited during insert/delete. As the 
 
 \item I rebuild a node as soon as one subtree is two times larger than the other, say $n_{l} = 2n_{r}$. Then the number of credits accumulated at the node is at least 6($2n_{r}-\frac{3}{2}n_{r}
 )\log n = 6\frac{1}{2}n_{r}\log n = n\log n$, where $n=n_{l}+n_{r}$. After I reconstruct the tree, the required number of credits will be at most $\log n$. Hence, I can use $(n-1)\log n$ credits to pay for the reconstruction and by Lemma~\ref{lem:1} this is enough.
-)\log n = 6\frac{1}{2}n_{r}\log n = n\log n$, where $n=n_{l}+n_{r}$. After I reconstruct the tree, the required number of credits will be at most $\log n$. Hence, I can use $(n-1)\log n$ credits to pay for the reconstruction and by Lemma~\ref{lem:1} this is enough.
 
 \end{enumerate}
 
