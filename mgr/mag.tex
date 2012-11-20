@@ -357,7 +357,7 @@ I decided that it would be best if the search engine could work as a simple HTTP
 
 \subsection{Validation and passing queries to SearchEngine class}
 
-\verb|http::server2::request_handler::handle_request| passes requesting urls to \verb|QueryDispatcher|. Then \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to \verb|SearchQuery|, insert is converted to \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and an error message is appended to the log file with errors. 
+\verb|http::server2::request_handler::handle_request| passes requesting urls to the \verb|QueryDispatcher|. Then \verb|QueryDispatcher| converts every request to corresponding class by using \verb|QueryCreate|. For instance, the search request is converted to the \verb|SearchQuery|, insert is converted to the \verb|InsertQuery|, and so on. At this level, syntax validation is performed. In case of an error, HTTP error code 400 is returned and an error message is appended to the log file with errors. 
 
 Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEngine| class is responsible for:
 \begin{enumerate}
@@ -716,13 +716,9 @@ Solr is superior over Shuffla in every way. Solr is faster. It uses less memory.
 
 In nk we have 3 servers with Solr. There is master-slave replication between them. One server is a master, another two others are slaves. Only master processes modifying queries. When user does anything related to searching, PHP code handles it, see Figure~\ref{fig:arch}.
 
-When some action requires modifying data in Solr, PHP code creates task for it. This task is inserted into a queue. There is a background job which processes all tasks from queue one by one. We need queue to avoid unexpected spikes. For example, the uncaught spammer attack may cause 1000 modifying requests per second \footnote{Actually this is highly unlikely, nk catches spammers activity extremely well.}. If this happens, master could easily crash or at least experience some kind of slowness due to a big load. We want to avoid such situations. 
+When some action requires modifying data in Solr, PHP code creates task for it. This task is inserted into a queue. There is a background job which processes all tasks from queue one by one. We need queue to avoid unexpected spikes. For example, a uncaught spammer attack may cause 1000 modifying requests per second \footnote{Actually this is highly unlikely, nk catches spammers activity extremely well.}. If this happens, master could easily crash or at least experience some kind of slowness due to a big load. We want to avoid such situations. 
 
 In case of search request we need to distribute requests between servers. For this purpose the search requests go through HAProxy \cite{HAPROXY}. This load balancer is distributes requests between our 3 servers.
-
-\subsection{Statistics from the master server}
-
-Figure~\ref{fig:stats} shows a few statistics from the master server.
 
 \begin{figure}
         \centering
@@ -785,6 +781,10 @@ Figure~\ref{fig:stats} shows a few statistics from the master server.
         \label{fig:stats}
 \end{figure}
 
+\subsection{Statistics from the master server}
+
+Figure~\ref{fig:stats} shows a few statistics from the master server.
+
 \subsubsection*{Number of requests, load - by day} 
 At night Solr does not do much. The load grows as the day progresses. At the peek (about 8 PM) our master server handles 18 search requests per second. the number of other requests like updates/replication/commit is negligible. One might not forget that we have three Solr servers on production and this chart is only from one of them. A load is a measure of the amount of computational work that a computer performs. Load $X$ means that we need at least $\lceil X \rceil$ CPUs to run all processes without any of them waiting for a turn. 
 
@@ -799,7 +799,7 @@ IO Service shows average values of how much time a disk works during a second. I
 Solr must be executed by some application container. For this purpose we chose JBoss. Thread pool contains more than 300 threads. Usually only small amount of this number is used.
 
 \subsubsection*{Cache usage}
-Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache.  At night there is a small number of requests and Solr is unable to get passed warming stage before next commit.  Hit ratio is slightly smaller, about 60 percent at night.
+Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache.  At night there is a small number of requests and Solr is unable to get passed warming stage before next commit. The hit ratio is slightly smaller, about 60 percent at night.
 
 \section{Summary}
 
