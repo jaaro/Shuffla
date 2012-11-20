@@ -251,7 +251,7 @@ I chose to implement K-D trees over range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-I will start with a basic description of K-D tree. In Section~\ref{chapter:opt} I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view it as a condition $x_{i} \leq C$ where $i$ denotes some coordinate. Insert/delete will be similar to their equivalents in classical binary tree. Each function is recursive. Based on condition in given node algorithm processes either left or right subtree. To achieve best complexity, in node on level $h$, pivot splits according to the $h \bmod{d}$-th coordinate, where $d$ is number of dimensions. 
+I will start with a basic description of K-D tree. In Section~\ref{chapter:opt} I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view it as a condition $x_{i} \leq C$ where $i$ denotes some coordinate. Insert/delete are similar to their equivalents in classical binary tree. Each function is recursive. Based on condition in given node algorithm processes either left or right subtree. To achieve best complexity, in node on level $h$, pivot splits according to the $h \bmod{d}$-th coordinate, where $d$ is number of dimensions. 
 
 Insert call of \verb|row| to \verb|node| is handled by the following procedure:
 
