@@ -124,6 +124,7 @@ Naturalnym rozwiązaniem tak postawionego problemu jest użycie relacyjnej baz d
 Jestem członkiem zespołu rozwijającego portal nk.pl (który jest największym polskim serwisem społecznościowym) od początku roku 2011. W sierpniu 2011 roku zostało mi powierzone rozwiązanie tego problemu.
 \end{abstract}
 
+\newpage \thispagestyle{empty} \mbox{} 
 \selectlanguage{english}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -138,7 +139,7 @@ Jestem członkiem zespołu rozwijającego portal nk.pl (który jest największym
 
 \section{Introduction and overview of the content}
 
-Given a list of people (their first name, last name, age, home town) we want to provide highly available, scalable and very fast solution that can search through such data.
+Given a list of people (their first name, last name, age, and home town) we want to provide highly available, scalable and very fast solution that can search through such data.
 
 One possible solution is to use a relational database. Other solution is to use a full-text search engine like Apache Solr or Sphinx Search. Another solution is to develop our own specialized search engine dedicated to solving such tasks. In this thesis I will describe Shuffla, a full-text search engine created by me and compare it to Sphinx, Solr, and PostgreSQL. 
 
@@ -151,7 +152,7 @@ I have been working at nk.pl (the biggest Polish social networking website) sinc
   \label{fig:nk_search}
 \end{figure}
 
-In Section~\ref{chapter:problem} I formally define the problem. Then in Section~\ref{chapter:competition} I present how it can be solved using already existing software and justify writing a new search engine. The core of my implementation is a data structure for efficient query handling, which I present in Section~\ref{chapter:algorithm}. Then I describe optimizations used to speed-up this data structure in Section~\ref{chapter:opt} and architecture of my implementation in Section~\ref{chapter:impl}. In Section~\ref{chapter:complexity} I formally analyze the complexity of the resulting solution, and in Section~\ref{chapter:tests} present the experimental results. Finally, in Section~\ref{chapter:nk} I present the architecture and a few statistics of the search engine actually used in nk.
+In Section~\ref{chapter:problem} I formally define the problem. Then in Section~\ref{chapter:competition} I present how it can be solved using already existing software tools and justify writing a new search engine. The core of my implementation is a data structure for efficient query handling, which I present in Section~\ref{chapter:algorithm}. Then I describe optimizations used to speed-up this data structure in Section~\ref{chapter:opt} and architecture of my implementation in Section~\ref{chapter:impl}. In Section~\ref{chapter:complexity} I formally analyze the complexity of the resulting solution, and in Section~\ref{chapter:tests} present the experimental results. Finally, in Section~\ref{chapter:nk} I present the architecture and a few statistics of the search engine actually used in nk and summarize in Section~\ref{chapter:summary}.
 
 \section{Problem definition}
 \label{chapter:problem}
@@ -178,10 +179,10 @@ Furthermore, it should be possible to personalize the order of the results. For 
 
 \section{Shuffla's competition}
 \label{chapter:competition}
-The problem described in this thesis may be solved by various existing software. There are two most common kinds of software which can be used: relational databases and full-text search engines.
+The problem described in this thesis may be solved by various existing software tools. There are two most common kinds of such tools which can be used: relational databases and full-text search engines.
 
 \subsection{Relational databases}
-Relational Database Management System data is structured in database tables, records and fields. Each table contains multiple rows. Each row contains multiple fields. Relational Databases store data in collection of tables, which might be related by common fields. They also provide relational operators to manipulate the data stored in those tables. Most relational databases use SQL as query language. The most popular relational databases are PostgreSQL, MySQL, MSSQL Server. In this thesis I will only test PostgreSQL which is in my opinion best relational database nowadays.
+Relational Database Management System data is structured in database tables, records and fields. Each table contains multiple rows. Each row contains multiple fields. Relational databases store data in collection of tables, which might be related by common fields. They also provide relational operators to manipulate the data stored in those tables. Most relational databases use SQL as query language. The most popular implementations are PostgreSQL, MySQL, MSSQL Server. In this thesis I will only test PostgreSQL which is in my opinion best relational database nowadays.
 
 \subsubsection{PostgreSQL}
 PostgreSQL has really useful features such as: point-in-time recovery, asynchronous replication, online/hot backups, a sophisticated query planner/optimizer and write ahead logging for fault tolerance. It supports international character sets, unicode, and is locale-aware for sorting and case-sensitivity. It is highly scalable both in the quantity of data it can manage and in the number of concurrent users it can accommodate. PostgreSQL keeps its data on a disk and it implements their own master-slave replication. There are also few middlewares which could provide master-master replication \cite{PSQLREPL}. PostgreSQL performance can be easily monitored by software like Munin and New Relic. SQL implies very strong typing system. PostgreSQL processes comparisons and inequalities very fast as long as proper indexes are created. Serious disadvantage of using PostgreSQL for this problem is performance on substring queries, as B-tree based indexes do not support fast processing of substring queries. There are attempts to create full-text indexes (gist, gin) which could outperform classical index based on B-tree.
@@ -204,7 +205,7 @@ Solr does not modify database in real-time. Data is not added to database immedi
 \subsubsection{Sphinx Search}
 
 Sphinx Search is a very good and fast search engine. Sphinx provides excellent relevance ranking (by using multiple factors like phrase proximity and various statistics). It is possible to install Sphinx as MySQL or PostgreSQL plugin. Unfortunately our specification emphasizes Sphinx disadvantages.
-Sphinx does not have replication. It is unacceptable for any high traffic website. There is a way to simulate replication by storing the inverted index on disk. Then the directory containing the index could be replicated by a file system (for example a network file system). But if the index is big then syncing such directories would take too much time and would be inefficient and problematic.
+Sphinx does not have replication. It is unacceptable for any high traffic website. There is a way to simulate replication by storing the inverted index on disk and replicating the directory containing the index (for example using a network file system). But if the index is big then syncing such directories would take too much time and would be inefficient and problematic.
 
 There are several high-traffic websites using Sphinx Search. They horizontally partition searched data across search nodes and then process it in parallel \cite{SPHINXPARAL}.
 
@@ -219,7 +220,7 @@ Apart from replication Sphinx has another problem. There are two different kinds
 Real-time index has many caveats \cite{SPHINXCAV}. Prefix and substring queries are not supported yet. Periodical rebuilding of an index with more than 20 million elements is problematic. Apache Solr and Sphinx search use similar data structures. Since number of features implemented by Solr is much greater than in Sphinx I decided to look only into Solr. 
 
 \subsection{Why am I creating new search engine?!}
-It seems that none of the existing solutions process search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions work on data stored on a disk. Nowadays when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on a disk could be stored in RAM by ramdisks, it is not a primary target for software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that there is room for improvement in this area. I was also very eager to write my own search engine. I have never implemented such a tool and I was interested to see how it goes. That is why I decided to create my own search engine.  
+It seems that none of the existing solutions process search queries very fast. In worst case scenario it is always $\Oh(n)$. All solutions work on data stored on a disk. Nowadays when RAM is cheap and servers with +32GB RAM are considered average, solutions working in RAM memory are very appreciated. Although data stored on a disk could be stored in RAM by ramdisks, it is not a primary target for software creators. Solr has designated class \verb|solr.RAMDirectoryFactory| which keeps all data in RAM memory but it does not support replication. For me it seems that there is room for improvement in this area. I was also very eager to write my own search engine. I have never implemented such a tool and I was interested to see what are the challenges involved. That is why I decided to create my own search engine.  
 
 \section{Algorithm description}
 \label{chapter:algorithm}
@@ -251,7 +252,7 @@ I chose to implement K-D trees over range trees because:
 \item Space complexity of range trees is unacceptable for this kind of problem. With 5 columns and 10 million rows, algorithm would require more than 100GB of RAM.
 \end{enumerate}
 
-I will start with a basic description of K-D tree. In Section~\ref{chapter:opt} I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view it as a condition $x_{i} \leq C$ where $i$ denotes some coordinate. Insert and delete are similar to their equivalents in classical binary tree. Each function is recursive. Based on condition in given node algorithm processes either left or right subtree. To achieve best complexity, in node on level $h$, pivot splits according to the $h \bmod{d}$-th coordinate, where $d$ is number of dimensions. 
+I will start with a basic description of K-D tree. In Section~\ref{chapter:opt} I will describe how this basic version can be improved. K-D tree is a binary tree. Each node contains a pivot, for our purpose we can view it as a condition $x_{i} \leq C$ where $x_{i}$ denotes the $i$-th coordinate. Insert and delete are similar to their equivalents in classical binary tree. Each function is recursive. Based on condition in given node algorithm processes either left or right subtree. To achieve best complexity, in node on level $h$, pivot splits according to the $h \bmod{d}$-th coordinate, where $d$ is number of dimensions. 
 
 Insert call of \verb|row| to \verb|node| is handled by the following procedure:
 
@@ -265,7 +266,7 @@ At this point let us assume that splitting leaf into two nodes occurs when leaf 
 
 In classical K-D tree algorithm searches points in some orthogonal search region. The parameters for search functions are \verb|node| and \verb|searchRegion|. If \verb|node| is a leaf, algorithm processes all rows inside \verb|node|. Otherwise, algorithm recursively searches through \verb|node| sons with two exceptions. If intersection of region represented by \verb|node| and \verb|searchRegion| is empty, I can stop processing this subtree. If the region represented by \verb|node| is fully contained in \verb|searchRegion|, I can assume that all rows will be inside \verb|searchRegion| (but still these rows must be collected).
 
-Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \geq c$. I want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, I can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. I will repeatedly use the master theorem in our complexity analysis, hence I state it below.
+Recall that the complexity of searching in a static K-D tree is $\Oh(n^{1-1/d} + k)$. The usual proof of such bound is by analyzing a query of the form $x \leq C$. I want to bound the number of nodes whose cells intersect the boundary of such query. Because every $d$-th level of the tree partitions the points according to the $x$ coordinate, I can write the recurrence $T(n)=1+2^{d-1}T(\frac{n}{2^{d}})$, which by the master theorem solves to $T(n)=\Oh(n^{\frac{\log 2^{d-1}}{\log 2^{d}}})=\Oh(n^{1-1/d})$. I will repeatedly use the master theorem in our complexity analysis, hence I state it below.
 
 \begin{theorem}[Master theorem]
 Assume that $a \geq 1, b > 1$ and for all $n\geq 1$:
@@ -297,7 +298,7 @@ Web search-engines usually show maximum of 20 results per page. A high percentag
 
 In classical K-D tree implementations, a search is performed by using a simple recurrence. Lets define a single recurrence call as a search event. Each search event is performed on a single node of K-D tree. For each node we could store boundary of its nodes. Such boundary should store the values of lower and upper bound for each column.
 
-Instead of running search events right away I could insert such events into a priority queue. Let me consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, I can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
+Instead of running search events right away I insert such events into a priority queue. Let me consider the case when user requests data ordered by value of column $X$. In such case, priority queue should always return events with minimal lower bound of value $X$. As soon as sufficient results have been found, the engine can stop processing search events from the queue. Hence, I can hope to substantially restrict the number of actually visited nodes of the K-D tree. This optimization alone may seem like a big improvement. It actually is not. The number of nodes added to the queue may be large.
 
 Imagine that I want to find few points with smallest values of the $x$ coordinate. Data structure needs to process at least all nodes
 that do not have a lower bound on $x$. Let me compute how many of them we need to process in the worst possible case:
@@ -309,7 +310,7 @@ Hence there are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by
 
 \subsection{Defined boundary and real boundary}
 
-\begin{figure}[h!]
+\begin{figure}[t]
         \centering
         \begin{subfigure}[b]{0.42\textwidth}
                 \centering
@@ -329,9 +330,9 @@ Hence there are $\Omega (n^{1-1/d})$ such nodes. This number can be decreased by
         
 \end{figure}
 
-Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), I could calculate area covered by points inside each node (see Figure~\ref{fig:inside}).
+Instead of storing whole area covered by the node (see Figure~\ref{fig:covered}), I calculate area covered by points inside each node (see Figure~\ref{fig:inside}).
 
-Let me take on an example where $k$ points with minimal values of coordinate $x$ are requested. First event contains a root of a tree. It is processed. It causes to push two of its sons to the queue. Next, I chose node with the smaller minimum value of coordinate $x$. This event is processed and another two nodes are added. The point with minimal value of coordinate $x$ belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with a minimum value of coordinate $x$ is processed. At this point I found first point with a minimal value of coordinate $x$. Then all nodes with lower bound equal to second minimal value of coordinate $x$ are processed. There are again $\Oh(\log n)$ such nodes, all of them are processed and one row is found. The situation goes on until I find $k$ rows.  After finding $k$ points, search process can be terminated and results may be rendered. To sum up, $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we store this information in boundary. Processing one node takes $\Oh(1)$ time. The bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. I processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log(k \log n))$.
+Let me elaborate on an example where $k$ points with minimal values of coordinate $x$ are requested. First event contains root of the tree. It is processed. It causes pushing two of its sons to the queue. Next, I choose node with the smaller minimum value of coordinate $x$. This event is processed and another two nodes are added. The point with minimal value of coordinate $x$ belongs to exactly one of these nodes and this node is processed. This situation goes on until leaf containing point with a minimum value of coordinate $x$ is processed. At this point I have found first point with a minimal value of coordinate $x$. Then all nodes with lower bound equal to second minimal value of coordinate $x$ are processed. There are again $\Oh(\log n)$ such nodes, all of them are processed and one row is found. The situation goes on until I find $k$ rows.  After finding $k$ points, search process can be terminated and results may be rendered. To sum up, $\Oh(k \log n)$ nodes are added to queue, and $\Oh(k \log n)$ nodes are processed. Finding minimum value of coordinate $x$ of node takes $\Oh(1)$ since we store this information in boundary. Processing one node takes $\Oh(1)$ time. The bootleneck of this solution is priority queue. Priority queue may be implemented as a binary heap. I processed $\Oh(\log n)$ nodes so complexity of this solution is $\Oh(k \log n \log(k \log n))$.
 
 \subsection{Raw pointers instead of shared pointers}
 
@@ -346,7 +347,7 @@ This is known as partial rebuilding, a simple yet very powerful paradigm often u
 
 \subsection{HTTP Service}
 
-I decided that it would be best if the search engine could work as a simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define the number of available threads. One of the server's starting procedure is to create all these threads. Every HTTP request is assigned to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently it's invoking only saving snapshots. All dependencies of server starting procedure are presented in Figure~\ref{fig:httpservice}.
+I decided that it would be best if the search engine could work as a simple HTTP server. Every query should be send as HTTP GET request. As a base of HTTP server I used \verb|example2| from \verb|boost::asio| documentation \cite{ASIOHTTP}. In Shuffla configuration file user should define the number of available threads. One of the server's starting procedure is to create all these threads. Every HTTP request is assigned to one of these threads by \verb|boost::asio::ip::tcp::acceptor|. There is another thread for periodical functions. Currently it is invoking only saving snapshots. All dependencies of server starting procedure are presented in Figure~\ref{fig:httpservice}.
 
 \begin{figure}[h!]
 \centering
@@ -370,16 +371,16 @@ Instances of query classes are sent to \verb|SearchEngine| class. \verb|SearchEn
 \subsection{Processing insert/delete requests}
 \label{chapter:processing}
 
-Inserting/deleting without tree balancing is pretty straight forward. It is just a simple recursion described in the previous section. Balancing is tricky as you may see in dependencies visualization in Figure~\ref{fig:rebuild}.
+Inserting/deleting without tree balancing is pretty straightforward. It is just a simple recursion described in the previous section. Balancing is tricky as you may see in dependencies visualization in Figure~\ref{fig:rebuild}.
 
-\begin{figure}[h!]
+\begin{figure}[b]
 \centering
   \includegraphics[width=16cm]{rebuild}
   \caption{Rebuilding process}
   \label{fig:rebuild}
 \end{figure}
 
-Balancing can be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (see definition of a super-balanced tree in Section~\ref{chapter:complexity}) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behaviour is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with $n$ nodes is $\Oh(n \log n)$.
+Balancing could be done using any linear algorithm for finding median in the set. I have decided to take a different approach. In \verb|KDVertex::find_good_pivot| I am iterating over all points. Based on coordinate value in currently processed row I create a \verb|Pivot|. \verb|Pivot| is a simple class which takes \verb|Row| and \verb|property_name|. For any \verb|Row|, \verb|pivot| can check if given \verb|Row| satisfy condition defined inside \verb|Pivot|. Algorithm iterates over 20 randomly selected rows in node and in linear time calculates pivot efficiency. If pivot efficiency is good enough (see definition of a super-balanced tree in Section~\ref{chapter:complexity}) I stop calculations. If none of these rows create good pivots, I iterate over all rows and check them one by one if they creating good pivot. After selecting pivot I am recursively rebuilding two subtrees. I have decided to use this solution because of space efficiency which is $\Oh(1)$. Space complexity is crucial because if it reaches linear, the rebuilding root may cause memory usage to double. Such a behaviour is very unwelcome in server environment. The implemented solution is $\Oh(n^2)$ but in average case it works well because $\frac{1}{5}$ of rows create good pivots. Therefore, the expected complexity of rebuilding subtree with $n$ nodes is $\Oh(n \log n)$.
 
 \subsection{Processing search requests}
 
@@ -418,7 +419,7 @@ My solution requires every table to have its own mutex. Read-only request uses \
 Architecture of data storage in databases is very important. It influences application performance and architecture of all other components. Here are the requirements for data storage: 
 \begin{enumerate}
 \item all data must be serializable,
-\item chosen architecture should force type safety,
+\item chosen architecture should enforce type safety,
 \item very good space efficiency,
 \item it must be fast!
 \end{enumerate}
@@ -448,7 +449,7 @@ I implemented both possibilities.
 
 \subsection{Presenting results}
 
-Presenting results may sound like a trivial issue. Actually it is not and hardly any libraries would fit for requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it by following \cite{SOANS} .
+Presenting results may sound like a trivial issue. Actually it is not and hardly any libraries would fit all the requirements presented below. Modern databases and search engines have to support most popular formats. Nowadays these are JSON, XML and (maybe) YAML. Chosen library should provide the same interface for feeding data to render, without any assumptions of the selected output format. Support for unicode characters is necessary. For some simple queries rendering response could be a bottleneck. That is why I chose \verb|boost::property_tree|. This library does not support unicode by default. It is possible to fix it by following \cite{SOANS} .
 
 \section{Complexities}
 \label{chapter:complexity}
@@ -503,7 +504,7 @@ Upper bound for number of processed nodes on level $d$ is $2^{d-1}$.
 
 \begin{proof}
 
-K-d tree is a binary tree. Root has height 0, its children have height 1, and so on. Let me count maximal possible number of visited nodes on level $d$ by a recursive search algorithm where region is defined by $x_i \geq$ $C$. A node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot on dimension $e$. Such line intersects either the region represented by left son or right son, not both. Therefore, only one of its sons will be recursively called. Then the upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce the number of processed nodes. Hence, the upper bound for number of processed nodes on level $d$ is $2^{d-1}$. 
+K-d tree is a binary tree. Root has height 0, its children have height 1, and so on. Let me count maximal possible number of visited nodes on level $d$ by a recursive search algorithm where region is defined by $x_i \leq$ $C$. A node will be recursively processed iff it intersects search region but is not fully contained in it. At one of these levels there will be a pivot splitting according to the the $i$-th dimension. Such line intersects either the region represented by left son or right son, not both. Therefore, only one of its sons will be recursively called. Then the upper bound for processed nodes is $2^{d-1}$. It can be easily generalized to every region. Adding another condition may only reduce the number of processed nodes. Hence, the upper bound for number of processed nodes on level $d$ is $2^{d-1}$. 
 \end{proof}
 
 
@@ -524,7 +525,7 @@ The recurrence describing the worst-case scenario is $T(n)=1+2^{d-1}T(\frac{\fra
 
 \begin{proof}
 
-My goal is to prove that $T(n) \leq c n^a$ for some constant $a < 1$ using induction on $n$. For small values of $n$ it is true because I can choose constant $c$. Now let me prove that $T(n) \leq c n^a$ assuming that $T(n') \leq c n'^a$ for all $n'<n$. I have:
+My goal is to prove that $T(n) \leq c n^a$ for some constant $a < 1$ using induction on $n$. For small values of $n$ it is true because I can choose constant $c$. Now let me prove that $T(n) \leq c n^a$ assuming that $T(n') \leq c (n')^a$ for all $n'<n$. I have:
 
 $$T(n) = \displaystyle\sum\limits_{i=1}^{2^{d-1}} T(x_i)\leq\displaystyle\sum\limits_{i=1}^{2^{d-1}} c(x_i)^{a}  \quad\text{where}\quad  \displaystyle\sum\limits_{i=1}^{2^{d-1}} x_i = \frac{2}{3}n$$ 
 
@@ -802,6 +803,7 @@ Solr must be executed by some application container. For this purpose we chose J
 Solr has advanced cache system. Usually about 70 percent of requests are rendered based on values from cache.  At night there is a small number of requests and Solr is unable to get passed warming stage before next commit. The hit ratio is slightly smaller, about 60 percent at night.
 
 \section{Summary}
+\label{chapter:summary}
 
 After this discussion it might seem that Shuffla is useless. I have to disagree. Shuffla fits great for smaller projects like searching through internet forum or a blog. Both Solr and PostgreSQL require quite difficult installation and configuration. Installation of shuffla takes 2 minutes, creating a table takes 10 seconds and searching is very easy. In short/simple projects having possibility of integrating search engine in less than 5 minutes is more than welcome.
 
